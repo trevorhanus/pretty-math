@@ -10,4 +10,4 @@ MarkupSafe==1.1.1
 mpmath==1.1.0
 six==1.12.0
 sympy==1.3
-Werkzeug==0.15.2
+Werkzeug==0.15.3
