@@ -1,0 +1,35 @@
+.tab {
+    border-top: 2px solid transparent;
+}
+
+.active-tab {
+    border-top: 2px solid green;
+}
+
+.active-tab:after {
+    content: ' ';
+    width: 100%;
+    position: absolute;
+    height: 2px;
+    bottom: -1px;
+    background-color: white;
+    left: 0;
+}
+
+.expr {
+    border-left: 4px solid transparent;
+}
+
+.expr .delete-button {
+    opacity: 0;
+    right: 10px;
+    transition: opacity .3s;
+}
+
+.expr:hover .delete-button {
+    opacity: 1;
+}
+
+.active-expr {
+    border-left-color: green;
+}

@@ -1,0 +1,624 @@
+{
+    "activeContextName": "dot product",
+    "activeExprId": "ddd6fc35-a838-4a76-9b1c-1e4ac5d26fad",
+    "contexts": [
+        {
+            "name": "simple",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "0f618f54-ab1c-422e-8de4-924e7ecbaed7",
+                        "expr": "x=10",
+                        "color": "rgba(102, 0, 153, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "x,y,z",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "f0f03530-1bd5-4981-847a-efd28814d2e8",
+                        "expr": "x=10",
+                        "color": "rgba(0, 0, 153, 1)"
+                    },
+                    {
+                        "id": "6eb71299-0d11-4b99-a233-19c2acb0cda1",
+                        "expr": "y=x+15",
+                        "color": "rgba(153, 0, 0, 1)"
+                    },
+                    {
+                        "id": "16059cd5-4bce-47e5-a949-cb050e5fbdab",
+                        "expr": "z=\\sqrt{x+y}",
+                        "color": "rgba(0, 51, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "abs",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "95c51c86-3880-4e21-8738-94aae230b4f3",
+                        "expr": "\\chabs{-1}",
+                        "color": "rgba(102, 0, 153, 1)"
+                    },
+                    {
+                        "id": "2f98605f-a905-479d-9607-ac5042e4e745",
+                        "expr": "m = \\matrix{[[1, -2], [-3, 4]]}",
+                        "color": "rgba(204, 0, 255, 1)"
+                    },
+                    {
+                        "id": "33a5215c-2a38-4245-bb59-44a8ff844734",
+                        "expr": "\\chabs{m}",
+                        "color": "rgba(51, 0, 51, 1)"
+                    },
+                    {
+                        "id": "56d6c86c-2b5d-4415-9c33-db0afbd95be6",
+                        "expr": "\\chabs{1}",
+                        "color": "rgba(51, 102, 255, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "arrays",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "ef5aef49-4899-4329-ae76-57b17049d280",
+                        "expr": "arr = [1, 2]",
+                        "color": "rgba(0, 102, 153, 1)"
+                    },
+                    {
+                        "id": "dcf9993b-f69d-4134-9637-64c1355b3fcd",
+                        "expr": "arr[1]",
+                        "color": "rgba(51, 0, 204, 1)"
+                    },
+                    {
+                        "id": "79d50bea-a691-45bc-9225-9e05fc00d517",
+                        "expr": "[3, 4][1]",
+                        "color": "rgba(0, 0, 153, 1)"
+                    },
+                    {
+                        "id": "35dab9bb-3e32-4061-81bf-cdce78b515c9",
+                        "expr": "\\pi[0]",
+                        "color": "rgba(102, 51, 153, 1)"
+                    },
+                    {
+                        "id": "a460b51c-45ff-4275-8a35-6661ae5e104b",
+                        "expr": "[1]+[2]",
+                        "color": "rgba(51, 102, 153, 1)"
+                    },
+                    {
+                        "id": "53e8cc29-586d-4b8b-90e3-9f5dd9da5174",
+                        "expr": "\\sin{[1]}",
+                        "color": "rgba(204, 0, 51, 1)"
+                    },
+                    {
+                        "id": "e493fa29-7c64-427c-be20-a57a060f7c07",
+                        "expr": "\\sin{arr[1]}",
+                        "color": "rgba(51, 102, 255, 1)"
+                    },
+                    {
+                        "id": "d48a4c2a-857c-4fc2-a0c8-bc4922c9c5ae",
+                        "expr": "\\sin{arr[2]}",
+                        "color": "rgba(0, 0, 204, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "cross product",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "0ee4b93c-c96b-40f1-80de-a65dd0f69a3b",
+                        "expr": "M1 = \\matrix{[[1, 2, 3]]}",
+                        "color": "rgba(153, 0, 0, 1)"
+                    },
+                    {
+                        "id": "bba925e9-c52c-4506-828a-bcb10beee4bf",
+                        "expr": "M2 = \\matrix{[[3], [2], [1]]}",
+                        "color": "rgba(0, 102, 204, 1)"
+                    },
+                    {
+                        "id": "62cc3bb2-617c-49f5-b007-9000f7f4c4dd",
+                        "expr": "M3 = \\matrix{[[2, 3, 4]]}",
+                        "color": "rgba(204, 0, 255, 1)"
+                    },
+                    {
+                        "id": "1278dc6e-e7ad-4303-9bf8-ac61af561fa3",
+                        "expr": "M1 \\crossp M2",
+                        "color": "rgba(102, 51, 0, 1)"
+                    },
+                    {
+                        "id": "b17bd724-ad19-4afd-afac-ad94dee80624",
+                        "expr": "M1 \\crossp M3",
+                        "color": "rgba(51, 0, 51, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "derivatives",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "02d634fb-9dff-4f49-ae0a-04d5dae328a3",
+                        "expr": "\\diff{x^2,\\wrt{x}}",
+                        "color": "rgba(102, 0, 255, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "divide",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "10c56df7-205f-43aa-9bef-5297753f5ec8",
+                        "expr": "1 / 4",
+                        "color": "rgba(102, 51, 51, 1)"
+                    },
+                    {
+                        "id": "12642322-587a-4552-9caf-be1d50f7ed38",
+                        "expr": "\\frac{1, 4}",
+                        "color": "rgba(153, 51, 255, 1)"
+                    },
+                    {
+                        "id": "71eeb30c-2a21-41cf-ab6e-15570f79d89a",
+                        "expr": "1 / \\matrix{[[1, 2]]}",
+                        "color": "rgba(51, 51, 0, 1)"
+                    },
+                    {
+                        "id": "7320c993-2041-4049-9546-9fde4e282e5b",
+                        "expr": "\\frac{1}",
+                        "color": "rgba(0, 0, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "dot product",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "7adcb0ab-ba04-4b8c-9255-65de82335aa0",
+                        "expr": "M1 = \\matrix{[[1, 3, -5]]}",
+                        "color": "rgba(0, 102, 0, 1)"
+                    },
+                    {
+                        "id": "6252c010-83c5-4ee3-9a74-b158d1a90f57",
+                        "expr": "M2 = \\matrix{[[4, -2, -1]]}",
+                        "color": "rgba(0, 51, 0, 1)"
+                    },
+                    {
+                        "id": "ddd6fc35-a838-4a76-9b1c-1e4ac5d26fad",
+                        "expr": "M1 \\dotp M2",
+                        "color": "rgba(102, 102, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "exp",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "88144d3e-87f9-4bc0-b200-e20c7dc09b02",
+                        "expr": "e^{2}",
+                        "color": "rgba(153, 51, 102, 1)"
+                    },
+                    {
+                        "id": "aa865a3b-ecf0-4cf9-8884-2056ded761f3",
+                        "expr": "\\exp{2}",
+                        "color": "rgba(0, 102, 204, 1)"
+                    },
+                    {
+                        "id": "d1680f6a-e6fd-464d-b700-ea7ae83dd472",
+                        "expr": "\\exp{\\matrix{[[1,2]]}}",
+                        "color": "rgba(0, 51, 153, 1)"
+                    },
+                    {
+                        "id": "17a7462c-f1af-41eb-86ec-a76ede1059be",
+                        "expr": "e^{\\matrix{[[1,2]]}}",
+                        "color": "rgba(0, 51, 255, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "factorial",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "b47bf7d1-bd18-4846-a24e-e76afeb14d57",
+                        "expr": "4!",
+                        "color": "rgba(0, 102, 153, 1)"
+                    },
+                    {
+                        "id": "97dd29fa-fe81-4883-ae25-861dabb88606",
+                        "expr": "a!",
+                        "color": "rgba(102, 102, 153, 1)"
+                    },
+                    {
+                        "id": "249ca878-b42c-41ff-b571-7fc224a5b96b",
+                        "expr": "(-1)!",
+                        "color": "rgba(204, 51, 102, 1)"
+                    },
+                    {
+                        "id": "50cb925b-5d92-4bee-a8fb-b0ac7134d7d4",
+                        "expr": "-3!",
+                        "color": "rgba(51, 102, 153, 1)"
+                    },
+                    {
+                        "id": "ba6900b9-0829-4412-b9ce-3814c0cd5ef2",
+                        "expr": "\\matrix{[[1, 2]]}!",
+                        "color": "rgba(204, 51, 102, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ln",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "5f9fd8fe-eb0c-4dcc-addd-b42e1c39afdd",
+                        "expr": "\\ln{2}",
+                        "color": "rgba(0, 51, 153, 1)"
+                    },
+                    {
+                        "id": "1290289a-721d-449c-97e9-87ce5e6503d8",
+                        "expr": "\\ln{\\matrix{[[1, 2]]}}",
+                        "color": "rgba(102, 102, 102, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "log",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "26306615-f63d-4150-a8c0-2805af3aaf62",
+                        "expr": "\\log{2}",
+                        "color": "rgba(153, 51, 102, 1)"
+                    },
+                    {
+                        "id": "59edcc3b-63a1-42fb-8704-e3ce66b1ecde",
+                        "expr": "\\log{2,3}",
+                        "color": "rgba(51, 102, 255, 1)"
+                    },
+                    {
+                        "id": "3d4743ce-a518-4489-9b9e-d309adf62fec",
+                        "expr": "\\log{2, 3, 4}",
+                        "color": "rgba(153, 0, 255, 1)"
+                    },
+                    {
+                        "id": "2f198e11-d069-44b6-9587-d082872d5994",
+                        "expr": "\\log{1,-1}",
+                        "color": "rgba(153, 0, 204, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "matrices 1",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "28ef733a-b973-4fc3-9fd4-56c0026379de",
+                        "expr": "y = \\matrix{[[1,2]]}",
+                        "color": "rgba(102, 51, 255, 1)"
+                    },
+                    {
+                        "id": "caa6b824-b7b7-40eb-a883-e2ce2b2d0d78",
+                        "expr": "6y",
+                        "color": "rgba(153, 0, 204, 1)"
+                    },
+                    {
+                        "id": "297d2a0b-1ef5-4320-af4a-e9f23f2a21f9",
+                        "expr": "y[1,1]",
+                        "color": "rgba(51, 0, 0, 1)"
+                    },
+                    {
+                        "id": "ab29f0f4-d7a4-4ff9-afec-f3441acf647c",
+                        "expr": "\\matrix{[[1,2],[3,4]]}[2,2]",
+                        "color": "rgba(102, 102, 153, 1)"
+                    },
+                    {
+                        "id": "65753350-84fd-4a4c-9699-ef995a5b8199",
+                        "expr": "y+\\matrix{[[1+2,4]]}",
+                        "color": "rgba(0, 51, 102, 1)"
+                    },
+                    {
+                        "id": "6debdb77-c0bb-4653-b8dc-02e7956263c6",
+                        "expr": "m = \\matrix{[[1,2,3],[4,5,6]]}",
+                        "color": "rgba(153, 102, 102, 1)"
+                    },
+                    {
+                        "id": "4325a033-084e-444d-a002-eb6bb4330c36",
+                        "expr": "\\matrix{[[6,5,4],[3,2,1]]} - m",
+                        "color": "rgba(102, 0, 51, 1)"
+                    },
+                    {
+                        "id": "2b0531d6-8305-4603-80e8-aee131557ecc",
+                        "expr": "\\matrix{[[1, 2], [1]]}",
+                        "color": "rgba(153, 51, 204, 1)"
+                    },
+                    {
+                        "id": "8d799108-7c26-480b-a0a6-e2142d3c020b",
+                        "expr": "-y",
+                        "color": "rgba(153, 51, 102, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "max",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "d4b3101c-f275-4d00-8d36-a60d949ec5ca",
+                        "expr": "\\chmax{1, 2}",
+                        "color": "rgba(204, 0, 153, 1)"
+                    },
+                    {
+                        "id": "46428dad-7d1e-43d2-be3d-9b908333bb05",
+                        "expr": "\\chmax{1, \\matrix{[[1, 2]]}}",
+                        "color": "rgba(51, 0, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "multiply",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "bf334d55-8441-4f5d-b8be-66bdbe6deb66",
+                        "expr": "5*6",
+                        "color": "rgba(204, 51, 0, 1)"
+                    },
+                    {
+                        "id": "0f87e08a-0bc2-4b80-ab70-8ac07231d17f",
+                        "expr": "3 * (1 + 4)",
+                        "color": "rgba(102, 0, 153, 1)"
+                    },
+                    {
+                        "id": "5d6bfc80-4ecd-4cfd-9dad-9b96a65bd55e",
+                        "expr": "3 * \\matrix{[[3, 4]]}",
+                        "color": "rgba(153, 102, 204, 1)"
+                    },
+                    {
+                        "id": "4b0937aa-18d2-418f-b1d1-5730848153be",
+                        "expr": "\\matrix{[[1, 2], [3, 4]]} * 5",
+                        "color": "rgba(51, 51, 102, 1)"
+                    },
+                    {
+                        "id": "7c9fb291-2618-4aba-ae85-0d5e2ce90337",
+                        "expr": "\\matrix{[[1, 2, 3]]} * \\matrix{[[3],[2],[1]]}",
+                        "color": "rgba(153, 0, 204, 1)"
+                    },
+                    {
+                        "id": "a1fb0eba-419b-4498-81fc-d85b76bda918",
+                        "expr": "M1 = \\matrix{[[1, 1 + 1, 3], [2, 4, 6], [1, 2, 3]]}",
+                        "color": "rgba(204, 0, 102, 1)"
+                    },
+                    {
+                        "id": "ed3faa7c-c882-4c3b-adec-d53fbab1f7b9",
+                        "expr": "M2 = \\matrix{[[1], [2], [3]]}",
+                        "color": "rgba(51, 51, 204, 1)"
+                    },
+                    {
+                        "id": "c135142f-a189-4cbe-9462-8c00a565f74c",
+                        "expr": "M1*M2",
+                        "color": "rgba(153, 0, 204, 1)"
+                    },
+                    {
+                        "id": "6df6bf06-3d89-4aa1-874a-d56b25fa7d54",
+                        "expr": "M2*M1",
+                        "color": "rgba(153, 51, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "power",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "c870ff94-f12e-4763-908f-91607156ab42",
+                        "expr": "4^{2}",
+                        "color": "rgba(0, 102, 51, 1)"
+                    },
+                    {
+                        "id": "e7682aa0-5131-45f2-b2e0-74b9b87c9bf5",
+                        "expr": "\\matrix{[[1, 2]]}^{-2}",
+                        "color": "rgba(204, 0, 204, 1)"
+                    },
+                    {
+                        "id": "7ac03658-26a0-4e5f-8ac7-06a05dead9fc",
+                        "expr": "\\matrix{[[1, 2], [1, 2]]}^{2}",
+                        "color": "rgba(51, 0, 204, 1)"
+                    },
+                    {
+                        "id": "400edbdc-c29a-4837-b02f-011f8df6964d",
+                        "expr": "\\matrix{[[2, 3], [3, 4]]}^{3}",
+                        "color": "rgba(0, 51, 102, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "sqrt",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "1376c828-13d9-461f-b5ec-c7fc04ee0a57",
+                        "expr": "\\sqrt{4}",
+                        "color": "rgba(0, 102, 255, 1)"
+                    },
+                    {
+                        "id": "98ed4abf-e00b-47ed-9c32-0201a30cb04a",
+                        "expr": "\\sqrt{\\matrix{[[1, 2]]}}",
+                        "color": "rgba(102, 0, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "sum",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "89cfbb83-c87d-45b9-af23-3cc5f5a2e0b6",
+                        "expr": "\\chsum{1,2}",
+                        "color": "rgba(0, 102, 153, 1)"
+                    },
+                    {
+                        "id": "7aede1e4-072d-4720-baf6-b7499b126aa5",
+                        "expr": "m1 = \\matrix{[[1+1, 2]]}",
+                        "color": "rgba(255, 0, 102, 1)"
+                    },
+                    {
+                        "id": "7f6c1d75-7ca5-49cd-8f10-c937816a81f6",
+                        "expr": "m2 = \\matrix{[[2, 4]]}",
+                        "color": "rgba(0, 102, 153, 1)"
+                    },
+                    {
+                        "id": "6194912f-57c0-4f05-aff6-730aaa4fd1f0",
+                        "expr": "\\chsum{m1, m2}",
+                        "color": "rgba(102, 51, 102, 1)"
+                    },
+                    {
+                        "id": "5122f350-b632-4205-8349-48939ded43fd",
+                        "expr": "\\chsum{4, m1}",
+                        "color": "rgba(0, 51, 255, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "trig",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "d1f3dbfb-7e25-4179-a8ff-0976d724474c",
+                        "expr": "\\arccos{1}",
+                        "color": "rgba(153, 51, 0, 1)"
+                    },
+                    {
+                        "id": "3f660de9-c5a8-4415-a5f8-b44e40e5f475",
+                        "expr": "\\arccos{\\matrix{[[1, 2]]}}",
+                        "color": "rgba(153, 0, 153, 1)"
+                    },
+                    {
+                        "id": "d8012392-5769-4416-9a01-c912c5ece952",
+                        "expr": "",
+                        "color": "rgba(102, 0, 255, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "unary minus",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "bc296d36-6729-4f02-91cb-529659104c26",
+                        "expr": "-1",
+                        "color": "rgba(0, 51, 255, 1)"
+                    },
+                    {
+                        "id": "f6044b85-28bb-4b8f-8f79-b45be8ec61a6",
+                        "expr": "M = \\matrix{[[1, -1], [2+3, 3]]}",
+                        "color": "rgba(0, 0, 153, 1)"
+                    },
+                    {
+                        "id": "e0a4c82d-12df-4ab8-82e1-e21185304117",
+                        "expr": "-M",
+                        "color": "rgba(153, 102, 204, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "User Defined Functions",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "cf2d81b9-4522-435f-8255-14afeab84039",
+                        "expr": "\\dfunc{f,x} = \\sin{x}",
+                        "color": "rgba(0, 0, 255, 1)"
+                    },
+                    {
+                        "id": "2a7dec89-b705-4261-94dc-a472a6723db4",
+                        "expr": "f(3)",
+                        "color": "rgba(153, 0, 51, 1)"
+                    },
+                    {
+                        "id": "442187a9-f4f1-4e6a-8c84-fdfb576ee04d",
+                        "expr": "f(3,2)",
+                        "color": "rgba(0, 102, 0, 1)"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "transpose",
+            "js": {
+                "dataTables": [],
+                "exprs": [
+                    {
+                        "id": "f22fbc27-5b81-4e4c-9b7c-111786d0c8f2",
+                        "expr": "\\transpose{\\matrix{[[1]]}}",
+                        "color": "rgba(51, 51, 204, 1)"
+                    },
+                    {
+                        "id": "3dbdf22a-4d4f-43f2-860a-56989b7cd478",
+                        "expr": "\\transpose{1}",
+                        "color": "rgba(0, 0, 204, 1)"
+                    },
+                    {
+                        "id": "52d83967-2f3e-4261-bbcc-bf12dcf33759",
+                        "expr": "\\transpose{\\matrix{[[1, 2], [3, 4]]}}",
+                        "color": "rgba(153, 51, 51, 1)"
+                    },
+                    {
+                        "id": "47f17c40-31d6-48fc-8ade-1fad14bece4d",
+                        "expr": "\\transpose{\\matrix{[[1+2, 1]]}}",
+                        "color": "rgba(51, 51, 102, 1)"
+                    }
+                ]
+            }
+        }
+    ],
+    "tab": "simplified_tree",
+    "trigMode": "radians"
+}
