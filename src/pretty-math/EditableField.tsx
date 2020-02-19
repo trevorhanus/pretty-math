@@ -177,7 +177,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
     };
 
     handleBackspace = (e: React.KeyboardEvent) => {
-        if (calchub.settings.keys.isModKey1(e)) {
+        if (e.metaKey) {
             return this.engine.handler.backspaceAll();
         }
         this.engine.handler.backspace();
@@ -231,7 +231,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleDown = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e):
+            case e.metaKey:
                 return this.engine.handler.moveSelectionToEnd();
             case e.shiftKey:
                 return this.engine.handler.selectDown();
@@ -242,9 +242,9 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleLeft = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case e.metaKey && e.shiftKey:
                 return this.engine.handler.selectToStart();
-            case calchub.settings.keys.isModKey1(e):
+            case e.metaKey:
                 return this.engine.handler.moveSelectionToStart();
             case e.shiftKey:
                 return this.engine.handler.selectLeft();
@@ -255,9 +255,9 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleRight = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case e.metaKey && e.shiftKey:
                 return this.engine.handler.selectToEnd();
-            case calchub.settings.keys.isModKey1(e):
+            case e.metaKey:
                 return this.engine.handler.moveSelectionToEnd();
             case e.shiftKey:
                 return this.engine.handler.selectRight();
@@ -268,7 +268,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleUp = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e):
+            case e.metaKey:
                 return this.engine.handler.moveSelectionToStart();
             case e.shiftKey:
                 return this.engine.handler.selectUp();

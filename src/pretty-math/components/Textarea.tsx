@@ -123,21 +123,21 @@ export class Textarea extends React.Component<ITextareaProps, {}> {
                 this.invokeCb('onDelete', e);
                 break;
 
-            case e.keyCode === 65 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 65 && e.metaKey:
                 this.invokeCb('onSelAll', e);
                 break;
 
             // Y
-            case e.keyCode === 89 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 89 && e.metaKey:
                 this.invokeCb('onRedo', e);
                 break;
 
             // Z
-            case e.keyCode === 90 && calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case e.keyCode === 90 && e.metaKey && e.shiftKey:
                 this.invokeCb('onRedo', e);
                 break;
             // Z
-            case e.keyCode === 90 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 90 && e.metaKey:
                 this.invokeCb('onUndo', e);
                 break;
 
