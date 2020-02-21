@@ -1,0 +1,155 @@
+---
+title: Pretty Math Input Component
+---
+
+A `PrettyMathInput` component is an input field that allows the user to input math.
+
+> Insert gif of the component in use here
+
+## Props
+
+The props allow the `PrettyMathInput` to be very flexible. You can use the props to customize the behavior of the component. Below is a summary of the props available followed by a more in depth discussion for each.
+
+```
+interface PrettyMathInputProps {
+    inputState: InputState;
+    onChange: (inputState: InputState) => void;
+    keyBindingFn: (e: React.KeyboardEvent) => string;
+    handleCommand: (command: string, inputState: InputState) => CommandHandlerResponse;
+    renderBlock: (block: Block) => React.ReactNode;
+    onBlur: (e: React.BlurEvent) => void;
+    onFocus: (e: React.FocusEvent) => void;
+}
+```
+
+### `inputState`
+
+```
+inputState: InputState;
+```
+
+This `InputState` object to be rendered by the `PrettyMathInput`.
+
+### `onChange`
+
+```
+onChange: (inputState: InputState) => void;
+```
+
+The `onChange` handler to be called by the `PrettyMathInput` when edits and selection changes occur.
+
+### `keyBindingFn`
+
+```
+keyBindingFn: (e: React.KeyboardEvent) => string;
+```
+
+A callback function to be called on every `keydown` event. You can use this callback to add custom functionality to the `PrettyMathInput`. This callback should return a string which is the name of a command to invoke. Alternatively, it can return nothing, which tells Pretty Math to perform whatever the default command is for this key.
+
+### `handleCommand`
+
+```
+handleCommand: (command: string, inputState: InputState) => CommandHandlerResponse;
+```
+
+A callback that is called before Pretty Math handles a command.  
+
+### `renderBlock`
+
+```
+renderBlock: (block: Block) => React.ReactNode;
+```
+
+A callback to override how a block renders.
+
+### `className`
+
+```
+className: string;
+```
+
+Additional classes to append to the root `div`.
+
+### `readOnly`
+
+```
+readOnly: boolean;
+```
+
+Just like the readonly prop on the basic html `input` element. Setting to `true` disables the input field.
+
+### `focusOnMount`
+
+```
+focusOnMount: boolean;
+```
+
+Focus the input field when the React lifecycle method `componentDidMount` is invoked.
+
+### `onBlur`
+
+```
+onBlur: () => void;
+```
+
+### `onFocus`
+
+```
+onFocus: () => void;
+```
+
+### `onCancel`
+
+```
+onCancel: () => void;
+```
+
+This is a convenience callback which is invoked when the user presses the `esc` key.
+
+> By default, should this return the state of the input back to what it was when it was last focused? Also, should this be called before or after the `onBlur` callback?
+
+### `onCursorLeave`
+
+```
+onCursorLeave: (dir: Dir) => void;
+```
+
+A callback that is invoked when the cursor is at an edge boundary of the input and an arrow key in the direction of the boundary is pressed. The `Dir` is one of `left`, `right`, `up`, or `down`.
+
+### `onDeleteOutOf`
+
+```
+onDeleteOutOf: (dir: Dir) => void;
+```
+
+Very similar to the `onCursorLeave` callback expect in this case the user pressed the `backspace` or `delete` key.
+
+### `onSubmit`
+
+```
+onSubmit: () => void;
+```
+
+### `getAssistantItems`
+
+```
+getAssistantItems: (inputState: InputState) => LibraryItem[];
+```
+
+Callback which is invoked after every state change and before the Assistant is rendered. The result of this callback determines what is shown in the autocomplete list of the Assistant.
+
+### `renderAssistant`
+
+```
+renderAssistant: (props: AssistantProps) => React.ReactNode;
+```
+
+Callback which allows us to override how the Assistant renders. See the Assistant page for more information about the `AssistantProps`.
+
+### `renderAssistantItem`
+
+```
+renderAssistantItem: (itemProps: AssistantItemProps) => React.ReactNode;
+```
+
+Callback which allows us to override how the Assistant renders it's items and to render custom items that were previously returned from the `getAssistantItems` callback. See [Adding Custom Assistant Items]() for more info.
