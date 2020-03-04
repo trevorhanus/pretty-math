@@ -15,9 +15,13 @@ export class App extends React.Component<IAppProps, {}> {
     render() {
         return (
             <Provider>
-                <div className="fixed inset-0 flex flex-col">
-                    <h1>The Calculator</h1>
-                    <MathField />
+                <div className="container mx-auto fixed inset-0 flex flex-col items-center pt-12">
+                    <h1 className="text-xl text-center mb-4">Pretty Math Input</h1>
+                    <div className="w-1/2">
+                        <MathField
+                            className="text-2xl p-2"
+                        />
+                    </div>
                 </div>
             </Provider>
         );

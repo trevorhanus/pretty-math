@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
+import { hasCommandModifier } from '../utils/Keys';
 
 export interface ITextareaProps {
     onRef?: (ref: HTMLTextAreaElement) => void;
@@ -123,21 +124,22 @@ export class Textarea extends React.Component<ITextareaProps, {}> {
                 this.invokeCb('onDelete', e);
                 break;
 
-            case e.keyCode === 65 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 65 && hasCommandModifier(e):
                 this.invokeCb('onSelAll', e);
                 break;
 
             // Y
-            case e.keyCode === 89 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 89 && hasCommandModifier(e):
                 this.invokeCb('onRedo', e);
                 break;
 
             // Z
-            case e.keyCode === 90 && calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case e.keyCode === 90 && hasCommandModifier(e) && e.shiftKey:
                 this.invokeCb('onRedo', e);
                 break;
+
             // Z
-            case e.keyCode === 90 && calchub.settings.keys.isModKey1(e):
+            case e.keyCode === 90 && hasCommandModifier(e):
                 this.invokeCb('onUndo', e);
                 break;
 

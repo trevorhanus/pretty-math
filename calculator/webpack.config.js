@@ -49,7 +49,7 @@ const config = () => {
             publicPath: '/',
         },
         plugins: [
-            new Dotenv(),
+            // new Dotenv(),
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 template: path.join(__dirname, 'index.html'),
