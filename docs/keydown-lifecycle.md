@@ -15,7 +15,6 @@ Note: You can always override the default key bindings by using the `keyBindingF
 | Key Sequence | command | default behavior |
 | --- | --- | --- |
 | ⌘ + C | `copy` | Copy the content included in the selection to the clipboard. |
-| ⌘ + B | `bold` | Toggle the bold-face style for the selected blocks. |
 | ⌘ + V | `paste` | Paste the text or state from the clipboard and place it at the current cursor position. |
 | C | `input` | Insert a block with value `C` at the current cursor position. |
 

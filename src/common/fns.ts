@@ -60,6 +60,19 @@ export function isEmpty(sub: any): boolean {
     return false;
 }
 
+/**
+ * Memoizes the return value of a function that accepts one string argument.
+ */
+export function memoizeStringOnly<T>(callback: (s: string) => T): (s: string) => T {
+    const cache = {};
+    return function(string) {
+        if (!cache.hasOwnProperty(string)) {
+            cache[string] = callback.call(this, string);
+        }
+        return cache[string];
+    };
+}
+
 export function omitNulls<T>(obj: any): T {
     const cleaned: any = {};
     Object.keys(obj).forEach(key => {

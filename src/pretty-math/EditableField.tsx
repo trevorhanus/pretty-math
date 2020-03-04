@@ -7,6 +7,7 @@ import { observer, Provider } from 'mobx-react';
 import { MathRoot, Textarea } from 'pretty-math/components';
 import { BlockUtils, Dir, EditableEngine, MathFieldState } from 'pretty-math/internal';
 import * as React from 'react';
+import { hasCommandModifier } from './utils/Keys';
 
 export interface IEditableFieldProps<EngineType> {
     assistant?: React.ReactNode
@@ -177,7 +178,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
     };
 
     handleBackspace = (e: React.KeyboardEvent) => {
-        if (calchub.settings.keys.isModKey1(e)) {
+        if (hasCommandModifier(e)) {
             return this.engine.handler.backspaceAll();
         }
         this.engine.handler.backspace();
@@ -231,7 +232,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleDown = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e):
+            case hasCommandModifier(e):
                 return this.engine.handler.moveSelectionToEnd();
             case e.shiftKey:
                 return this.engine.handler.selectDown();
@@ -242,9 +243,9 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleLeft = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case hasCommandModifier(e) && e.shiftKey:
                 return this.engine.handler.selectToStart();
-            case calchub.settings.keys.isModKey1(e):
+            case hasCommandModifier(e):
                 return this.engine.handler.moveSelectionToStart();
             case e.shiftKey:
                 return this.engine.handler.selectLeft();
@@ -255,9 +256,9 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleRight = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e) && e.shiftKey:
+            case hasCommandModifier(e) && e.shiftKey:
                 return this.engine.handler.selectToEnd();
-            case calchub.settings.keys.isModKey1(e):
+            case hasCommandModifier(e):
                 return this.engine.handler.moveSelectionToEnd();
             case e.shiftKey:
                 return this.engine.handler.selectRight();
@@ -268,7 +269,7 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
 
     handleUp = (e: React.KeyboardEvent) => {
         switch (true) {
-            case calchub.settings.keys.isModKey1(e):
+            case hasCommandModifier(e):
                 return this.engine.handler.moveSelectionToStart();
             case e.shiftKey:
                 return this.engine.handler.selectUp();

@@ -21,6 +21,7 @@ module.exports = {
                 'quick-start',
                 'pretty-math-input',
                 'keydown-lifecycle',
+                'math-input-state',
                 'state-decorator',
                 'assistant',
                 'blocks',

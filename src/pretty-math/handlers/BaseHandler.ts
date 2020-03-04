@@ -3,7 +3,6 @@ import {
     Action,
     BlockUtils,
     buildChainFromCalchub,
-    CursorPosition,
     Dir,
     EditableEngine,
     getNextCursorPosition,

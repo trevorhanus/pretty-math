@@ -14,10 +14,10 @@ import { decorateState } from 'pretty-math';
 
 // some handler which is passed the inputState object
 handleCommand: (command: string, inputState: InputState) => {
-    const decorated = decorateState(inputState);
+    let newState = inputState;
     
     if (command === 'insert_foo') {
-        decorated
+        newState = decorateState(inputState)
             .moveCursorToEndOfChain()
             .insertBlocks([
                 {
@@ -38,11 +38,12 @@ handleCommand: (command: string, inputState: InputState) => {
                         text: 'o'
                     }
                 }
-            ]);
+            ])
+            .serialize();
     }
 
     this.setState({
-        inputState: decorated.serialize(),
+        inputState: newState,
     });
 }
 ```

@@ -52,11 +52,13 @@
     "classnames": "^2.2.6",
     "decimal.js": "^10.2.0",
     "elasticlunr": "^0.9.5",
+    "invariant": "^2.2.4",
     "lodash.isempty": "^4.4.0",
     "lodash.isequal": "^4.5.0",
     "mobx-portals": "^0",
     "mobx-validated-field": "^0",
     "mutationobserver-shim": "^0.3.3",
-    "react-color": "^2.18.0"
+    "react-color": "^2.18.0",
+    "ua-parser-js": "^0.7.21"
   }
 }
