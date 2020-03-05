@@ -35,7 +35,7 @@ const FRACTION_BLOCK_OPTS: CompositeBlockOpts = {
         }
     },
     cursorOrder: {
-        leftToRight: [NUM],
+        leftToRight: [],
         upToDown: [NUM, DENOM],
     },
     entries: {
