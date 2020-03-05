@@ -70,10 +70,6 @@ export abstract class EditableEngine {
         return this.handler.lastAction;
     }
 
-    get overlayPortalKey(): string {
-        return `overlay-portal-${this.root.id}`;
-    }
-
     setHandler(handler: IEventHandler) {
         this._handler = handler;
     }
