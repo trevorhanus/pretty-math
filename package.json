@@ -55,7 +55,6 @@
     "invariant": "^2.2.4",
     "lodash.isempty": "^4.4.0",
     "lodash.isequal": "^4.5.0",
-    "mobx-portals": "^0",
     "mobx-validated-field": "^0",
     "mutationobserver-shim": "^0.3.3",
     "react-color": "^2.18.0",

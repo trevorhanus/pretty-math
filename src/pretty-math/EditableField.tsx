@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import isEqual from 'lodash.isequal';
 import { MathContext } from 'math';
 import { action } from 'mobx';
-import { Portal } from 'mobx-portals';
 import { observer, Provider } from 'mobx-react';
 import { MathRoot, Textarea } from 'pretty-math/components';
 import { BlockUtils, Dir, EditableEngine, MathFieldState } from 'pretty-math/internal';
@@ -101,7 +100,6 @@ export class EditableField<EngineType> extends React.Component<IEditableFieldPro
                     onDoubleClick={this.props.disabled ? null : this.handleDblClick }
                     onMouseDown={this.props.disabled ? null : this.handleMouseDown }
                 >
-                    <Portal id={engine.overlayPortalKey} className="overlay-portal" />
                     <MathRoot rootBlock={engine.root} />
                     { this.props.assistant }
                     <Textarea
