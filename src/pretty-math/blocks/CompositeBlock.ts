@@ -175,7 +175,7 @@ export class CompositeBlock extends Block implements ICompositeBlock {
     @action
     removeChild(block: IBlock): ICursorPosition {
         const chain = this.getChainByBlock(block);
-        const b = chain.replaceChain(block);
+        const b = chain.replaceChain(BlockBuilder.blank());
         return { block: b, offset: 0 };
     }
 
