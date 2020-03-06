@@ -160,7 +160,7 @@ export const FUNCTIONS: LibraryEntryJS[] = [
         cursorOnInsert: { blockPos: '0.1:0', offset: 0 },
     },
     {
-        keywords: ['sqrt', 'radical'],
+        keywords: ['sqrt', 'radical', 'square root'],
         descr: 'Square root of a positive number',
         latex: '\\sqrt',
         text: null,
