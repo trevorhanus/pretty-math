@@ -32,14 +32,12 @@ export interface ITextareaProps {
 
 @observer
 export class Textarea extends React.Component<ITextareaProps, {}> {
-    ref: HTMLTextAreaElement;
 
     constructor(props: ITextareaProps) {
         super(props);
     }
 
     render() {
-
         return (
             <textarea
                 className="hidden-textarea"
@@ -150,7 +148,6 @@ export class Textarea extends React.Component<ITextareaProps, {}> {
 
     handleRef = (ref: HTMLTextAreaElement) => {
         this.props.onRef && this.props.onRef(ref);
-        this.ref = ref;
     };
 
     invokeCb(name: string, e: React.SyntheticEvent, ...args: any[]) {

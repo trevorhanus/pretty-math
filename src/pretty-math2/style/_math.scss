@@ -1,0 +1,309 @@
+.math-root {
+    display: inline-block;
+    position: relative;
+    font-family: "Times New Roman", Symbola, serif;
+    line-height: normal;
+    white-space: nowrap;
+
+    .block-chain {
+        display: inline-flex;
+        align-items: baseline;
+    }
+
+    .block {
+        display: inline-block;
+        white-space: pre;
+    }
+
+    .block-has-error {
+        display: inline-block;
+        position: relative;
+        background: url(images/red_squiggly.gif) bottom repeat-x;
+        background-color: rgba(255, 118, 118, 0.3);
+    }
+
+    .block.block-has-error:hover {
+
+        .block-error-message {
+            display: block;
+        }
+    }
+
+    .block-error-message {
+        position: absolute;
+        background-color: red;
+        color: white;
+        display: none;
+    }
+
+    .differential {
+        font-style: italic;
+    }
+
+    .italic {
+        font-style: italic;
+    }
+
+    .symbol {
+        font-style: italic;
+    }
+
+    .function-name {
+
+        .symbol {
+            font-style: initial;
+        }
+    }
+
+    .blank {
+        background-color: lightgrey;
+        margin-right: 1px;
+
+        &:after {
+            content: 'a';
+            opacity: 0;
+        }
+
+        .focused & {
+            background-color: transparent;
+
+            &.no-cursor {
+                background-color: lightgrey;
+            }
+        }
+    }
+
+    .static-blank {
+
+        &:after {
+            content: 'i';
+            opacity: 0;
+        }
+    }
+
+    .parens {
+        align-self: stretch;
+    }
+
+    .binary-op {
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+
+        &.no-padding-right {
+            padding-right: 0;
+        }
+
+        &.no-padding-left {
+            padding-left: 0;
+        }
+    }
+
+    .radical {
+        position: relative;
+        display: inline-flex;
+
+        .inner {
+            padding: 0.1em 1px 0 1px;
+            margin: 0.1em 0.1em 0 1em;
+        }
+
+        .radical-symbol {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
+        }
+    }
+
+    .integral {
+        position: relative;
+        display: inline-flex;
+        align-items: baseline;
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
+
+        .integral-symbol {
+            font-size: 3rem;
+            font-family: 'Segio UI';
+            margin-right: 0.7rem;
+            vertical-align: middle;
+
+            span {
+                vertical-align: inherit;
+            }
+        }
+
+        .integral-bounds {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-self: normal;
+
+            .right-bound {
+                font-size: 80%;
+            }
+
+            .left-bound {
+                font-size: 80%;
+                margin-left: -0.4rem;
+                margin-bottom:-0.3rem;
+            }
+        }
+
+        .inner {
+            margin-left: 0.1rem;
+            margin-right: 0.2rem;
+        }
+
+        .wrt {
+            margin-left: 0.2rem;
+            font-style: italic;
+        }
+    }
+
+    .derivative {
+        display: inline-block;
+    }
+
+    .inner {
+        display: inline-block;
+        padding: 0 1px 0 1px;
+    }
+
+    .function {
+        display: inline-block;
+
+        .function-name {
+            margin-right: 0.05em;
+        }
+    }
+
+    .fraction {
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+
+        .numerator {
+            float: left;
+            width: 100%;
+            text-align: center;
+            margin-bottom: -0.62em;
+            padding-left: 1px;
+        }
+
+        .fraction-line {
+            display: block;
+            clear: both;
+            height: 1em;
+            pointer-events: none;
+
+            .line {
+                display: inline-block;
+                width: 100%;
+                vertical-align: 0.25em;
+                border-bottom: solid 1px;
+            }
+        }
+
+        .denominator {
+            float: left;
+            width: 100%;
+            text-align: center;
+            margin-top: -0.31em;
+            padding-left: 1px;
+        }
+    }
+
+    .sup-sub {
+        display: inline-block;
+        position: relative;
+        text-align: left;
+
+        .sup {
+            float: left;
+            clear: both;
+            margin-bottom: -.9257em;
+            margin-top: 0;
+            padding-left: 1px;
+            font-size: 0.7em;
+        }
+
+        .sup:last-child {
+            margin-bottom: -1.09em;
+        }
+
+        .middle-base {
+            display: block;
+            clear: both;
+            height: 1em;
+
+            .inline {
+                display: inline-block;
+            }
+        }
+
+        .sub {
+            float: left;
+            clear: both;
+            margin-top: -0.547899em;
+            margin-bottom: 0;
+            padding-left: 1px;
+            font-size: 0.7em;
+
+            .symbol {
+                font-style: normal;
+            }
+        }
+    }
+
+    .matrix {
+        align-items: center;
+        display: inline-flex;
+        position: relative;
+
+        .base-line {
+            display: inline-block;
+            height: inherit;
+            margin-top: -0.18em;
+            overflow: hidden;
+            width: 0;
+        }
+
+        .matrix-bracket {
+            position: relative;
+            pointer-events: none;
+        }
+
+        td {
+            border: 1px solid transparent;
+            padding: .2rem .4rem;
+            text-align: center;
+
+            &:first-child {
+                padding-left: .2rem;
+            }
+
+            &:last-child {
+                padding-right: .2rem;
+            }
+        }
+
+        &.focus-inside {
+
+            td {
+                border: 1px dashed lightblue;
+            }
+        }
+
+        .matrix-config-button {
+            position: absolute;
+            right: 0;
+            top: -3px;
+            transform: translateX(100%);
+        }
+    }
+}

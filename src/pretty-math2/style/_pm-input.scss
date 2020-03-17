@@ -1,0 +1,76 @@
+.pm-input {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    cursor: text;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 5px;
+
+    &:hover {
+        box-shadow: 0 0 0 1px lightgrey;
+    }
+
+    &:focus-within {
+        outline: none;
+        border: 1px solid #4D90FE;
+        box-shadow: 0 0 5px #4D90FE;
+    }
+
+    .hidden-textarea {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: scale(0);
+    }
+
+    .cursor-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .block {
+        display: inline-block;
+        white-space: pre;
+    }
+
+    .blank {
+        background-color: lightgrey;
+        margin-right: 1px;
+
+        &:after {
+            content: 'a';
+            opacity: 0;
+        }
+
+        .focused & {
+            background-color: transparent;
+
+            &.no-cursor {
+                background-color: lightgrey;
+            }
+        }
+    }
+
+    .cursor {
+        animation: 1s cursor-blink step-end infinite;
+        border-left: 1px solid blue;
+        display: inline;
+        margin-left: -1px;
+        position: absolute;
+    }
+}
+
+@keyframes cursor-blink {
+    from, to {
+        border-left: 1px solid;
+    }
+    50% {
+        border-left: 1px solid transparent;
+    }
+}

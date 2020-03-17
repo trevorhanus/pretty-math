@@ -13,8 +13,8 @@ export class History {
 
     constructor(engine: EditableEngine) {
         this._engine = engine;
-        this._undoStack = observable.shallowArray<MathFieldState>();
-        this._redoStack = observable.shallowArray<MathFieldState>();
+        this._undoStack = observable.array<MathFieldState>([], { deep: false });
+        this._redoStack = observable.array<MathFieldState>([], { deep: false });
         this._inUndo = false;
         this._inRedo = false;
     }
