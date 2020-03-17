@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { KeyCodes } from 'common';
+import { KeyCodes } from '.';
 import { observer } from 'mobx-react';
 import { ValidatedField } from 'mobx-validated-field';
 import * as React from 'react';

@@ -21,7 +21,7 @@ export class MatrixBlock extends Block implements ICompositeBlock {
 
     constructor(id?: string) {
         super('Matrix', null, BlockType.Matrix, id);
-        this.rows = observable.shallowArray<IObservableArray<BlockChain>>();
+        this.rows = observable.array<IObservableArray<BlockChain>>([], { deep: false });
     }
 
     @computed
@@ -201,7 +201,7 @@ export class MatrixBlock extends Block implements ICompositeBlock {
     insertBlankRow(atIndex?: number) {
         atIndex = atIndex || this.numRows;
 
-        const row = observable.shallowArray<BlockChain>();
+        const row = observable.array<BlockChain>([], { deep: false });
 
         let i = 0;
         while (i < this.numCols) {
@@ -227,7 +227,7 @@ export class MatrixBlock extends Block implements ICompositeBlock {
             chain.replaceChain(block);
             chains.push(chain);
         });
-        this.rows.push(observable.shallowArray(chains));
+        this.rows.push(observable.array(chains, { deep: false }));
     }
 
     @action

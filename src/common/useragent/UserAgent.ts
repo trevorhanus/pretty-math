@@ -5,7 +5,7 @@
 
 import { VersionRange } from './VersionRange';
 import { uaData as UserAgentData } from './UserAgentData';
-import { memoizeStringOnly } from 'common';
+import { memoizeStringOnly } from '..';
 
 /**
  * Checks to see whether `name` and `version` satisfy `query`.

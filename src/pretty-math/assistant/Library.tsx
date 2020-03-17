@@ -17,7 +17,7 @@ export class Library extends React.Component<ILibraryProps, {}> {
         super(props);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const { library } = this.props.engine.assistant;
         library.handleMount();
     }
