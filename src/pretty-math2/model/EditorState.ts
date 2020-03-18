@@ -1,8 +1,10 @@
 import { action, computed, observable } from 'mobx';
 import { Selection } from '../selection/Selection';
-import { BlockState } from './Block';
+import { BlockState, Block } from './Block';
 import { BlockList } from './BlockList';
 import { RootBlock } from './RootBlock';
+import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
+import { Dir } from 'pretty-math2/interfaces';
 
 export interface SerializedEditorState {
     root: BlockState;
@@ -38,6 +40,52 @@ export class EditorState {
         }
 
         this.root.applyJS(state.root);
+    }
+
+    // Didn't import Block before this
+    @action
+    insertBlock(block: Block) {
+        if (!this.selection.isCollapsed) {
+            // handle a deleting the selection
+        }
+        const { focus } = this.selection;
+        const cursorPosition = focus.block.list.insertRightOfBlock(focus.block, block);
+        this.selection.anchorAt(cursorPosition);
+    }
+
+    @action
+    moveCursor(dir: Dir) {
+        const { focus } = this.selection;
+        if (dir === Dir.Left) {
+            if (focus.block.prev != null) {
+                this.selection.anchorAt(new CursorPosition(focus.block.prev, focus.offset));
+                return;
+            }
+            if (focus.offset === 1) {
+                this.selection.anchorAt(new CursorPosition(focus.block, 0));
+                return;
+            }
+        }
+        if (dir === Dir.Right) {
+            if (focus.block.next != null) {
+                this.selection.anchorAt(new CursorPosition(focus.block.next, focus.offset));
+                return;
+            }
+            if (focus.offset === 0) {
+                this.selection.anchorAt(new CursorPosition(focus.block, 1));
+                return;
+            }
+        }
+    }
+
+    @action
+    remove() {
+        if (!this.selection.isCollapsed) {
+            // handle range deletion
+        }
+        const { focus } = this.selection;
+        const cursorPosition = focus.block.list.removeBlock(focus.block);
+        this.selection.anchorAt(cursorPosition);
     }
 
     @action

@@ -5,6 +5,7 @@ import { Block, BlockState } from '.';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import React from 'react';
 import { EditorState } from './EditorState';
+import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
 
 export type BlockListState = BlockState[];
 
@@ -31,7 +32,7 @@ export class BlockList implements IModel<BlockListState> {
         this.parent = parent;
         this.opts = opts || DEFAULT_OPTS;
         this._blocks = observable.array([], { deep: false });
-        this._blocks.forEach(b => b.list = this);
+        if (!this.opts.canBeNull) this._blocks.push(createBlock('blank'));
         reaction(
             () => this._blocks.slice(),
             () => this.reindex(),
@@ -77,6 +78,26 @@ export class BlockList implements IModel<BlockListState> {
         return this._indexMap[block.id];
     }
 
+    @action
+    insertBlock(insertBlock: Block, index: number): CursorPosition {
+        this.splice(index, 0, insertBlock);
+        if (this.blocks.length > 1 && this.blocks[0].type === 'blank') {
+            this.splice(0, 1);
+        }
+        return new CursorPosition(insertBlock, 1);
+    }
+    
+    @action
+    insertLeftOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
+        return this.insertBlock(insertBlock, this.getIndex(positionBlock));
+    }
+    
+    @action
+    insertRightOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
+        // Right Of Block means the start index is the positionBlock's index + 1
+        return this.insertBlock(insertBlock, this.getIndex(positionBlock) + 1);
+    }
+
     next(block: Block): Block {
         const i = this.getIndex(block);
         return this.getBlock(i + 1);
@@ -95,6 +116,18 @@ export class BlockList implements IModel<BlockListState> {
             {},
             renderedBlocks,
         );
+    }
+
+    removeBlock(block: Block): CursorPosition {
+        if (this.getIndex(block) == null) return null;
+        let cursorBlock = new CursorPosition (block.prev, 1);
+        this.splice(this.getIndex(block), 1);
+        if (!this.opts.canBeNull && this.blocks.length === 0) {
+            const blankBlock = createBlock('blank');
+            this._blocks.push(blankBlock);
+            cursorBlock = new CursorPosition(blankBlock, 0);
+        }
+        return cursorBlock;
     }
 
     toCalchub(): PrinterOutput {
@@ -119,9 +152,6 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     private reindex() {
-        if (!this.opts.canBeNull && this.blocks.length === 0) {
-            this._blocks.push(createBlock('blank'));
-        }
         const map = {};
         this.blocks.forEach((block, i) => {
             block.list = this;

@@ -21,7 +21,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     readonly children: Record<C, BlockList>;
     readonly config: IBlockConfig<Block<D, C>>;
     readonly id: string;
-    readonly ref: React.RefObject<HTMLElement>;
+    @observable readonly ref: React.RefObject<HTMLElement>;
     @observable.ref data: D;
     @observable.ref list: BlockList;
 

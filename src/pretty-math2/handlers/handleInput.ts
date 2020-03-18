@@ -1,23 +1,15 @@
 import React from 'react';
 import { createBlock } from '../blocks/blocks';
 import { EditorState } from '../model/EditorState';
-import { CursorPosition } from '../selection/CursorPosition';
 
 export function handleInput(editorState: EditorState, e: React.KeyboardEvent) {
+    // Still a work in progress. Looking into other ways to find the keys we want
     const keyValue = e.key;
+    if (keyValue.length > 1) return;
+
+    // Fraction
+    // 
+
     const newBlock = createBlock('text:block', { data: { text: keyValue } });
-    editorState.selection.focus.block.list.blocks.push(newBlock);
-    editorState.selection.anchorAt(new CursorPosition(newBlock, 1));
-
-
-    // if (keyValue === '/') {
-    //     // do logic to pull out numerator
-    //     const range = findNumeratorRange(editorState);
-    //     const numeratorList = editorState.removeRange(range);
-    //     newBlock = createBlock('math:fraction');
-    //     newBlock.children.num.replaceList(numeratorList);
-    //     newBlock.children.anthgs.replaceList();
-    // }
-    //
-    // editorState.insertBlock(newBlock);
+    editorState.insertBlock(newBlock);
 }

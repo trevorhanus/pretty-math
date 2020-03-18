@@ -34,7 +34,8 @@ export class Cursor extends React.Component<ICursorProps, {}> {
             return null;
         }
 
-        const el = selection.focus.block.ref.current;
+        const { block, offset } = selection.focus;
+        const el = block.ref.current;
 
         if (!el) {
             return null;
@@ -42,7 +43,7 @@ export class Cursor extends React.Component<ICursorProps, {}> {
 
         // calculate the dimensions
         const style = {
-            left: el.offsetLeft,
+            left: el.offsetLeft + (offset === 1 ? el.offsetWidth : 0) + 1,
             top: el.offsetTop,
             height: el.offsetHeight,
         };
