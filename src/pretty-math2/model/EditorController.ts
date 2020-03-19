@@ -4,6 +4,7 @@ import { IPrettyMathInputProps } from '../components/PrettyMathInput';
 import { defaultCommandHandler } from '../handlers/defaultCommandHandler';
 import { defaultKeyBindingFn } from '../keybindings/defaultKeyBindingFn';
 import { EditorState } from './EditorState';
+import { handleTextareaChange } from 'pretty-math2/handlers/handleTextareaChange';
 
 export class EditorController {
     readonly editorState: EditorState;
@@ -27,14 +28,18 @@ export class EditorController {
         }
 
         command = command || defaultKeyBindingFn(e);
-        this._handleCommand(command, e);
+        if (command != null) {
+            e.preventDefault();
+            this._handleCommand(command, e);
+        }
     };
 
-    private _handleCommand(command: string, e?: React.SyntheticEvent) {
-        if (!command) {
-            return;
-        }
+    @action
+    handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        handleTextareaChange(this.editorState, e);
+    }
 
+    private _handleCommand(command: string, e?: React.SyntheticEvent) {
         let handled = 'not_handled';
 
         if (this.props.handleCommand) {

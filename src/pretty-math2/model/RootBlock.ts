@@ -1,21 +1,38 @@
 import { IBlockConfig } from '../interfaces';
 import { Block, BlockState } from './Block';
 import { RootBlock as RootBlockType, rootBlockConfig, RootBlockData, RootBlockChildNames } from '../blocks/RootBlock';
+import { mathRootBlockConfig } from '../blocks/MathRootBlock';
 import { EditorState } from './EditorState';
+import { action, computed } from 'mobx';
 
 export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
-    readonly _editor: EditorState;
+    private _editor: EditorState;
 
-    constructor(editor: EditorState, config: IBlockConfig<RootBlockType>, state?: Partial<BlockState>) {
+    constructor(config: IBlockConfig<RootBlockType>, state?: Partial<BlockState>) {
         super(config, state);
-        this._editor = editor;
     }
 
+    @computed
     get editor(): EditorState {
         return this._editor;
     }
 
-    static create(editor: EditorState, state?: Partial<BlockState>): RootBlock {
-        return new RootBlock(editor, rootBlockConfig, state);
+    @computed
+    get mode(): string {
+        if (this.config.type === 'root:math') return 'math';
+        return 'text';
+    }
+
+    @action
+    setEditor(editor: EditorState) {
+        this._editor = editor;
+    }
+
+    static create(state?: Partial<BlockState>): RootBlock {
+        return new RootBlock(rootBlockConfig, state);
+    }
+
+    static createMathRoot(state?: Partial<BlockState>): RootBlock {
+        return new RootBlock(mathRootBlockConfig, state);
     }
 }

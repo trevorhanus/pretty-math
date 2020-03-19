@@ -27,7 +27,7 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
 
     constructor(props: IPrettyMathInputProps) {
         super(props);
-        this.editorState = new EditorState(props.editorState);
+        this.editorState = EditorState.createMathRoot();
         this.controller = new EditorController(props, this.editorState);
         this.hiddenTextareaRef = React.createRef<HTMLTextAreaElement>();
     }
@@ -41,10 +41,12 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
                 <textarea
                     className="hidden-textarea"
                     onBlur={() => this.editorState.setFocus(false)}
+                    onChange={this.controller.handleTextareaChange}
                     onFocus={() => this.editorState.setFocus(true)}
                     onKeyDown={this.controller.handleKeyDown}
                     readOnly={this.props.readOnly}
                     ref={this.hiddenTextareaRef}
+                    value={""}
                 />
                 <Content editorState={this.editorState} />
                 <Cursor editorState={this.editorState} />

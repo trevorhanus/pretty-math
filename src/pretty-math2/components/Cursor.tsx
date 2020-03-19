@@ -46,6 +46,7 @@ export class Cursor extends React.Component<ICursorProps, {}> {
             left: el.offsetLeft + (offset === 1 ? el.offsetWidth : 0) + 1,
             top: el.offsetTop,
             height: el.offsetHeight,
+            animation: '1s cursor-blink step-end infinite',
         };
 
         return (

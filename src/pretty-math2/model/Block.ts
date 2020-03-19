@@ -40,6 +40,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @computed
+    get mode(): string {
+        return this.list && this.list.mode;
+    }
+
+    @computed
     get next(): Block {
         return this.list && this.list.next(this);
     }
@@ -129,6 +134,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         this.data = state.data || {} as D;
     }
 
+    // Question: Is this ICompositeBlockConfig correct?
     private initChildrenMap(config?: ICompositeBlockConfig): Record<C, BlockList> {
         config = config || { children: {} };
         const childrenConfig = config.children;

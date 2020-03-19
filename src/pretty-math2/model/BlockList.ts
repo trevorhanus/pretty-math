@@ -46,12 +46,19 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     get editor(): EditorState {
+        if (!this.parent) throw new Error("Should never get here.");
         return this.parent.editor;
     }
 
     @computed
     get length(): number {
         return this.blocks.length;
+    }
+
+    @computed
+    get mode(): string {
+        if (!this.parent) throw new Error("Should never get here.");
+        return this.parent.mode;
     }
 
     @computed

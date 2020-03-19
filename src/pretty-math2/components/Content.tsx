@@ -11,8 +11,7 @@ export const Content = observer((props: IContentProps) => {
 
     return (
         <>
-            <span>&#8203;</span>
-            {editorState.content.render()}
+            {editorState.root.render()}
         </>
     );
 });

@@ -3,16 +3,16 @@ import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
-export type BlockLevelBlockChildNames = 'content';
+export type ParagraphBlockChildNames = 'content';
 
-export interface BlockLevelBlockData {
+export interface ParagraphBlockData {
     as: string;
 }
 
-export type BlockLevelBlock = Block<BlockLevelBlockData, BlockLevelBlockChildNames>;
+export type ParagraphBlock = Block<ParagraphBlockData, ParagraphBlockChildNames>;
 
-export const blockLevelBlockConfig: IBlockConfig<BlockLevelBlock> = {
-    type: 'text:block_level',
+export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
+    type: 'text:paragraph',
 
     printers: {
         calchub: props => {

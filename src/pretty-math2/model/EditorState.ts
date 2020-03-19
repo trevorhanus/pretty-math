@@ -5,6 +5,7 @@ import { BlockList } from './BlockList';
 import { RootBlock } from './RootBlock';
 import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
 import { Dir } from 'pretty-math2/interfaces';
+import { createBlock } from 'pretty-math2/blocks/blocks';
 
 export interface SerializedEditorState {
     root: BlockState;
@@ -17,9 +18,10 @@ export class EditorState {
     // readonly inlineStyles: InlineStyles;
     // readonly history: History;
 
-    constructor(initialState?: SerializedEditorState) {
+    constructor(rootBlock: RootBlock, initialState?: SerializedEditorState) {
         this._hasFocus = false;
-        this.root = RootBlock.create(this);
+        this.root = rootBlock;
+        this.root.setEditor(this);
         this.selection = new Selection(this);
         this.applyState(initialState);
     }
@@ -31,6 +33,11 @@ export class EditorState {
     @computed
     get hasFocus(): boolean {
         return this._hasFocus;
+    }
+
+    @computed
+    get mode(): string {
+        return this.selection.focus.block.mode;
     }
 
     @action
@@ -94,7 +101,11 @@ export class EditorState {
     }
 
     static create(state?: SerializedEditorState) {
-        return new EditorState(state);
+        return new EditorState(RootBlock.create(), state);
+    }
+
+    static createMathRoot(state?: SerializedEditorState): EditorState {
+        return new EditorState(RootBlock.createMathRoot(), state);
     }
 
     serialize(): SerializedEditorState {
