@@ -1,0 +1,23 @@
+.pm-input {
+
+    .cursor {
+        border-left: 1px solid;
+        display: inline;
+        margin-left: -1px;
+        position: absolute;
+    }
+
+    .cursor-blink {
+        animation: 1s cursor-blink step-end infinite;
+    }
+
+}
+
+@keyframes cursor-blink {
+    from, to {
+        border-left: 1px solid;
+    }
+    50% {
+        border-left: 1px solid transparent;
+    }
+}

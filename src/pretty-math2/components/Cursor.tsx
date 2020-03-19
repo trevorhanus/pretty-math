@@ -6,29 +6,34 @@ export interface ICursorProps {
     editorState: EditorState;
 }
 
-export interface ICursorState {
-    left: number;
-    top: number;
-    height: number;
-}
+const BLINK_DELAY = 300;
 
 @observer
-export class Cursor extends React.Component<ICursorProps, ICursorState> {
+export class Cursor extends React.Component<ICursorProps, {}> {
     private mounted: boolean;
+    private _cursorRef: React.RefObject<HTMLSpanElement>;
+    private _key: number;
+    private _timer: any;
 
     constructor(props: ICursorProps) {
         super(props);
-        this.mounted = false;
-        this.state = {
-            left: 0,
-            top: 0,
-            height: 0
-        }
+        this._cursorRef = React.createRef<HTMLSpanElement>();
+        this._key = 1;
     }
 
     componentDidMount() {
         this.mounted = true;
         this.calculatePosition();
+    }
+
+    componentDidUpdate(prevProps: Readonly<ICursorProps>, prevState: Readonly<{}>, snapshot?: any): void {
+        clearTimeout(this._timer);
+        this._timer = setTimeout(() => {
+            // modify the ref directly
+            if (this._cursorRef.current) {
+                this._cursorRef.current.classList.add('cursor-blink');
+            }
+        }, BLINK_DELAY);
     }
 
     componentWillUnmount() {
@@ -50,16 +55,13 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
             return null;
         }
 
-        const style = {
-            left: this.state.left,
-            top: this.state.top,
-            height: this.state.height
-        };
+        const key = this._key++;
 
         return (
             <span
                 className="cursor"
-                style={style}
+                key={key}
+                ref={this._cursorRef}
             />
         );
     }
@@ -69,18 +71,17 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
             return;
         }
 
-        const { ref } = this.props.editorState.selection.focus;
+        const targetRef = this.props.editorState.selection.focus.ref.current;
+        const cursorRef = this._cursorRef.current;
 
-        if (ref != null) {
-            const el = ref.current;
+        if (targetRef != null && cursorRef != null) {
+            const left = targetRef.offsetLeft + 1;
+            const top = targetRef.offsetTop;
+            const height = targetRef.offsetHeight;
 
-            if (!el) return;
-
-            this.setState({
-                left: el.offsetLeft + 1,
-                top: el.offsetTop,
-                height: el.offsetHeight
-            });
+            cursorRef.style.left = `${left}px`;
+            cursorRef.style.top = `${top}px`;
+            cursorRef.style.height = `${height}px`;
         }
 
         window.requestAnimationFrame(this.calculatePosition);
