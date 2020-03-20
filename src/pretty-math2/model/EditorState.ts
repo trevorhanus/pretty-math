@@ -3,9 +3,8 @@ import { Selection } from '../selection/Selection';
 import { BlockState, Block } from './Block';
 import { BlockList } from './BlockList';
 import { RootBlock } from './RootBlock';
-import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
 import { Dir } from 'pretty-math2/interfaces';
-import { createBlock } from 'pretty-math2/blocks/blocks';
+import { getNextCursorPosition } from 'pretty-math2/selection/CursorPositioner';
 
 export interface SerializedEditorState {
     root: BlockState;
@@ -26,8 +25,8 @@ export class EditorState {
         this.applyState(initialState);
     }
 
-    get content(): BlockList {
-        return this.root.children.content;
+    get inner(): BlockList {
+        return this.root.children.inner;
     }
 
     @computed
@@ -37,7 +36,7 @@ export class EditorState {
 
     @computed
     get mode(): string {
-        return this.selection.focus.block.mode;
+        return this.selection.focus.mode;
     }
 
     @action
@@ -56,33 +55,13 @@ export class EditorState {
             // handle a deleting the selection
         }
         const { focus } = this.selection;
-        const cursorPosition = focus.block.list.insertRightOfBlock(focus.block, block);
-        this.selection.anchorAt(cursorPosition);
+        focus.list.insertBlock(focus, block);
     }
 
     @action
     moveCursor(dir: Dir) {
         const { focus } = this.selection;
-        if (dir === Dir.Left) {
-            if (focus.block.prev != null) {
-                this.selection.anchorAt(new CursorPosition(focus.block.prev, focus.offset));
-                return;
-            }
-            if (focus.offset === 1) {
-                this.selection.anchorAt(new CursorPosition(focus.block, 0));
-                return;
-            }
-        }
-        if (dir === Dir.Right) {
-            if (focus.block.next != null) {
-                this.selection.anchorAt(new CursorPosition(focus.block.next, focus.offset));
-                return;
-            }
-            if (focus.offset === 0) {
-                this.selection.anchorAt(new CursorPosition(focus.block, 1));
-                return;
-            }
-        }
+        this.selection.anchorAt(getNextCursorPosition(focus, dir));
     }
 
     @action
@@ -91,8 +70,7 @@ export class EditorState {
             // handle range deletion
         }
         const { focus } = this.selection;
-        const cursorPosition = focus.block.list.removeBlock(focus.block);
-        this.selection.anchorAt(cursorPosition);
+        focus.list.removeBlock(focus.prev);
     }
 
     @action

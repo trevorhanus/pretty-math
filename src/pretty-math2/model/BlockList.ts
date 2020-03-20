@@ -1,38 +1,37 @@
 import { action, computed, IObservableArray, observable, reaction } from 'mobx';
-import { createBlock } from '../blocks/blocks';
-import { IModel } from '../interfaces';
-import { Block, BlockState } from '.';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
+import { Block, BlockState } from '.';
+import { createBlock } from '../blocks/blocks';
+import { EndBlock } from '../blocks/EndBlock';
+import { IBlockListConfig, IModel } from '../interfaces';
+import { invariant } from '../utils/invariant';
+import { PrinterOutput } from '../utils/PrinterOutput';
 import { EditorState } from './EditorState';
-import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
 
 export type BlockListState = BlockState[];
 
-export interface BlockListOpts {
-    canBeNull?: boolean;
-    order: number;
-}
-
-const DEFAULT_OPTS = {
+const DEFAULT_CONFIG = {
     canBeNull: true,
     order: 0,
 };
 
 export class BlockList implements IModel<BlockListState> {
     readonly name: string;
-    readonly opts: BlockListOpts;
+    readonly config: IBlockListConfig;
     readonly parent: Block;
     @observable readonly _blocks: IObservableArray<Block>;
     // keep an internal map of blockId => index so we can have O(1) lookup
     private _indexMap: { [blockId: string]: number };
 
-    constructor(parent: Block, name: string, opts?: BlockListOpts) {
+    constructor(parent: Block, name: string, config?: IBlockListConfig) {
         this.name = name;
         this.parent = parent;
-        this.opts = opts || DEFAULT_OPTS;
+        this.config = config || DEFAULT_CONFIG;
         this._blocks = observable.array([], { deep: false });
-        if (!this.opts.canBeNull) this._blocks.push(createBlock('blank'));
+        if (!this.config.canBeNull) {
+            this._blocks.push(createBlock('end'));
+        }
         reaction(
             () => this._blocks.slice(),
             () => this.reindex(),
@@ -46,8 +45,13 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     get editor(): EditorState {
-        if (!this.parent) throw new Error("Should never get here.");
+        invariant(!this.parent, `BlockList does not have a parent.`);
         return this.parent.editor;
+    }
+
+    get position(): BlockPosition {
+        invariant(!this.parent, `BlockList does not have a parent.`);
+        return this.parent.position.incLevel(this.config.order);
     }
 
     @computed
@@ -57,22 +61,28 @@ export class BlockList implements IModel<BlockListState> {
 
     @computed
     get mode(): string {
-        if (!this.parent) throw new Error("Should never get here.");
+        invariant(!this.parent, `BlockList does not have a parent.`);
         return this.parent.mode;
     }
 
     @computed
-    get start(): Block {
+    get start(): Block | null {
         return this.getBlock(0);
     }
 
     @computed
-    get end(): Block {
+    get end(): Block | null {
         return this.getBlock(this.length - 1);
     }
 
     contains(block: Block): boolean {
         return this.blocks.indexOf(block) > -1 || this.blocks.some(b => b.contains(block));
+    }
+
+    createChildPosition(child: Block): BlockPosition {
+        const index = this.getIndex(child);
+        invariant(index == null, `BlockList.createChildPosition was invoked with a block that is not a child of the list.`);
+        return new BlockPosition(this.position.path, index);
     }
 
     getBlock(i: number): Block {
@@ -82,36 +92,25 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     getIndex(block: Block): number {
+        if (!block) return null;
         return this._indexMap[block.id];
     }
 
     @action
-    insertBlock(insertBlock: Block, index: number): CursorPosition {
-        this.splice(index, 0, insertBlock);
-        if (this.blocks.length > 1 && this.blocks[0].type === 'blank') {
-            this.splice(0, 1);
-        }
-        return new CursorPosition(insertBlock, 1);
-    }
-    
-    @action
-    insertLeftOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
-        return this.insertBlock(insertBlock, this.getIndex(positionBlock));
-    }
-    
-    @action
-    insertRightOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
-        // Right Of Block means the start index is the positionBlock's index + 1
-        return this.insertBlock(insertBlock, this.getIndex(positionBlock) + 1);
+    insertBlock(focus: Block, insertBlock: Block) {
+        invariant(!this.contains(focus), `BlockList.insertBlock invoked with a block not in the list.`);
+        this.splice(this.getIndex(focus), 0, insertBlock);
     }
 
-    next(block: Block): Block {
-        const i = this.getIndex(block);
+    next(fromBlock: Block): Block {
+        const i = this.getIndex(fromBlock);
+        invariant(i == null, `BlockList.next invoked with a block not in the list.`);
         return this.getBlock(i + 1);
     }
 
-    prev(block: Block): Block {
-        const i = this.getIndex(block);
+    prev(fromBlock: Block): Block {
+        const i = this.getIndex(fromBlock);
+        invariant(i == null, `BlockList.next invoked with a block not in the list.`);
         return this.getBlock(i - 1);
     }
 
@@ -125,16 +124,13 @@ export class BlockList implements IModel<BlockListState> {
         );
     }
 
-    removeBlock(block: Block): CursorPosition {
-        if (this.getIndex(block) == null) return null;
-        let cursorBlock = new CursorPosition (block.prev, 1);
-        this.splice(this.getIndex(block), 1);
-        if (!this.opts.canBeNull && this.blocks.length === 0) {
-            const blankBlock = createBlock('blank');
-            this._blocks.push(blankBlock);
-            cursorBlock = new CursorPosition(blankBlock, 0);
+    @action
+    removeBlock(block: Block) {
+        const index = this.getIndex(block);
+        if (index == null) {
+            return;
         }
-        return cursorBlock;
+        this.splice(index, 1);
     }
 
     toCalchub(): PrinterOutput {
@@ -146,16 +142,21 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @action
-    splice(start: number, deleteCount: number, ...blocks: Block[]) {
-        blocks.forEach(b => b.list = this);
-        this._blocks.splice(start, deleteCount, ...blocks);
-    }
-
-    @action
     applyJS(state: BlockListState) {
         this._blocks.replace(state.map(s => {
             return createBlock(s.type, s);
         }));
+    }
+
+    /**
+     * splice() is a low level method that should
+     * be called whenever we are adding or removing
+     * a block from the list
+     */
+    @action
+    splice(start: number, deleteCount: number, ...blocks: Block[]) {
+        this._blocks.splice(start, deleteCount, ...blocks);
+        invariant(!this.config.canBeNull && this._blocks.length === 0, 'BlockList can not be null but was empty');
     }
 
     private reindex() {

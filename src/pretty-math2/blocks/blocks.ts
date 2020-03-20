@@ -1,13 +1,13 @@
 import { Block, BlockState } from '../model';
-import { blankBlockConfig } from './BlankBlock';
+import { endBlockConfig } from './EndBlock';
+import { fractionBlockConfig } from './FractionBlock';
+import { functionBlockConfig } from './FunctionBlock';
 import { paragraphBlockConfig } from './ParagraphBlock';
 import { textBlockConfig } from './TextBlock';
-import { functionBlockConfig } from './FunctionBlock';
-import { fractionBlockConfig } from './FractionBlock';
 
 const blocks = {};
 
-blocks[blankBlockConfig.type] = blankBlockConfig;
+blocks[endBlockConfig.type] = endBlockConfig;
 blocks[fractionBlockConfig.type] = fractionBlockConfig;
 blocks[functionBlockConfig.type] = functionBlockConfig;
 blocks[paragraphBlockConfig.type] = paragraphBlockConfig;

@@ -7,17 +7,16 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     const keyValue = e.target.value;
 
     if (keyValue === 's') {
-        const newBlock = createBlock('function:block', { data: { displayValue: 'sin' } });
+        const newBlock = createBlock('math:function', { data: { displayValue: 'sin' } });
         editorState.insertBlock(newBlock);
         return;
     }
     // Fraction
-    if (keyValue === 'f') {
-        const newBlock = createBlock('fraction:block', {});
+    if (keyValue === '/') {
+        const newBlock = createBlock('math:fraction', {});
         editorState.insertBlock(newBlock);
         return;
     }
-    // 
 
     const newBlock = createBlock('text:block', { data: { text: keyValue } });
     editorState.insertBlock(newBlock);

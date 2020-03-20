@@ -3,7 +3,7 @@ import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 
 export interface RootBlockData {}
-export type RootBlockChildNames = 'content';
+export type RootBlockChildNames = 'inner';
 export type RootBlock = Block<RootBlockData, RootBlockChildNames>;
 
 export const rootBlockConfig: IBlockConfig<RootBlock> = {
@@ -12,25 +12,41 @@ export const rootBlockConfig: IBlockConfig<RootBlock> = {
     render: ({ children }) => {
         return (
             <span>
-                {children.content}
+                {children.inner}
             </span>
         )
     },
 
     printers: {
         calchub: ({ children }) => {
-            return children.content;
+            return children.inner;
         },
         python: ({ children }) => {
-            return children.content;
+            return children.inner;
         }
     },
 
     composite: {
         children: {
-            content: {
+            inner: {
                 canBeNull: false,
                 order: 0,
+            }
+        },
+        cursorOrder: {
+            leftToRight: [],
+            upToDown: [],
+        },
+        entry: {
+            fromLeft: {
+                up: 'inner',
+                right: 'inner',
+                down: 'inner',
+            },
+            fromRight: {
+                up: 'inner',
+                left: 'inner',
+                down: 'inner',
             }
         }
     },

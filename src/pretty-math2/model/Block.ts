@@ -1,14 +1,22 @@
 import { action, computed, observable } from 'mobx';
+import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { BlockList, BlockListOpts, BlockListState } from '.';
 import { generateId, omitNulls } from '../../common';
-import { IBlockConfig, ICompositeBlockConfig, IModel, PrinterProps } from '../interfaces';
+import {
+    IBlockConfig,
+    ICompositeBlockConfig,
+    ICursorOrderConfig,
+    IEntryConfig,
+    IModel,
+    PrinterProps
+} from '../interfaces';
 import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
 
-export type BlockChildrenState<ChildNames extends string> = Record<ChildNames, BlockListState>;
+export type BlockChildrenState<ChildNames> = Record<ChildNames, BlockListState>;
 
 export interface BlockState<D = any, C extends string = string> {
     id: string;
@@ -23,7 +31,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     readonly id: string;
     @observable readonly ref: React.RefObject<HTMLElement>;
     @observable.ref data: D;
-    @observable.ref list: BlockList;
+    @observable.ref list: BlockList | null;
 
     constructor(config: IBlockConfig<Block<D, C>>, state?: Partial<BlockState>) {
         state = state || {};
@@ -35,8 +43,24 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         this.list = null; // set by BlockList when the block is added
     }
 
+    get cursorOrder(): ICursorOrderConfig {
+        return this.config.composite && this.config.composite.cursorOrder;
+    }
+
     get editor(): EditorState {
-        return this.list.editor;
+        return this.list && this.list.editor;
+    }
+
+    get entry(): IEntryConfig {
+        return this.config.composite && this.config.composite.entry;
+    }
+
+    get index(): number {
+        return this.list ? this.list.getIndex(this) : 0;
+    }
+
+    get isComposite(): boolean {
+        return Object.keys(this.children).length > 0;
     }
 
     @computed
@@ -45,12 +69,17 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @computed
-    get next(): Block {
+    get next(): Block | null {
         return this.list && this.list.next(this);
     }
 
     @computed
-    get prev(): Block {
+    get position(): BlockPosition {
+        return this.list ? this.list.createChildPosition(this) : BlockPosition.root();
+    }
+
+    @computed
+    get prev(): Block | null {
         return this.list && this.list.prev(this);
     }
 
@@ -136,8 +165,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
 
     // Question: Is this ICompositeBlockConfig correct?
     private initChildrenMap(config?: ICompositeBlockConfig): Record<C, BlockList> {
-        config = config || { children: {} };
-        const childrenConfig = config.children;
+        const childrenConfig = config ? config.children : {};
         return mapObject(childrenConfig, (childName: string, opts: BlockListOpts) => {
             return new BlockList(this, childName, opts);
         });

@@ -1,5 +1,4 @@
 import React, { CSSProperties } from 'react';
-import { BlockListOpts } from './model';
 import { EditorState } from './model/EditorState';
 import { PrinterOutput } from './utils/PrinterOutput';
 
@@ -43,26 +42,35 @@ export interface IBlockConfig<B> {
     composite?: ICompositeBlockConfig;
 }
 
+export interface IEntryConfig {
+    fromLeft: {
+        up?: ChildName;
+        right?: ChildName;
+        down?: ChildName;
+    };
+    fromRight: {
+        up?: ChildName;
+        left?: ChildName;
+        down?: ChildName;
+    }
+}
+
+export interface ICursorOrderConfig {
+    leftToRight: ChildName[];
+    rightToLeft?: ChildName[];
+    upToDown: ChildName[];
+    downToUp?: ChildName[];
+}
+
+export interface IBlockListConfig {
+    canBeNull?: boolean;
+    order: number;
+}
+
 export interface ICompositeBlockConfig {
     children: {
-        [name: string]: BlockListOpts;
+        [name: string]: IBlockListConfig;
     };
-    cursorOrder?: {
-        leftToRight?: ChildName[];
-        rightToLeft?: ChildName[];
-        upToDown?: ChildName[];
-        downToUp?: ChildName[];
-    };
-    entry?: {
-        fromLeft?: {
-            up?: ChildName;
-            right?: ChildName;
-            down?: ChildName;
-        };
-        fromRight?: {
-            up?: ChildName;
-            left?: ChildName;
-            down?: ChildName;
-        }
-    };
+    cursorOrder: ICursorOrderConfig;
+    entry: IEntryConfig;
 }
