@@ -33,28 +33,10 @@
         height: 100%;
         pointer-events: none;
     }
-
+    
     .block {
         display: inline-block;
         white-space: pre;
-    }
-
-    .blank {
-        background-color: lightgrey;
-        margin-right: 1px;
-
-        &:after {
-            content: 'a';
-            opacity: 0;
-        }
-
-        .focused & {
-            background-color: transparent;
-
-            &.no-cursor {
-                background-color: lightgrey;
-            }
-        }
     }
 
     .cursor {

@@ -3,6 +3,7 @@ import { endBlockConfig } from './EndBlock';
 import { fractionBlockConfig } from './FractionBlock';
 import { functionBlockConfig } from './FunctionBlock';
 import { paragraphBlockConfig } from './ParagraphBlock';
+import { supSubBlockConfig } from './SupSubBlock';
 import { textBlockConfig } from './TextBlock';
 
 const blocks = {};
@@ -11,6 +12,7 @@ blocks[endBlockConfig.type] = endBlockConfig;
 blocks[fractionBlockConfig.type] = fractionBlockConfig;
 blocks[functionBlockConfig.type] = functionBlockConfig;
 blocks[paragraphBlockConfig.type] = paragraphBlockConfig;
+blocks[supSubBlockConfig.type] = supSubBlockConfig;
 blocks[textBlockConfig.type] = textBlockConfig;
 
 export function createBlock(type: string, state?: Partial<BlockState>): Block {

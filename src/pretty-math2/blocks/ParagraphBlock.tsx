@@ -53,14 +53,14 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
         },
         entry: {
             fromLeft: {
-                up: 'inner',
-                right: 'inner',
-                down: 'inner',
+                up: ['inner'],
+                right: ['inner'],
+                down: ['inner']
             },
             fromRight: {
-                up: 'inner',
-                left: 'inner',
-                down: 'inner',
+                up: ['inner'],
+                left: ['inner'],
+                down: ['inner']
             }
         }
     }

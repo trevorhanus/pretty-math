@@ -11,7 +11,7 @@ export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
 
     render: ({ children }) => {
         return (
-            <span className='math-root'>
+            <span className='pm-math'>
                 {children.inner}
             </span>
         )
@@ -39,14 +39,14 @@ export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
         },
         entry: {
             fromLeft: {
-                up: 'inner',
-                right: 'inner',
-                down: 'inner'
+                up: ['inner'],
+                right: ['inner'],
+                down: ['inner']
             },
             fromRight: {
-                up: 'inner',
-                left: 'inner',
-                down: 'inner'
+                up: ['inner'],
+                left: ['inner'],
+                down: ['inner']
             }
         }
     },

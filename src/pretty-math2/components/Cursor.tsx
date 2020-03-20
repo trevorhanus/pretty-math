@@ -51,7 +51,7 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
         }
 
         const style = {
-            left: this.state.left + 1,
+            left: this.state.left,
             top: this.state.top,
             height: this.state.height
         };

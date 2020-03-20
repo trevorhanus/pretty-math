@@ -46,14 +46,14 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
         },
         entry: {
             fromLeft: {
-                up: 'num',
-                right: 'num',
-                down: 'denom'
+                up: ['num'],
+                right: ['num'],
+                down: ['denom']
             },
             fromRight: {
-                up: 'num',
-                left: 'num',
-                down: 'denom'
+                up: ['num'],
+                left: ['num'],
+                down: ['denom']
             }
         }
     }

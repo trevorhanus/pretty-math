@@ -1,8 +1,9 @@
+import classNames from 'classnames';
 import { action, computed, observable } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { BlockList, BlockListState } from '.';
-import classNames from 'classnames';
+import { generateId, omitNulls } from '../../common';
 import {
     ChildName,
     IBlockConfig,
@@ -11,9 +12,8 @@ import {
     ICursorOrderConfig,
     IEntryConfig,
     IModel,
-    PrinterProps,
+    PrinterProps
 } from '../interfaces';
-import { generateId, omitNulls } from '../../common';
 import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
@@ -44,6 +44,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         this.id = state.id || generateId();
         this.ref = React.createRef<HTMLElement>();
         this.list = null; // set by BlockList when the block is added
+    }
+
+    @computed
+    get childrenAreEmtpy(): boolean {
+        return Object.values(this.children).every(child => (child as BlockList).length === 0);
     }
 
     get cursorOrder(): ICursorOrderConfig {
@@ -78,6 +83,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     @computed
     get next(): Block | null {
         return this.list && this.list.next(this);
+    }
+
+    @computed
+    get parent(): Block | null {
+        return this.list && this.list.parent;
     }
 
     @computed
@@ -117,7 +127,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
             editor: this.editor,
             style: {}, // TODO: get the style from the editor.inlineStyles
         });
-        
+
         const className = classNames(
             renderedBlock.props.className,
             { 'selected-block': this.isSelected },

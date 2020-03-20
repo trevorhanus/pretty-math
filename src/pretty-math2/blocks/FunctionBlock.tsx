@@ -18,31 +18,31 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
     type: 'math:function',
 
     render: ({ block, children, style }) => (
-        <span style={style}>{block.data.displayValue}({children.child})</span>
+        <span style={style}>{block.data.displayValue}({children.inner})</span>
     ),
 
     printers: {
         calchub: ({ block, children }) => {
-            return PrinterOutput.fromMany(
+            return PrinterOutput.fromMany([
                 { text: block.data.displayValue, source: block },
                 { text: '{(', source: block },
-                children,
+                children.inner,
                 { text: ')}', source: block }
-            );
+            ]);
         },
         python: ({ block, children }) => {
-            return PrinterOutput.fromMany(
+            return PrinterOutput.fromMany([
                 { text: block.data.displayValue, source: block },
                 { text: '(', source: block },
-                children,
+                children.inner,
                 { text: ')', source: block }
-            );
+            ]);
         }
     },
 
     composite: {
         children: {
-            child: {
+            inner: {
                 canBeNull: false,
                 order: 0
             }
@@ -53,10 +53,14 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
         },
         entry: {
             fromLeft: {
-                right: 'child'
+                up: [],
+                right: ['inner'],
+                down: []
             },
             fromRight: {
-                left: 'child'
+                up: [],
+                left: ['inner'],
+                down: []
             }
         }
     }

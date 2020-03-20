@@ -7,6 +7,7 @@ import { IBlockListConfig, IModel } from '../interfaces';
 import { invariant } from '../utils/invariant';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { EditorState } from './EditorState';
+import { EndBlock } from 'pretty-math2/blocks/EndBlock';
 
 export type BlockListState = BlockState[];
 
@@ -21,7 +22,7 @@ export class BlockList implements IModel<BlockListState> {
     readonly parent: Block;
     @observable readonly _blocks: IObservableArray<Block>;
     // keep an internal map of blockId => index so we can have O(1) lookup
-    private _indexMap: { [blockId: string]: number };
+    @observable private _indexMap: { [blockId: string]: number };
 
     constructor(parent: Block, name: string, config?: IBlockListConfig) {
         this.name = name;
@@ -29,7 +30,7 @@ export class BlockList implements IModel<BlockListState> {
         this.config = config || DEFAULT_CONFIG;
         this._blocks = observable.array([], { deep: false });
         if (!this.config.canBeNull) {
-            this._blocks.push(createBlock('end'));
+            this.addEndBlock();
         }
         reaction(
             () => this._blocks.slice(),
@@ -46,6 +47,16 @@ export class BlockList implements IModel<BlockListState> {
     get editor(): EditorState {
         invariant(!this.parent, `BlockList does not have a parent.`);
         return this.parent.editor;
+    }
+
+    @computed
+    get isEmpty(): boolean {
+        return this.blocks.length === 0;
+    }
+
+    @computed
+    get isOnlyEndBlock(): boolean {
+        return this.blocks.length === 1 && this.blocks[0].type === 'end';
     }
 
     get position(): BlockPosition {
@@ -72,6 +83,13 @@ export class BlockList implements IModel<BlockListState> {
     @computed
     get end(): Block | null {
         return this.getBlock(this.length - 1);
+    }
+
+    @action
+    addEndBlock(): EndBlock {
+        const endBlock = createBlock('end');
+        this.splice(0, 0, endBlock);
+        return endBlock;
     }
 
     contains(block: Block): boolean {
@@ -126,9 +144,7 @@ export class BlockList implements IModel<BlockListState> {
     @action
     removeBlock(block: Block) {
         const index = this.getIndex(block);
-        if (index == null) {
-            return;
-        }
+        invariant(index == null, `BlockList.removeNext tried to remove a block that was not in the list.`);
         this.splice(index, 1);
     }
 

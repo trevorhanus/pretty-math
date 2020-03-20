@@ -1,5 +1,5 @@
 import { Dir } from 'pretty-math2/interfaces';
-import { Block } from 'pretty-math2/model';
+import { Block, BlockList } from 'pretty-math2/model';
 import { isRootBlock } from 'pretty-math2/utils/blockUtils';
 import { invariant } from '../utils/invariant';
 
@@ -9,51 +9,54 @@ export function getNextCursorPosition(block: Block, dir: Dir): Block {
     switch (dir) {
         case Dir.Left:
             if (block.prev) {
-                if (block.prev.isComposite) {
-                    const entry = block.prev.entry.fromRight.left;
-                    if (entry) {
-                        return block.prev.children[entry].end;
+                const { prev } = block;
+                if (prev.isComposite) {
+                    const entryList = getNonNullEntryBlockList(prev, prev.entry.fromRight.left);
+                    if (entryList) {
+                        return entryList.end;
                     }
                 }
-                return block.prev;
+                return prev;
             }
             return getNextCursorPositionOutOf(block, dir);
         case Dir.Right:
             if (block.isComposite) {
-                const entry = block.entry.fromLeft.right;
-                if (entry) {
-                    return block.children[entry].start;
+                const entryList = getNonNullEntryBlockList(block, block.entry.fromLeft.right);
+                if (entryList) {
+                    return entryList.start;
                 }
             }
             return block.next || getNextCursorPositionOutOf(block, dir);
         case Dir.Up:
             if (block.isComposite) {
-                const entry = block.entry.fromLeft.up;
-                if (entry) {
-                    return block.children[entry].start;
+                const entryList = getNonNullEntryBlockList(block, block.entry.fromLeft.up);
+                if (entryList) {
+                    return entryList.start;
                 }
             }
             if (block.prev) {
-                if (block.prev.isComposite) {
-                    const entry = block.prev.entry.fromRight.up;
-                    if (entry) {
-                        return block.prev.children[entry].end;
+                const { prev } = block;
+                if (prev.isComposite) {
+                    const entryList = getNonNullEntryBlockList(prev, prev.entry.fromRight.up);
+                    if (entryList) {
+                        return entryList.end;
                     }
                 }
             }
             return getNextCursorPositionOutOf(block, dir);
         case Dir.Down:
             if (block.isComposite) {
-                const entry = block.entry.fromLeft.down;
-                if (entry) {
-                    return block.children[entry].start;
+                const entryList = getNonNullEntryBlockList(block, block.entry.fromLeft.down);
+                if (entryList) {
+                    return entryList.start;
                 }
             }
             if (block.prev) {
-                if (block.prev.isComposite) {
-                    const entry = block.prev.entry.fromRight.down;
-                    if (entry) {
-                        return block.prev.children[entry].end;
+                const { prev } = block;
+                if (prev.isComposite) {
+                    const entryList = getNonNullEntryBlockList(prev, prev.entry.fromRight.down);
+                    if (entryList) {
+                        return entryList.end;
                     }
                 }
             }
@@ -94,4 +97,15 @@ export function getNextCursorPositionOutOf(child: Block, dir: Dir): Block {
             }
             return getNextCursorPositionOutOf(parent, dir);
     }
+}
+
+function getNonNullEntryBlockList(block: Block, list: string[]): BlockList {
+    if (list.length < 1) {
+        return null;
+    }
+    let index = 0;
+    while (index < list.length && block.children[list[index]].isEmpty) {
+        index++;
+    }
+    return block.children[list[index]];
 }
