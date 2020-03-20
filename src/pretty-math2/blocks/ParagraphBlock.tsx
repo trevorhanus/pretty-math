@@ -16,10 +16,9 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
 
     printers: {
         calchub: props => {
-            const { block } = props;
-            const content = block.children.content.toCalchub();
+            const { block, children } = props;
             return PrinterOutput.fromMany([
-                content,
+                children.content,
                 {
                     source: block,
                     text: '\n',
@@ -37,7 +36,7 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
         return React.createElement(
             elType,
             { style },
-            children,
+            children.content,
         );
     },
 
@@ -50,18 +49,18 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
         },
         cursorOrder: {
             leftToRight: [],
-            upToDown: []
+            upToDown: [],
         },
         entry: {
             fromLeft: {
                 up: 'content',
                 right: 'content',
-                down: 'content'
+                down: 'content',
             },
             fromRight: {
                 up: 'content',
                 left: 'content',
-                down: 'content'
+                down: 'content',
             }
         }
     }

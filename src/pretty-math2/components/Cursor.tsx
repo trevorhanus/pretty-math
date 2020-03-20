@@ -35,6 +35,41 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
         this.mounted = false;
     }
 
+    render() {
+        return (
+            <div className="cursor-overlay">
+                {this.renderCursor()}
+            </div>
+        );
+    }
+
+    renderCursor() {
+        const { editorState } = this.props;
+
+        if (!editorState.hasFocus) {
+            return null;
+        }
+
+        const { selection } = editorState;
+
+        if (!selection.isCollapsed) {
+            return null;
+        }
+
+        const style = {
+            left: this.state.left + 1,
+            top: this.state.top,
+            height: this.state.height
+        };
+
+        return (
+            <span
+                className="cursor"
+                style={style}
+            />
+        );
+    }
+
     calculatePosition = () => {
         if (!this.mounted) {
             return;
@@ -55,29 +90,5 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
         }
 
         window.requestAnimationFrame(this.calculatePosition);
-    }
-
-    render() {
-        return (
-            <div className="cursor-overlay">
-                {this.renderCursor()}
-            </div>
-        );
-    }
-
-    renderCursor() {
-        // calculate the dimensions
-        const style = {
-            left: this.state.left + 1,
-            top: this.state.top,
-            height: this.state.height
-        };
-
-        return (
-            <span
-                className="cursor"
-                style={style}
-            />
-        );
-    }
+    };
 }

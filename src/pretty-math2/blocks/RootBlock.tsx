@@ -35,18 +35,18 @@ export const rootBlockConfig: IBlockConfig<RootBlock> = {
         },
         cursorOrder: {
             leftToRight: [],
-            upToDown: []
+            upToDown: [],
         },
         entry: {
             fromLeft: {
                 up: 'content',
                 right: 'content',
-                down: 'content'
+                down: 'content',
             },
             fromRight: {
                 up: 'content',
                 left: 'content',
-                down: 'content'
+                down: 'content',
             }
         }
     },

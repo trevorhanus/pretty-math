@@ -1,17 +1,14 @@
-import React from 'react';
-import { Block } from 'pretty-math2/model';
 import { IBlockConfig } from 'pretty-math2/interfaces';
+import { Block } from 'pretty-math2/model';
 import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
+import React from 'react';
 
-export interface FractionBlockData {
-
-}
-
-export type FractionBlockChildNames = 'num,denom';
+export interface FractionBlockData {}
+export type FractionBlockChildNames = 'num' | 'denom';
 export type FractionBlock = Block<FractionBlockData, FractionBlockChildNames>;
 
 export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
-    type: 'fraction:block',
+    type: 'math:fraction',
 
     render: ({ block, children, style }) => (
         <span className="fraction">
@@ -60,4 +57,4 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
             }
         }
     }
-}
+};

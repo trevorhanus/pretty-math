@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
@@ -9,14 +10,12 @@ export const endBlockConfig: IBlockConfig<EndBlock> = {
     type: 'end',
 
     render: ({ block }) => {
-        if (block.list.length === 1) {
-            return (
-                <span className="block blank">&#8203;</span>
-            )
-        }
-        return (
-            <span className="block">&#8203;</span>
-        )
+        const className = classNames(
+            'block',
+            { 'blank': block.list.length === 1 },
+        );
+
+        return <span className={className}>&#8203;</span>
     },
 
     printers: {
