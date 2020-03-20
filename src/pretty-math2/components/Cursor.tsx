@@ -6,11 +6,55 @@ export interface ICursorProps {
     editorState: EditorState;
 }
 
+export interface ICursorState {
+    left: number;
+    top: number;
+    height: number;
+}
+
 @observer
-export class Cursor extends React.Component<ICursorProps, {}> {
+export class Cursor extends React.Component<ICursorProps, ICursorState> {
+    private mounted: boolean;
 
     constructor(props: ICursorProps) {
         super(props);
+        this.mounted = false;
+        this.state = {
+            left: 0,
+            top: 0,
+            height: 0
+        }
+    }
+
+    componentDidMount() {
+        this.mounted = true;
+        this.calculatePosition();
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
+    calculatePosition = () => {
+        if (!this.mounted) {
+            return;
+        }
+
+        const { ref } = this.props.editorState.selection.focus;
+
+        if (ref != null) {
+            const el = ref.current;
+
+            if (!el) return;
+
+            this.setState({
+                left: el.offsetLeft + 1,
+                top: el.offsetTop,
+                height: el.offsetHeight
+            });
+        }
+
+        window.requestAnimationFrame(this.calculatePosition);
     }
 
     render() {
@@ -22,31 +66,11 @@ export class Cursor extends React.Component<ICursorProps, {}> {
     }
 
     renderCursor() {
-        const { editorState } = this.props;
-
-        if (!editorState.hasFocus) {
-            return null;
-        }
-
-        const { selection } = editorState;
-
-        if (!selection.isCollapsed) {
-            return null;
-        }
-
-        const { block, offset } = selection.focus;
-        const el = block.ref.current;
-
-        if (!el) {
-            return null;
-        }
-
         // calculate the dimensions
         const style = {
-            left: el.offsetLeft + (offset === 1 ? el.offsetWidth : 0) + 1,
-            top: el.offsetTop,
-            height: el.offsetHeight,
-            animation: '1s cursor-blink step-end infinite',
+            left: this.state.left + 1,
+            top: this.state.top,
+            height: this.state.height
         };
 
         return (

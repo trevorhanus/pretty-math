@@ -2,11 +2,12 @@ import { action, computed, observable } from 'mobx';
 import React from 'react';
 import { BlockList, BlockListOpts, BlockListState } from '.';
 import { generateId, omitNulls } from '../../common';
-import { IBlockConfig, ICompositeBlockConfig, IModel, PrinterProps } from '../interfaces';
+import { IBlockConfig, ICompositeBlockConfig, IModel, PrinterProps, BlockEntry, CursorOrder } from '../interfaces';
 import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
+import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 
 export type BlockChildrenState<ChildNames extends string> = Record<ChildNames, BlockListState>;
 
@@ -35,8 +36,24 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         this.list = null; // set by BlockList when the block is added
     }
 
+    get cursorOrder(): CursorOrder {
+        return this.config.composite && this.config.composite.cursorOrder;
+    }
+
     get editor(): EditorState {
         return this.list.editor;
+    }
+
+    get entry(): BlockEntry {
+        return this.config.composite && this.config.composite.entry;
+    }
+
+    get index(): number {
+        return this.list.getIndex(this);
+    }
+
+    get isComposite(): boolean {
+        return Object.keys(this.children).length > 0;
     }
 
     @computed
@@ -47,6 +64,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     @computed
     get next(): Block {
         return this.list && this.list.next(this);
+    }
+
+    @computed
+    get position(): BlockPosition {
+        return this.list.position.getPosition(this);
     }
 
     @computed
@@ -136,8 +158,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
 
     // Question: Is this ICompositeBlockConfig correct?
     private initChildrenMap(config?: ICompositeBlockConfig): Record<C, BlockList> {
-        config = config || { children: {} };
-        const childrenConfig = config.children;
+        const childrenConfig = config ? config.children : {};
         return mapObject(childrenConfig, (childName: string, opts: BlockListOpts) => {
             return new BlockList(this, childName, opts);
         });

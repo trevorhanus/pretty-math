@@ -43,26 +43,30 @@ export interface IBlockConfig<B> {
     composite?: ICompositeBlockConfig;
 }
 
+export interface BlockEntry {
+    fromLeft: {
+        up?: ChildName;
+        right?: ChildName;
+        down?: ChildName;
+    };
+    fromRight: {
+        up?: ChildName;
+        left?: ChildName;
+        down?: ChildName;
+    }
+}
+
+export interface CursorOrder {
+    leftToRight: ChildName[];
+    rightToLeft?: ChildName[];
+    upToDown: ChildName[];
+    downToUp?: ChildName[];
+}
+
 export interface ICompositeBlockConfig {
     children: {
         [name: string]: BlockListOpts;
     };
-    cursorOrder?: {
-        leftToRight?: ChildName[];
-        rightToLeft?: ChildName[];
-        upToDown?: ChildName[];
-        downToUp?: ChildName[];
-    };
-    entry?: {
-        fromLeft?: {
-            up?: ChildName;
-            right?: ChildName;
-            down?: ChildName;
-        };
-        fromRight?: {
-            up?: ChildName;
-            left?: ChildName;
-            down?: ChildName;
-        }
-    };
+    cursorOrder: CursorOrder;
+    entry: BlockEntry;
 }

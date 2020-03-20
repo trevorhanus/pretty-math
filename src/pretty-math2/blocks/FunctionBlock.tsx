@@ -29,6 +29,18 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
                 canBeNull: false,
                 order: 0
             }
+        },
+        cursorOrder: {
+            leftToRight: [],
+            upToDown: []
+        },
+        entry: {
+            fromLeft: {
+                right: 'child'
+            },
+            fromRight: {
+                left: 'child'
+            }
         }
     }
 }

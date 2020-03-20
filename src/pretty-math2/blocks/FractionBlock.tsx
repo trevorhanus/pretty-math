@@ -42,6 +42,22 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
                 canBeNull: false,
                 order: 1
             }
+        },
+        cursorOrder: {
+            leftToRight: [],
+            upToDown: ['num', 'denom']
+        },
+        entry: {
+            fromLeft: {
+                up: 'num',
+                right: 'num',
+                down: 'denom'
+            },
+            fromRight: {
+                up: 'num',
+                left: 'num',
+                down: 'denom'
+            }
         }
     }
 }

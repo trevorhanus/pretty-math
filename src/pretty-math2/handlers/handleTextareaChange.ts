@@ -17,7 +17,6 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         editorState.insertBlock(newBlock);
         return;
     }
-    // 
 
     const newBlock = createBlock('text:block', { data: { text: keyValue } });
     editorState.insertBlock(newBlock);

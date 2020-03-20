@@ -4,6 +4,7 @@ import { RootBlock as RootBlockType, rootBlockConfig, RootBlockData, RootBlockCh
 import { mathRootBlockConfig } from '../blocks/MathRootBlock';
 import { EditorState } from './EditorState';
 import { action, computed } from 'mobx';
+import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 
 export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     private _editor: EditorState;
@@ -21,6 +22,11 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     get mode(): string {
         if (this.config.type === 'root:math') return 'math';
         return 'text';
+    }
+
+    @computed
+    get position(): BlockPosition {
+        return BlockPosition.root();
     }
 
     @action

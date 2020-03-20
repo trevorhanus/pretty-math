@@ -5,7 +5,7 @@ import { Block, BlockState } from '.';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import React from 'react';
 import { EditorState } from './EditorState';
-import { CursorPosition } from 'pretty-math2/selection/CursorPosition';
+import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 
 export type BlockListState = BlockState[];
 
@@ -32,7 +32,7 @@ export class BlockList implements IModel<BlockListState> {
         this.parent = parent;
         this.opts = opts || DEFAULT_OPTS;
         this._blocks = observable.array([], { deep: false });
-        if (!this.opts.canBeNull) this._blocks.push(createBlock('blank'));
+        if (!this.opts.canBeNull) this._blocks.push(createBlock('end'));
         reaction(
             () => this._blocks.slice(),
             () => this.reindex(),
@@ -48,6 +48,10 @@ export class BlockList implements IModel<BlockListState> {
     get editor(): EditorState {
         if (!this.parent) throw new Error("Should never get here.");
         return this.parent.editor;
+    }
+    
+    get position(): BlockPosition {
+        return this.parent.position.incLevel(this.opts.order);
     }
 
     @computed
@@ -82,27 +86,14 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     getIndex(block: Block): number {
+        if (!block) return null;
         return this._indexMap[block.id];
     }
 
     @action
-    insertBlock(insertBlock: Block, index: number): CursorPosition {
-        this.splice(index, 0, insertBlock);
-        if (this.blocks.length > 1 && this.blocks[0].type === 'blank') {
-            this.splice(0, 1);
-        }
-        return new CursorPosition(insertBlock, 1);
-    }
-    
-    @action
-    insertLeftOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
-        return this.insertBlock(insertBlock, this.getIndex(positionBlock));
-    }
-    
-    @action
-    insertRightOfBlock(positionBlock: Block, insertBlock: Block): CursorPosition {
-        // Right Of Block means the start index is the positionBlock's index + 1
-        return this.insertBlock(insertBlock, this.getIndex(positionBlock) + 1);
+    insertBlock(focus: Block, insertBlock: Block) {
+        if (!this.contains(focus)) throw new Error("Programmer error.");
+        this.splice(this.getIndex(focus), 0, insertBlock);
     }
 
     next(block: Block): Block {
@@ -125,14 +116,14 @@ export class BlockList implements IModel<BlockListState> {
         );
     }
 
-    removeBlock(block: Block): CursorPosition {
-        if (this.getIndex(block) == null) return null;
-        let cursorBlock = new CursorPosition (block.prev, 1);
+    removeBlock(block: Block) {
+        if (this.getIndex(block) == null) return;
+        let cursorBlock = block.prev;
         this.splice(this.getIndex(block), 1);
         if (!this.opts.canBeNull && this.blocks.length === 0) {
             const blankBlock = createBlock('blank');
             this._blocks.push(blankBlock);
-            cursorBlock = new CursorPosition(blankBlock, 0);
+            cursorBlock = blankBlock;
         }
         return cursorBlock;
     }

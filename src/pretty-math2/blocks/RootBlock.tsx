@@ -32,6 +32,22 @@ export const rootBlockConfig: IBlockConfig<RootBlock> = {
                 canBeNull: false,
                 order: 0,
             }
+        },
+        cursorOrder: {
+            leftToRight: [],
+            upToDown: []
+        },
+        entry: {
+            fromLeft: {
+                up: 'content',
+                right: 'content',
+                down: 'content'
+            },
+            fromRight: {
+                up: 'content',
+                left: 'content',
+                down: 'content'
+            }
         }
     },
 
