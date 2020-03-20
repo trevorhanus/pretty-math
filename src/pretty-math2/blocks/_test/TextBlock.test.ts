@@ -5,7 +5,7 @@ describe('TextBlock', () => {
 
     it('works', () => {
         const block = Block.fromJS({
-            type: 'text:block',
+            type: 'atomic',
             data: {
                 text: 'a',
             }

@@ -5,6 +5,10 @@
         display: inline;
         margin-left: -1px;
         position: absolute;
+
+        &.cursor-hide {
+            display: none;
+        }
     }
 
     .cursor-blink {

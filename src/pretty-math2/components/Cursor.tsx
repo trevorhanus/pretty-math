@@ -1,5 +1,7 @@
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import * as React from 'react';
+import { haveWindow } from '../../common';
 import { EditorState } from '../model/EditorState';
 
 export interface ICursorProps {
@@ -10,34 +12,44 @@ const BLINK_DELAY = 300;
 
 @observer
 export class Cursor extends React.Component<ICursorProps, {}> {
+    private cursorRef: React.RefObject<HTMLSpanElement>;
+    private key: number;
     private mounted: boolean;
-    private _cursorRef: React.RefObject<HTMLSpanElement>;
-    private _key: number;
-    private _timer: any;
+    private mutationObserver: MutationObserver;
+    private timer: any;
 
     constructor(props: ICursorProps) {
         super(props);
-        this._cursorRef = React.createRef<HTMLSpanElement>();
-        this._key = 1;
+        this.mounted = false;
+        this.cursorRef = React.createRef<HTMLSpanElement>();
+        this.key = 1;
     }
 
     componentDidMount() {
         this.mounted = true;
+        // setup our mutation observer
+        if (haveWindow() && this.cursorRef.current) {
+            require('mutationobserver-shim'); // polyfill for MutationObserver, uses native MutationObserver if it exists
+            this.mutationObserver = new (window as any).MutationObserver(this.handleMutation);
+            this.mutationObserver.observe(this.cursorRef.current, observerConfig);
+        }
         this.calculatePosition();
     }
 
     componentDidUpdate(prevProps: Readonly<ICursorProps>, prevState: Readonly<{}>, snapshot?: any): void {
-        clearTimeout(this._timer);
-        this._timer = setTimeout(() => {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
             // modify the ref directly
-            if (this._cursorRef.current) {
-                this._cursorRef.current.classList.add('cursor-blink');
+            if (this.cursorRef.current) {
+                this.cursorRef.current.classList.add('cursor-blink');
             }
         }, BLINK_DELAY);
     }
 
     componentWillUnmount() {
         this.mounted = false;
+        this.mutationObserver.disconnect();
+        clearTimeout(this.timer);
     }
 
     render() {
@@ -51,17 +63,15 @@ export class Cursor extends React.Component<ICursorProps, {}> {
     renderCursor() {
         const { editorState } = this.props;
 
-        if (!editorState.hasFocus) {
-            return null;
-        }
-
-        const key = this._key++;
+        const className = classNames(
+            'cursor',
+            { 'cursor-hide': !editorState.hasFocus }
+        );
 
         return (
             <span
-                className="cursor"
-                key={key}
-                ref={this._cursorRef}
+                className={className}
+                ref={this.cursorRef}
             />
         );
     }
@@ -72,7 +82,7 @@ export class Cursor extends React.Component<ICursorProps, {}> {
         }
 
         const targetRef = this.props.editorState.selection.focus.ref.current;
-        const cursorRef = this._cursorRef.current;
+        const cursorRef = this.cursorRef.current;
 
         if (targetRef != null && cursorRef != null) {
             const left = targetRef.offsetLeft + 1;
@@ -86,4 +96,19 @@ export class Cursor extends React.Component<ICursorProps, {}> {
 
         window.requestAnimationFrame(this.calculatePosition);
     };
+
+    handleMutation = () => {
+        // the position changed, so reset the timer
+        clearTimeout(this.timer);
+        this.cursorRef.current.classList.remove('cursor-blink');
+        this.timer = setTimeout(() => {
+            // modify the ref directly
+            this.cursorRef.current.classList.add('cursor-blink');
+        }, BLINK_DELAY);
+    }
 }
+
+const observerConfig: MutationObserverInit = {
+    attributes: true,
+    attributeFilter: ['style'],
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBlock } from '../blocks/blocks';
+import { BlockFactory } from '../blocks/BlockFactory';
 import { EditorState } from '../model/EditorState';
 
 export function handleTextareaChange(editorState: EditorState, e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -7,13 +7,13 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     const keyValue = e.target.value;
 
     if (keyValue === 's') {
-        const newBlock = createBlock('math:function', { data: { displayValue: 'sin' } });
+        const newBlock = BlockFactory.createBlock('math:function', { displayValue: 'sin' });
         editorState.insertBlock(newBlock);
         return;
     }
     // Fraction
     if (keyValue === '/') {
-        const newBlock = createBlock('math:fraction', {});
+        const newBlock = BlockFactory.createBlock('math:fraction', {});
         editorState.insertBlock(newBlock);
         return;
     }
@@ -26,10 +26,9 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         return;
     }
 
-    const newBlock = createBlock('text:block', { data: { text: keyValue } });
+    const newBlock = BlockFactory.createBlock('atomic', { text: keyValue });
     editorState.insertBlock(newBlock);
 }
-
 
 function handleSuperscript(editorState: EditorState) {
     const { focus } = editorState.selection;
@@ -48,7 +47,7 @@ function handleSuperscript(editorState: EditorState) {
         editorState.selection.anchorAt(focus.children.sup.start);
         return;
     }
-    const newBlock = createBlock('math:supsub');
+    const newBlock = BlockFactory.createBlock('math:supsub');
     newBlock.children.sup.addEndBlock();
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.children.sup.start);
@@ -72,7 +71,7 @@ function handleSubscript(editorState: EditorState) {
         editorState.selection.anchorAt(focus.children.sub.start);
         return;
     }
-    const newBlock = createBlock('math:supsub');
+    const newBlock = BlockFactory.createBlock('math:supsub');
     newBlock.children.sub.addEndBlock();
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.children.sub.start);

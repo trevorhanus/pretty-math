@@ -1,7 +1,6 @@
 import { IBlockConfig } from '../interfaces';
 import { Block, BlockState } from './Block';
-import { RootBlock as RootBlockType, rootBlockConfig, RootBlockData, RootBlockChildNames } from '../blocks/RootBlock';
-import { mathRootBlockConfig } from '../blocks/MathRootBlock';
+import { RootBlock as RootBlockType, RootBlockData, RootBlockChildNames } from '../blocks/RootBlock';
 import { EditorState } from './EditorState';
 import { action, computed } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
@@ -34,13 +33,5 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     @action
     setEditor(editor: EditorState) {
         this._editor = editor;
-    }
-
-    static create(state?: Partial<BlockState>): RootBlock {
-        return new RootBlock(rootBlockConfig, state);
-    }
-
-    static createMathRoot(state?: Partial<BlockState>): RootBlock {
-        return new RootBlock(mathRootBlockConfig, state);
     }
 }

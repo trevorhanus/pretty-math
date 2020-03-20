@@ -65,6 +65,7 @@ export interface ICursorOrderConfig {
 export interface IBlockListConfig {
     canBeNull?: boolean;
     order: number;
+    transparentEndBlock?: boolean;
 }
 
 export interface ICompositeBlockConfig {

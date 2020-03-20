@@ -1,4 +1,6 @@
 import { action, computed, observable } from 'mobx';
+import { AssistantStore } from '../assistant/stores/AssistantStore';
+import { BlockFactory } from '../blocks/BlockFactory';
 import { Selection } from '../selection/Selection';
 import { BlockState, Block } from './Block';
 import { BlockList } from './BlockList';
@@ -12,6 +14,8 @@ export interface SerializedEditorState {
 
 export class EditorState {
     @observable private _hasFocus: boolean;
+    @observable private _lastCommand: string;
+    readonly assistant: AssistantStore;
     readonly root: RootBlock;
     readonly selection: Selection;
     // readonly inlineStyles: InlineStyles;
@@ -19,6 +23,8 @@ export class EditorState {
 
     constructor(rootBlock: RootBlock, initialState?: SerializedEditorState) {
         this._hasFocus = false;
+        this._lastCommand = null;
+        this.assistant = new AssistantStore();
         this.root = rootBlock;
         this.root.setEditor(this);
         this.selection = new Selection(this);
@@ -32,6 +38,11 @@ export class EditorState {
     @computed
     get hasFocus(): boolean {
         return this._hasFocus;
+    }
+
+    @computed
+    get lastCommand(): string {
+        return this._lastCommand;
     }
 
     @computed
@@ -110,12 +121,26 @@ export class EditorState {
         this._hasFocus = hasFocus;
     }
 
-    static create(state?: SerializedEditorState) {
-        return new EditorState(RootBlock.create(), state);
+    @action
+    setLastCommand(command: string) {
+        if (command) {
+            this._lastCommand = command;
+        }
     }
 
-    static createMathRoot(state?: SerializedEditorState): EditorState {
-        return new EditorState(RootBlock.createMathRoot(), state);
+    static create() {
+        const root = BlockFactory.createRootBlock('root');
+        return new EditorState(root);
+    }
+
+    static createMathRoot(): EditorState {
+        const root = BlockFactory.createRootBlock('root:math');
+        return new EditorState(root);
+    }
+
+    static fromState(state: SerializedEditorState): EditorState {
+        const root = BlockFactory.createBlockFromState(state.root) as RootBlock;
+        return new EditorState(root, state);
     }
 
     serialize(): SerializedEditorState {
@@ -124,76 +149,3 @@ export class EditorState {
         }
     }
 }
-
-const editorState = {
-    root: {
-        id: '1s3qw',
-        type: 'root',
-        data: {},
-        children: {
-            content: [
-                {
-                    id: '9wvp3',
-                    type: 'char',
-                    data: {
-                        text: 'a',
-                    }
-                },
-                {
-                    id: '24n8s',
-                    type: 'char',
-                    data: {
-                        text: ' ',
-                    }
-                },
-                {
-                    id: '120as',
-                    type: 'math:root',
-                    data: {},
-                    children: {
-                        content: [
-                            {
-                                id: '3',
-                                type: 'math:greek',
-                                data: {
-                                    text: 'α',
-                                }
-                            },
-                            {
-                                id: '3',
-                                type: 'math:char',
-                                data: {
-                                    text: '=',
-                                }
-                            },
-                            {
-                                id: '3',
-                                type: 'math:radical',
-                                data: {},
-                                children: {
-                                    inner: [
-
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-
-                }
-            ]
-        }
-    },
-    inlineStyles: [
-        {
-            start: '0.1:1',
-            end: '0.1:3',
-            style: {
-                color: 'red',
-            }
-        }
-    ],
-    selection: {
-        anchor: '0.1:2',
-        focus: '0.1:2',
-    },
-};

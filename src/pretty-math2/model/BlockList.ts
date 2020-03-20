@@ -1,19 +1,20 @@
 import { action, computed, IObservableArray, observable, reaction } from 'mobx';
+import { EndBlock } from 'pretty-math2/blocks/EndBlock';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { Block, BlockState } from '.';
-import { createBlock } from '../blocks/blocks';
+import { BlockFactory } from '../blocks/BlockFactory';
 import { IBlockListConfig, IModel } from '../interfaces';
 import { invariant } from '../utils/invariant';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { EditorState } from './EditorState';
-import { EndBlock } from 'pretty-math2/blocks/EndBlock';
 
 export type BlockListState = BlockState[];
 
 const DEFAULT_CONFIG = {
     canBeNull: true,
     order: 0,
+    transparentEndBlock: false,
 };
 
 export class BlockList implements IModel<BlockListState> {
@@ -27,7 +28,10 @@ export class BlockList implements IModel<BlockListState> {
     constructor(parent: Block, name: string, config?: IBlockListConfig) {
         this.name = name;
         this.parent = parent;
-        this.config = config || DEFAULT_CONFIG;
+        this.config = {
+            ...DEFAULT_CONFIG,
+            ...config,
+        };
         this._blocks = observable.array([], { deep: false });
         if (!this.config.canBeNull) {
             this.addEndBlock();
@@ -87,7 +91,7 @@ export class BlockList implements IModel<BlockListState> {
 
     @action
     addEndBlock(): EndBlock {
-        const endBlock = createBlock('end');
+        const endBlock = BlockFactory.createBlock('end');
         this.splice(0, 0, endBlock);
         return endBlock;
     }
@@ -159,7 +163,7 @@ export class BlockList implements IModel<BlockListState> {
     @action
     applyJS(state: BlockListState) {
         this._blocks.replace(state.map(s => {
-            return createBlock(s.type, s);
+            return BlockFactory.createBlockFromState(s);
         }));
     }
 
