@@ -44,14 +44,14 @@ export interface IBlockConfig<B> {
 
 export interface IEntryConfig {
     fromLeft: {
-        up?: ChildName;
-        right?: ChildName;
-        down?: ChildName;
+        up?: ChildName[];
+        right?: ChildName[];
+        down?: ChildName[];
     };
     fromRight: {
-        up?: ChildName;
-        left?: ChildName;
-        down?: ChildName;
+        up?: ChildName[];
+        left?: ChildName[];
+        down?: ChildName[];
     }
 }
 

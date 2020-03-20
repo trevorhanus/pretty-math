@@ -1,0 +1,94 @@
+.pm-math {
+
+    .blank {
+        background-color: lightgrey;
+        margin-right: 1px;
+
+        &:after {
+            content: 'a';
+            opacity: 0;
+        }
+
+        .focused & {
+            background-color: transparent;
+
+            &.no-cursor {
+                background-color: lightgrey;
+            }
+        }
+    }
+
+    .fraction {
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+
+        .numerator {
+            float: left;
+            width: 100%;
+            text-align: center;
+            margin-bottom: -0.62em;
+            padding-left: 1px;
+        }
+
+        .fraction-line {
+            display: block;
+            clear: both;
+            height: 1em;
+            pointer-events: none;
+
+            .line {
+                display: inline-block;
+                width: 100%;
+                vertical-align: 0.25em;
+                border-bottom: solid 1px;
+            }
+        }
+
+        .denominator {
+            float: left;
+            width: 100%;
+            text-align: center;
+            padding-left: 1px;
+        }
+    }
+
+    .sup-sub {
+        display: inline-block;
+        position: relative;
+        text-align: left;
+
+        .sup {
+            float: left;
+            clear: both;
+            margin-bottom: -.9257em;
+            margin-top: 0;
+            padding-left: 1px;
+            font-size: 0.7em;
+        }
+
+        .middle-base {
+            display: block;
+            clear: both;
+            height: 1em;
+
+            .inline {
+                display: inline-block;
+            }
+        }
+
+        .sub {
+            float: left;
+            clear: both;
+            margin-top: -0.547899em;
+            margin-bottom: 0;
+            padding-left: 1px;
+            font-size: 0.7em;
+
+            .symbol {
+                font-style: normal;
+            }
+        }
+    }
+}

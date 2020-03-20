@@ -87,7 +87,22 @@ export class EditorState {
             // handle range deletion
         }
         const { focus } = this.selection;
-        focus.list.removeBlock(focus.prev);
+        const { prev } = focus;
+        if (prev) {
+            prev.list.removeBlock(prev);
+            return;
+        }
+        if (focus.list.isOnlyEndBlock && focus.list.config.canBeNull) {
+            const { parent } = focus;
+            focus.list.removeBlock(focus);
+            if (parent.childrenAreEmtpy) {
+                const { list, next } = parent;
+                list.removeBlock(parent);
+                this.selection.anchorAt(next);
+                return;
+            }
+        }
+        this.selection.anchorAt(focus.parent);
     }
 
     @action
