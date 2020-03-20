@@ -60,8 +60,25 @@ export class EditorState {
 
     @action
     moveCursor(dir: Dir) {
+        if (!this.selection.isCollapsed) {
+            if (dir === Dir.Left) {
+                this.selection.anchorAt(this.selection.selectedRange.start);
+                return;
+            }
+            if (dir === Dir.Right) {
+                this.selection.anchorAt(this.selection.selectedRange.end);
+                return;
+            }
+            this.selection.anchorAt(this.selection.focus);
+        }
         const { focus } = this.selection;
         this.selection.anchorAt(getNextCursorPosition(focus, dir));
+    }
+
+    @action
+    moveSelectionFocus(dir: Dir) {
+        const { focus } = this.selection;
+        this.selection.focusAt(getNextCursorPosition(focus, dir));
     }
 
     @action

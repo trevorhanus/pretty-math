@@ -31,8 +31,8 @@ export class SelectionRange {
     @computed
     get end(): Block {
         return this.anchor.position.isRightOf(this.focus.position) ?
-            this.focus :
-            this.anchor;
+            this.anchor :
+            this.focus;
     }
 
     @computed

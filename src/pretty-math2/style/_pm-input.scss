@@ -64,6 +64,10 @@
         margin-left: -1px;
         position: absolute;
     }
+
+    .selected-block {
+        background-color: lightblue;
+    }
 }
 
 @keyframes cursor-blink {

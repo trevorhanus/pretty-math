@@ -1,22 +1,25 @@
 import { action, computed, observable } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
-import { BlockList, BlockListOpts, BlockListState } from '.';
-import { generateId, omitNulls } from '../../common';
+import { BlockList, BlockListState } from '.';
+import classNames from 'classnames';
 import {
+    ChildName,
     IBlockConfig,
+    IBlockListConfig,
     ICompositeBlockConfig,
     ICursorOrderConfig,
     IEntryConfig,
     IModel,
-    PrinterProps
+    PrinterProps,
 } from '../interfaces';
+import { generateId, omitNulls } from '../../common';
 import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
 
-export type BlockChildrenState<ChildNames> = Record<ChildNames, BlockListState>;
+export type BlockChildrenState<ChildNames> = Record<ChildName, BlockListState>;
 
 export interface BlockState<D = any, C extends string = string> {
     id: string;
@@ -61,6 +64,10 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
 
     get isComposite(): boolean {
         return Object.keys(this.children).length > 0;
+    }
+
+    get isSelected(): boolean {
+        return this.editor.selection.isBlockSelected(this);
     }
 
     @computed
@@ -110,11 +117,17 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
             editor: this.editor,
             style: {}, // TODO: get the style from the editor.inlineStyles
         });
+        
+        const className = classNames(
+            renderedBlock.props.className,
+            { 'selected-block': this.isSelected },
+        )
 
         const props = {
             ...renderedBlock.props,
             key: this.id,
             ref: this.ref,
+            className
         };
 
         return React.cloneElement(renderedBlock, props);
@@ -166,8 +179,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     // Question: Is this ICompositeBlockConfig correct?
     private initChildrenMap(config?: ICompositeBlockConfig): Record<C, BlockList> {
         const childrenConfig = config ? config.children : {};
-        return mapObject(childrenConfig, (childName: string, opts: BlockListOpts) => {
-            return new BlockList(this, childName, opts);
+        return mapObject(childrenConfig, (childName: string, config: IBlockListConfig) => {
+            return new BlockList(this, childName, config);
         });
     }
 }
