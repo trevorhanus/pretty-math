@@ -1,8 +1,11 @@
 import { Dir } from 'pretty-math2/interfaces';
 import { Block } from 'pretty-math2/model';
 import { isRootBlock } from 'pretty-math2/utils/blockUtils';
+import { invariant } from '../utils/invariant';
 
 export function getNextCursorPosition(block: Block, dir: Dir): Block {
+    invariant(block == null, `getNextCursorPosition invoked without a block.`);
+
     switch (dir) {
         case Dir.Left:
             if (block.prev) {
@@ -62,7 +65,7 @@ export function getNextCursorPositionOutOf(child: Block, dir: Dir): Block {
     const parent = child.list.parent;
 
     if (!parent || isRootBlock(parent)) return null;
-    
+
     const leftToRightIndex = parent.cursorOrder.leftToRight.findIndex(val => val === child.list.name);
     const upToDownIndex =  parent.cursorOrder.upToDown.findIndex(val => val === child.list.name);
     switch (dir) {

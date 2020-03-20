@@ -25,8 +25,8 @@ export class EditorState {
         this.applyState(initialState);
     }
 
-    get content(): BlockList {
-        return this.root.children.content;
+    get inner(): BlockList {
+        return this.root.children.inner;
     }
 
     @computed

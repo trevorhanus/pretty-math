@@ -3,7 +3,7 @@ import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
-export type ParagraphBlockChildNames = 'content';
+export type ParagraphBlockChildNames = 'inner';
 
 export interface ParagraphBlockData {
     as: string;
@@ -16,10 +16,9 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
 
     printers: {
         calchub: props => {
-            const { block } = props;
-            const content = block.children.content.toCalchub();
+            const { block, children } = props;
             return PrinterOutput.fromMany([
-                content,
+                children.inner,
                 {
                     source: block,
                     text: '\n',
@@ -37,31 +36,31 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
         return React.createElement(
             elType,
             { style },
-            children,
+            children.inner,
         );
     },
 
     composite: {
         children: {
-            content: {
+            inner: {
                 order: 0,
                 canBeNull: false,
             },
         },
         cursorOrder: {
             leftToRight: [],
-            upToDown: []
+            upToDown: [],
         },
         entry: {
             fromLeft: {
-                up: 'content',
-                right: 'content',
-                down: 'content'
+                up: 'inner',
+                right: 'inner',
+                down: 'inner',
             },
             fromRight: {
-                up: 'content',
-                left: 'content',
-                down: 'content'
+                up: 'inner',
+                left: 'inner',
+                down: 'inner',
             }
         }
     }

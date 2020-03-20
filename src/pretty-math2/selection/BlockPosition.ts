@@ -24,10 +24,6 @@ export class BlockPosition {
             && this.path.every((stop, i) => isEqual(stop, pos.stopAt(i)));
     }
 
-    getPosition(block: Block): BlockPosition {
-        return new BlockPosition(this.path, block.index);
-    }
-
     incIndex(): BlockPosition {
         return new BlockPosition(this.path, this.index + 1);
     }

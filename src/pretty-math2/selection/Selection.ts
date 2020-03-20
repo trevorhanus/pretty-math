@@ -49,11 +49,11 @@ export class Selection {
 
     @action
     anchorAtEnd() {
-        this.anchorAt(this.editorState.content.end);
+        this.anchorAt(this.editorState.inner.end);
     }
 
     @action
     anchorAtStart() {
-        this.anchorAt(this.editorState.content.start);
+        this.anchorAt(this.editorState.inner.start);
     }
 }
