@@ -7,10 +7,10 @@ export interface TextBlockData {
     text: string;
 }
 
-export type TextBlock = Block<TextBlockData>;
+export type AtomicBlock = Block<TextBlockData>;
 
-export const textBlockConfig: IBlockConfig<TextBlock> = {
-    type: 'text:block',
+export const atomicBlockConfig: IBlockConfig<AtomicBlock> = {
+    type: 'atomic',
 
     render: ({ block, style }) => (
         <span style={style}>{block.data.text}</span>

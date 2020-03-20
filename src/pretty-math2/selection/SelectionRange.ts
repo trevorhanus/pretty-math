@@ -46,6 +46,11 @@ export class SelectionRange {
     }
 
     @computed
+    get isEmpty(): boolean {
+        return this._anchor == null;
+    }
+
+    @computed
     get start(): Block {
         return this.anchor.position.isLeftOf(this.focus.position) ?
             this.anchor :
@@ -61,5 +66,9 @@ export class SelectionRange {
     @action
     setFocus(block: Block) {
         this._focus = block;
+    }
+
+    static empty(): SelectionRange {
+        return new SelectionRange();
     }
 }

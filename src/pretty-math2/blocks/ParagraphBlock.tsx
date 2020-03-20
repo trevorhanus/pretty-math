@@ -43,8 +43,9 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
     composite: {
         children: {
             inner: {
-                order: 0,
                 canBeNull: false,
+                order: 0,
+                transparentEndBlock: true,
             },
         },
         cursorOrder: {

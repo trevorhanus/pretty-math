@@ -5,7 +5,6 @@ import React from 'react';
 import { BlockList, BlockListState } from '.';
 import { generateId, omitNulls } from '../../common';
 import {
-    ChildName,
     IBlockConfig,
     IBlockListConfig,
     ICompositeBlockConfig,
@@ -19,10 +18,10 @@ import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
 
-export type BlockChildrenState<ChildNames> = Record<ChildName, BlockListState>;
+export type BlockChildrenState<ChildNames extends string> = Record<ChildNames, BlockListState>;
 
 export interface BlockState<D = any, C extends string = string> {
-    id: string;
+    id?: string;
     type: string;
     data?: D;
     children?: BlockChildrenState<C>;
@@ -36,12 +35,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     @observable.ref data: D;
     @observable.ref list: BlockList | null;
 
-    constructor(config: IBlockConfig<Block<D, C>>, state?: Partial<BlockState>) {
-        state = state || {};
+    constructor(config: IBlockConfig<Block<D, C>>, data?: D, id?: string) {
         this.children = this.initChildrenMap(config.composite);
         this.config = config;
-        this.data = state.data || {};
-        this.id = state.id || generateId();
+        this.data = data || ({} as D);
+        this.id = id || generateId();
         this.ref = React.createRef<HTMLElement>();
         this.list = null; // set by BlockList when the block is added
     }

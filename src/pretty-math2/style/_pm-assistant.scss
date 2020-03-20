@@ -1,0 +1,26 @@
+#pm-assistant-portal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.pm-assistant-positioner {
+    position: absolute;
+}
+
+.pm-assistant {
+    background-color: #F6F8F9;
+    border: 1px solid #E4E6E8;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px 1px #cccccc;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    min-width: 300px;
+    padding-top: 0.5em;
+    pointer-events: auto;
+    position: relative;
+    text-align: left;
+}

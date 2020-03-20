@@ -30,16 +30,17 @@ export class EditorController {
         command = command || defaultKeyBindingFn(e);
         if (command != null) {
             e.preventDefault();
-            this._handleCommand(command, e);
+            this.handleCommand(command, e);
         }
     };
 
     @action
     handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         handleTextareaChange(this.editorState, e);
-    }
+        this.editorState.setLastCommand('input');
+    };
 
-    private _handleCommand(command: string, e?: React.SyntheticEvent) {
+    handleCommand(command: string, e?: React.SyntheticEvent) {
         let handled = 'not_handled';
 
         if (this.props.handleCommand) {
@@ -49,5 +50,7 @@ export class EditorController {
         if (handled === 'not_handled') {
             defaultCommandHandler(command, this.editorState, e);
         }
+
+        this.editorState.setLastCommand(command);
     }
 }

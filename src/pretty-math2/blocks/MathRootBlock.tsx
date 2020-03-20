@@ -31,6 +31,7 @@ export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
             inner: {
                 canBeNull: false,
                 order: 0,
+                transparentEndBlock: true,
             }
         },
         cursorOrder: {

@@ -10,12 +10,19 @@ export const endBlockConfig: IBlockConfig<EndBlock> = {
     type: 'end',
 
     render: ({ block }) => {
+        const hideEndBlock = block.list.length > 1 || block.list.config.transparentEndBlock;
+
         const className = classNames(
-            'block',
-            { 'blank': block.list.length === 1 },
+            'block end-block',
+            { 'end-block--transparent': hideEndBlock },
         );
 
-        return <span className={className}>&#8203;</span>
+        const content = () => {
+            const char = hideEndBlock ? '\u200b' : 'a';
+            return <span style={{ opacity: 0 }}>{char}</span>;
+        };
+
+        return <span className={className}>{content()}</span>
     },
 
     printers: {

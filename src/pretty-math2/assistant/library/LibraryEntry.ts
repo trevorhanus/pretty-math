@@ -1,0 +1,73 @@
+import { generateId } from 'common';
+import { EditorState, SerializedEditorState } from '../../model/EditorState';
+
+export interface LibraryEntryConfig {
+    // keywords are words that will be used when indexing the entry
+    // these are the search terms
+    keywords: string[];
+
+    // a description that will be shown to the user for the entry
+    description: string;
+
+    // what will be rendered in the assistant
+    preview?: SerializedEditorState;
+
+    // the text value to use when
+    // rendering the block in pretty math
+    text?: string;
+
+    // an optional callback that allows the entry to
+    // determine if it should be suggested based on the current
+    // state of the engine
+    doSuggest?: (editor: EditorState) => boolean;
+
+    // required callback that is invoked when the user
+    // selects the entry. This callback should modify the editorState
+    onSelect: (editor: EditorState, entry: LibraryEntry) => void;
+}
+
+export class LibraryEntry {
+    ref: HTMLLIElement;
+    readonly _id: string;
+    readonly _config: LibraryEntryConfig;
+
+    constructor(config: LibraryEntryConfig) {
+        this._id = generateId();
+        this._config = config;
+    }
+
+    get id(): string {
+        return this._id;
+    }
+
+    get description(): string {
+        return this._config.description;
+    }
+
+    get preview(): SerializedEditorState {
+        return this._config.preview;
+    }
+
+    get keyword(): string {
+        return this.keywords.join(' ');
+    }
+
+    get keywords(): string[] {
+        return this._config.keywords || [];
+    }
+
+    doSuggest(editor: EditorState): boolean {
+        return this._config.doSuggest ? this._config.doSuggest(editor) : true;
+    }
+
+    onSelect(editor: EditorState) {
+        this._config.onSelect(editor, this);
+    }
+
+    toDoc(): any {
+        return {
+            id: this.id,
+            keyword: this.keyword,
+        }
+    }
+}
