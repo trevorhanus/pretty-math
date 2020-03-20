@@ -50,12 +50,6 @@ export class Cursor extends React.Component<ICursorProps, ICursorState> {
             return null;
         }
 
-        const { selection } = editorState;
-
-        if (!selection.isCollapsed) {
-            return null;
-        }
-
         const style = {
             left: this.state.left + 1,
             top: this.state.top,

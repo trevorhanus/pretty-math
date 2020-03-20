@@ -125,17 +125,12 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @action
-    removeBlock(block: Block): Block {
+    removeBlock(block: Block) {
         const index = this.getIndex(block);
         if (index == null) {
             return;
         }
-        let cursorAnchor = block.prev;
-        const endBlock = this.splice(index, 1);
-        if (endBlock) {
-            cursorAnchor = endBlock;
-        }
-        return cursorAnchor;
+        this.splice(index, 1);
     }
 
     toCalchub(): PrinterOutput {
@@ -159,13 +154,9 @@ export class BlockList implements IModel<BlockListState> {
      * a block from the list
      */
     @action
-    splice(start: number, deleteCount: number, ...blocks: Block[]): EndBlock | null {
+    splice(start: number, deleteCount: number, ...blocks: Block[]) {
         this._blocks.splice(start, deleteCount, ...blocks);
-        if (!this.config.canBeNull && this._blocks.length === 0) {
-            const endBlock = createBlock('end');
-            this._blocks.push(endBlock);
-            return endBlock;
-        }
+        invariant(!this.config.canBeNull && this._blocks.length === 0, 'BlockList can not be null but was empty');
     }
 
     private reindex() {

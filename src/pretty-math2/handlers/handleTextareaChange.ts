@@ -12,7 +12,7 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         return;
     }
     // Fraction
-    if (keyValue === 'f') {
+    if (keyValue === '/') {
         const newBlock = createBlock('math:fraction', {});
         editorState.insertBlock(newBlock);
         return;

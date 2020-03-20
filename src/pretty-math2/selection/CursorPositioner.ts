@@ -6,10 +6,6 @@ import { invariant } from '../utils/invariant';
 export function getNextCursorPosition(block: Block, dir: Dir): Block {
     invariant(block == null, `getNextCursorPosition invoked without a block.`);
 
-    if (!block) {
-        return null;
-    }
-
     switch (dir) {
         case Dir.Left:
             if (block.prev) {

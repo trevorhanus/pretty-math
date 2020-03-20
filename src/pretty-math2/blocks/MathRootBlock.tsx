@@ -3,7 +3,7 @@ import { Block } from '../model';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 
 export interface MathRootBlockData {}
-export type MathRootBlockChildNames = 'content';
+export type MathRootBlockChildNames = 'inner';
 export type MathRootBlock = Block<MathRootBlockData>;
 
 export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
@@ -12,23 +12,23 @@ export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
     render: ({ children }) => {
         return (
             <span className='math-root'>
-                {children.content}
+                {children.inner}
             </span>
         )
     },
 
     printers: {
         calchub: ({ children }) => {
-            return children.content;
+            return children.inner;
         },
         python: ({ children }) => {
-            return children.content;
+            return children.inner;
         }
     },
 
     composite: {
         children: {
-            content: {
+            inner: {
                 canBeNull: false,
                 order: 0,
             }
@@ -39,14 +39,14 @@ export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
         },
         entry: {
             fromLeft: {
-                up: 'content',
-                right: 'content',
-                down: 'content'
+                up: 'inner',
+                right: 'inner',
+                down: 'inner'
             },
             fromRight: {
-                up: 'content',
-                left: 'content',
-                down: 'content'
+                up: 'inner',
+                left: 'inner',
+                down: 'inner'
             }
         }
     },
