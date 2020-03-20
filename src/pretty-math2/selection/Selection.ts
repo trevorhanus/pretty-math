@@ -1,11 +1,11 @@
-import { SelectionRange } from './SelectionRange';
-import { EditorState } from 'pretty-math2/model/EditorState';
 import { action, computed } from 'mobx';
 import { Block } from 'pretty-math2/model';
+import { EditorState } from 'pretty-math2/model/EditorState';
+import { SelectionRange } from './SelectionRange';
 
 export class Selection {
     readonly editorState: EditorState;
-    private range: SelectionRange;
+    readonly range: SelectionRange;
 
     constructor(editorState: EditorState) {
         this.editorState = editorState;
@@ -55,5 +55,22 @@ export class Selection {
     @action
     anchorAtStart() {
         this.anchorAt(this.editorState.inner.start);
+    }
+
+    @action
+    focusAt(block: Block) {
+        if (block == null) return;
+        if (this.editorState.root.contains(block)) {
+            this.range.setFocus(block);
+            return;
+        }
+        console.warn("Attempted to set the cursor focus to an invalid block.");
+    }
+
+    isBlockSelected(block: Block): boolean {
+        return !this.isCollapsed &&
+            (block === this.range.start ||
+            (block.position.isRightOf(this.range.start.position) &&
+             block.position.isLeftOf(this.range.end.position)));
     }
 }

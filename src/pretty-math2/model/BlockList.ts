@@ -3,7 +3,6 @@ import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { Block, BlockState } from '.';
 import { createBlock } from '../blocks/blocks';
-import { EndBlock } from '../blocks/EndBlock';
 import { IBlockListConfig, IModel } from '../interfaces';
 import { invariant } from '../utils/invariant';
 import { PrinterOutput } from '../utils/PrinterOutput';
