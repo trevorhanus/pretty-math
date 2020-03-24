@@ -1,9 +1,8 @@
-import { observer } from 'mobx-react';
+import { action } from 'mobx';
+import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { EditorState } from '../../model/EditorState';
-import { SelectionRange } from '../../selection/SelectionRange';
-import { getMathLibrary, Library } from '../library/Library';
 import { LibraryEntry } from '../library/LibraryEntry';
 import { AssistantForce } from '../stores/AssistantStore';
 import { AssistantDialog } from './AssistantDialog';
@@ -29,49 +28,50 @@ export class Assistant extends React.Component<IAssistantProps, {}> {
 
     render() {
         const { editor } = this.props;
+        const { assistant } = editor;
 
         if (!editor.hasFocus) {
             return null;
         }
 
-        if (editor.assistant.force === AssistantForce.Closed) {
+        if (assistant.force === AssistantForce.Closed) {
             return null;
         }
 
-        if (editor.assistant.force === AssistantForce.Open) {
-            const library = getMathLibrary();
-            return this.renderAssistant(library);
+        if (assistant.force === AssistantForce.Open) {
+            return this.renderAssistant();
         }
 
         // else do we have any suggestions?
         const lastCommandWasInput = editor.lastCommand === 'input';
-        const library = getMathLibrary();
-        const phrase = rangeToText(editor.selection.trailingPhraseRange);
-        const suggestions = library.getSuggested(phrase, editor);
 
-        if (lastCommandWasInput && suggestions.length > 0) {
-            return this.renderAssistant(library, suggestions);
+        if (lastCommandWasInput && assistant.suggestions.length > 0) {
+            return this.renderAssistant();
         }
 
         return null;
     }
 
-    renderAssistant(library: Library, suggestions?: LibraryEntry[]) {
+    renderAssistant() {
         const { editor } = this.props;
+        const { assistant } = editor;
 
         return createPortal(
             (
-                <AssistantPositioner
-                    boundingViewport={this.props.boundingViewport}
-                    target={this.props.target}
+                <Provider
+                    assistant={assistant}
                 >
-                    <AssistantDialog
-                        library={library}
-                        onCloseRequested={this.props.onCloseRequested}
-                        onUnmount={() => editor.assistant.releaseForce()}
-                        suggestions={suggestions || []}
-                    />
-                </AssistantPositioner>
+                    <AssistantPositioner
+                        boundingViewport={this.props.boundingViewport}
+                        target={this.props.target}
+                    >
+                        <AssistantDialog
+                            onCloseRequested={this.props.onCloseRequested}
+                            onSelect={this.handleEntrySelect}
+                            onUnmount={this.handleUnmount}
+                        />
+                    </AssistantPositioner>
+                </Provider>
             ),
             this.portal,
         );
@@ -86,15 +86,18 @@ export class Assistant extends React.Component<IAssistantProps, {}> {
         }
         this.portal = portal as HTMLDivElement;
     }
-}
 
-function rangeToText(range: SelectionRange): string {
-    if (range.isEmpty) {
-        return '';
+    @action
+    handleEntrySelect = (entry: LibraryEntry) => {
+        const { editor } = this.props;
+        entry.onSelect(editor);
+        editor.assistant.releaseForce();
+        editor.setLastCommand('assistant_entry_selected');
+    };
+
+    @action
+    handleUnmount = () => {
+        const { assistant } = this.props.editor;
+        assistant.reset();
     }
-
-    return range.blocks.reduce((text, b) => {
-        text = text + b.data.text || '';
-        return text;
-    }, '');
 }

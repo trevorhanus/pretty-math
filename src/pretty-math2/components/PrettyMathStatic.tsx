@@ -18,7 +18,7 @@ export class PrettyMathStatic extends React.Component<IPrettyMathStaticProps, {}
 
     render() {
         return (
-            <div>
+            <div className="pretty-math">
                 <Content
                     editorState={this.editor}
                 />

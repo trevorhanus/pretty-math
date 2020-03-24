@@ -10,8 +10,8 @@ export enum Dir {
 }
 
 export interface IModel<S> {
-    applyJS: (js: S) => void;
-    toJS: () => S;
+    applyState: (state: S) => void;
+    serialize: () => S;
 }
 
 export interface PrinterProps<B> {

@@ -1,4 +1,5 @@
 import { action, computed, observable } from 'mobx';
+import * as React from 'react';
 import { AssistantStore } from '../assistant/stores/AssistantStore';
 import { BlockFactory } from '../blocks/BlockFactory';
 import { Selection } from '../selection/Selection';
@@ -13,6 +14,8 @@ export interface SerializedEditorState {
 }
 
 export class EditorState {
+    @observable readonly containerRef: React.RefObject<HTMLDivElement>;
+    readonly hiddenTextareaRef: React.RefObject<HTMLTextAreaElement>;
     @observable private _hasFocus: boolean;
     @observable private _lastCommand: string;
     readonly assistant: AssistantStore;
@@ -22,9 +25,11 @@ export class EditorState {
     // readonly history: History;
 
     constructor(rootBlock: RootBlock, initialState?: SerializedEditorState) {
+        this.containerRef = React.createRef<HTMLDivElement>();
+        this.hiddenTextareaRef = React.createRef<HTMLTextAreaElement>();
         this._hasFocus = false;
         this._lastCommand = null;
-        this.assistant = new AssistantStore();
+        this.assistant = new AssistantStore(this);
         this.root = rootBlock;
         this.root.setEditor(this);
         this.selection = new Selection(this);
@@ -56,7 +61,19 @@ export class EditorState {
             return;
         }
 
-        this.root.applyJS(state.root);
+        const oldFocus = this.selection.focus;
+        this.root.applyState(state.root);
+        // does the previously focused block still exist?
+        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.children.inner.start;
+        this.selection.anchorAt(newFocus);
+    }
+
+    blur() {
+        this.hiddenTextareaRef.current.blur();
+    }
+
+    focus() {
+        this.hiddenTextareaRef.current.focus();
     }
 
     // Didn't import Block before this
@@ -128,24 +145,40 @@ export class EditorState {
         }
     }
 
-    static create() {
+    @action
+    static createTextRoot(state?: SerializedEditorState) {
         const root = BlockFactory.createRootBlock('root');
+        const editor = new EditorState(root);
+        if (state) {
+            editor.applyState(state);
+        }
         return new EditorState(root);
     }
 
-    static createMathRoot(): EditorState {
+    @action
+    static createMathRoot(state?: SerializedEditorState): EditorState {
         const root = BlockFactory.createRootBlock('root:math');
-        return new EditorState(root);
+        const editor = new EditorState(root);
+        if (state) {
+            editor.applyState(state);
+        }
+        return editor;
     }
 
+    @action
     static fromState(state: SerializedEditorState): EditorState {
-        const root = BlockFactory.createBlockFromState(state.root) as RootBlock;
-        return new EditorState(root, state);
+        if (state.root.type === 'root:math') {
+            return EditorState.createMathRoot(state);
+        }
+        if (state.root.type === 'root') {
+            return EditorState.createTextRoot(state);
+        }
+        throw new Error('Invalid state object.');
     }
 
     serialize(): SerializedEditorState {
         return {
-            root: this.root.toJS(),
+            root: this.root.serialize(),
         }
     }
 }

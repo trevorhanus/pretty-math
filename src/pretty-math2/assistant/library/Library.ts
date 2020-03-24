@@ -6,13 +6,13 @@ import { mathEntries } from '../math.entries';
 elasticlunr.clearStopWords();
 
 export class Library {
+    private _categories: Map<string, LibraryEntry[]>;
     private _entries: Map<string, LibraryEntry>;
-    private _exprToEntryMap: Map<string, LibraryEntry>;
     private _index: any;
 
     constructor() {
+        this._categories = new Map<string, LibraryEntry[]>();
         this._entries = new Map<string, LibraryEntry>();
-        this._exprToEntryMap = new Map<string, LibraryEntry>();
 
         this._index = elasticlunr();
         this._index.addField('keyword');
@@ -21,6 +21,17 @@ export class Library {
 
     get allEntries(): LibraryEntry[] {
         return Array.from(this._entries.values());
+    }
+
+    get categories(): string[] {
+        return Array.from(this._categories.keys());
+    }
+
+    getCategoryList(category: string): LibraryEntry[] {
+        if (!this._categories.has(category)) {
+            this._categories.set(category, []);
+        }
+        return this._categories.get(category);
     }
 
     getSuggested(phrase: string, editorState: EditorState): LibraryEntry[] {
@@ -36,6 +47,10 @@ export class Library {
 
         this._index.addDoc(entry.toDoc());
         this._entries.set(entry.id, entry);
+        if (entry.category) {
+            const categoryList = this.getCategoryList(entry.category);
+            categoryList.push(entry);
+        }
     }
 
     libraryEntryWithExactKeyword(keyword: string): LibraryEntry {

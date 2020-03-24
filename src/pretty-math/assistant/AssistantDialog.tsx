@@ -49,16 +49,8 @@ export class AssistantDialog extends React.Component<IAssistantDialogProps, {}> 
                 assistant.handleEscape(e);
                 break;
 
-            case e.keyCode === 37: // Left
-                // assistant.handleLeft(e);
-                break;
-
             case e.keyCode === 38: // Up
                 assistant.handleUp(e);
-                break;
-
-            case e.keyCode === 39: // Right
-                // assistant.handleRight(e);
                 break;
 
             case e.keyCode === 40: // Down

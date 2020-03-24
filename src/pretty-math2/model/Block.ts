@@ -106,6 +106,20 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return this === block || someObject(this.children, child => child.contains(block));
     }
 
+    getBlockById(id: string): Block | null {
+        if (this.id === id) {
+            return this;
+        }
+        for (let listName in this.children) {
+            const list = this.children[listName];
+            const block = list.getBlockById(id);
+            if (block) {
+                return block;
+            }
+        }
+        return null;
+    }
+
     getChildByNumber(childNumber: number): BlockList {
         let list = null;
         for (let child in this.children) {
@@ -129,7 +143,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         const className = classNames(
             renderedBlock.props.className,
             { 'selected-block': this.isSelected },
-        )
+        );
 
         const props = {
             ...renderedBlock.props,
@@ -139,6 +153,17 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         };
 
         return React.cloneElement(renderedBlock, props);
+    }
+
+    serialize(): BlockState<D, C> {
+        return {
+            id: this.id,
+            type: this.type,
+            data: this.data,
+            children: mapObject(this.children, (childName: string, list: BlockList) => {
+                return list.serialize();
+            }),
+        }
     }
 
     toCalchub(): PrinterOutput {
@@ -152,17 +177,6 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         };
 
         return this.config.printers.calchub(props);
-    }
-
-    toJS(): BlockState<D> {
-        return omitNulls({
-            id: this.id,
-            type: this.type,
-            data: this.data,
-            children: mapObject(this.children, (childName: string, child: BlockList) => {
-                return child.toJS();
-            }),
-        });
     }
 
     toPython(): PrinterOutput {
@@ -179,9 +193,15 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @action
-    applyJS(state: BlockState<D>) {
+    applyState(state: BlockState<D>) {
         state = state || {} as BlockState<D>;
         this.data = state.data || {} as D;
+        const childrenState = state.children || {};
+        for (let childName in this.children) {
+            const list = this.children[childName];
+            const childState = childrenState[childName];
+            list.applyState(childState);
+        }
     }
 
     // Question: Is this ICompositeBlockConfig correct?

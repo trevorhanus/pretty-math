@@ -6,6 +6,7 @@ import { handleDelete } from './handleDelete';
 import { handleSelectionMove } from './handleSelectionMove';
 
 const commands = {
+    'blur': action((editor: EditorState) => editor.blur()),
     'delete': handleDelete,
     'force_assistant_open': action((editor: EditorState) => editor.assistant.forceOpen()),
     'force_assistant_closed': action((editor: EditorState) => editor.assistant.forceClosed()),

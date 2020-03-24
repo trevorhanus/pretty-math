@@ -1,6 +1,9 @@
 import React from 'react';
 
 export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
+    if (e.defaultPrevented) {
+        return;
+    }
 
     if (e.shiftKey) {
         switch (e.keyCode) {
@@ -29,6 +32,9 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
 
         case 13: // Enter
             return 'enter-pressed';
+
+        case 27: // Escape
+            return 'blur';
 
         case 37: // ArrowLeft
             return 'move_cursor';

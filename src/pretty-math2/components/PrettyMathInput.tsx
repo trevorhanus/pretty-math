@@ -1,4 +1,3 @@
-import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Assistant } from '../assistant/components/Assistant';
@@ -23,49 +22,41 @@ export interface IPrettyMathInputProps {
 
 @observer
 export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> {
-    @observable readonly containerRef: React.RefObject<HTMLDivElement>;
     readonly controller: EditorController;
-    readonly editorState: EditorState;
-    readonly hiddenTextareaRef: React.RefObject<HTMLTextAreaElement>;
+    readonly editor: EditorState;
 
     constructor(props: IPrettyMathInputProps) {
         super(props);
-        this.containerRef = React.createRef<HTMLDivElement>();
-        this.editorState = EditorState.createMathRoot();
-        this.controller = new EditorController(props, this.editorState);
-        this.hiddenTextareaRef = React.createRef<HTMLTextAreaElement>();
+        this.editor = EditorState.createMathRoot(props.editorState);
+        this.controller = new EditorController(props, this.editor);
     }
 
     render() {
         return (
             <div
-                className="pm-input"
-                ref={this.containerRef}
+                className="pretty-math pm-input"
+                ref={this.editor.containerRef}
                 onMouseDown={this.handleMouseDown}
             >
                 <textarea
                     className="hidden-textarea"
-                    onBlur={() => this.editorState.setFocus(false)}
+                    onBlur={() => this.editor.setFocus(false)}
                     onChange={this.controller.handleTextareaChange}
-                    onFocus={() => this.editorState.setFocus(true)}
+                    onFocus={() => this.editor.setFocus(true)}
                     onKeyDown={this.controller.handleKeyDown}
                     readOnly={this.props.readOnly}
-                    ref={this.hiddenTextareaRef}
+                    ref={this.editor.hiddenTextareaRef}
                     value={""}
                 />
-                <Content editorState={this.editorState} />
-                <Cursor editorState={this.editorState} />
+                <Content editorState={this.editor} />
+                <Cursor editorState={this.editor} />
                 <Assistant
-                    editor={this.editorState}
+                    editor={this.editor}
                     onCloseRequested={() => this.controller.handleCommand('force_assistant_closed')}
-                    target={this.containerRef.current}
+                    target={this.editor.containerRef.current}
                 />
             </div>
         );
-    }
-
-    focus() {
-        this.hiddenTextareaRef.current.focus();
     }
 
     handleMouseDown = (e: React.MouseEvent) => {
@@ -75,10 +66,6 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
             return;
         }
 
-        this.hiddenTextareaRef.current.focus();
+        this.editor.focus();
     };
-
-    blur() {
-        this.hiddenTextareaRef.current.blur();
-    }
 }
