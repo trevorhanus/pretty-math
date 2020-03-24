@@ -1,11 +1,13 @@
 import { action } from 'mobx';
 import { IBlockConfig } from '../interfaces';
 import { Block, BlockState, RootBlock } from '../model';
+import { invariant } from '../utils/invariant';
 import { atomicBlockConfig } from './AtomicBlock';
 import { endBlockConfig } from './EndBlock';
 import { fractionBlockConfig } from './FractionBlock';
 import { functionBlockConfig } from './FunctionBlock';
 import { mathRootBlockConfig } from './MathRootBlock';
+import { mathSymbolBlockConfig } from './MathSymbolBlock';
 import { paragraphBlockConfig } from './ParagraphBlock';
 import { rootBlockConfig } from './RootBlock';
 import { supSubBlockConfig } from './SupSubBlock';
@@ -24,36 +26,19 @@ const addBlockType = (config: IBlockConfig<Block>) => {
 
 const createBlock = action((type: string, data?: any, id?: string): Block => {
     const config = blocks[type];
+    invariant(!config, `Could not find config for block type '${type}'.`);
     return new Block(config, data, id);
 });
 
 const createRootBlock = action((type: string): RootBlock => {
     const config = blocks[type];
+    invariant(!config, `Could not find config for block type '${type}'.`);
     return new RootBlock(config);
 });
 
 const createBlockFromState = action((state: BlockState): Block => {
-    const { type } = state;
-
-    if (!type) {
-        throw new Error('no type in block state');
-    }
-
-    if (type.startsWith('root')) {
-        return createRootBlock(type);
-    }
-
-    const block = createBlock(type, state.data, state.id);
-
-    const childrenState = state.children || {};
-
-    for (let childName in block.children) {
-        const list = block.children[childName];
-        const listState = childrenState[childName];
-        if (listState && listState.length > 0) {
-        }
-    }
-
+    const block = createBlock(state.type, state.data, state.id);
+    block.applyState(state);
     return block;
 });
 
@@ -77,6 +62,7 @@ export const BlockFactory = {
     functionBlockConfig,
     paragraphBlockConfig,
     mathRootBlockConfig,
+    mathSymbolBlockConfig,
     rootBlockConfig,
     supSubBlockConfig,
 ].forEach(config => BlockFactory.addBlockType(config));

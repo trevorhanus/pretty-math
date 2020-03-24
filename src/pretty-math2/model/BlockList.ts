@@ -112,15 +112,15 @@ export class BlockList implements IModel<BlockListState> {
             : null;
     }
 
+    getBlockById(id: string): Block | null {
+        return this.blocks.find(b => {
+            return b.getBlockById(id);
+        });
+    }
+
     getIndex(block: Block): number {
         if (!block) return null;
         return this._indexMap[block.id];
-    }
-
-    @action
-    insertBlock(focus: Block, insertBlock: Block) {
-        invariant(!this.contains(focus), `BlockList.insertBlock invoked with a block not in the list.`);
-        this.splice(this.getIndex(focus), 0, insertBlock);
     }
 
     next(fromBlock: Block): Block {
@@ -145,26 +145,35 @@ export class BlockList implements IModel<BlockListState> {
         );
     }
 
-    @action
-    removeBlock(block: Block) {
-        const index = this.getIndex(block);
-        invariant(index == null, `BlockList.removeNext tried to remove a block that was not in the list.`);
-        this.splice(index, 1);
+    serialize(): BlockListState {
+        return this.blocks.map(b => b.serialize());
     }
 
     toCalchub(): PrinterOutput {
         return PrinterOutput.fromMany(this.blocks.map(b => b.toCalchub()));
     }
 
-    toJS(): BlockListState {
-        return this.blocks.map(block => block.toJS());
-    }
-
     @action
-    applyJS(state: BlockListState) {
+    applyState(state: BlockListState) {
+        if (!state) {
+            return;
+        }
         this._blocks.replace(state.map(s => {
             return BlockFactory.createBlockFromState(s);
         }));
+    }
+
+    @action
+    insertBlock(focus: Block, insertBlock: Block) {
+        invariant(!this.contains(focus), `BlockList.insertBlock invoked with a block not in the list.`);
+        this.splice(this.getIndex(focus), 0, insertBlock);
+    }
+
+    @action
+    removeBlock(block: Block) {
+        const index = this.getIndex(block);
+        invariant(index == null, `BlockList.removeNext tried to remove a block that was not in the list.`);
+        this.splice(index, 1);
     }
 
     /**

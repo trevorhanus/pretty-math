@@ -31,6 +31,14 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     }
 
     @action
+    applyState(state: BlockState) {
+        if (this.type !== state.type) {
+            throw new Error(`Invalid state for RootBlock. Expected type '${this.type}' but got type '${state.type}'.`);
+        }
+        super.applyState(state);
+    }
+
+    @action
     setEditor(editor: EditorState) {
         this._editor = editor;
     }

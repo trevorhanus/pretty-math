@@ -23,4 +23,90 @@
     pointer-events: auto;
     position: relative;
     text-align: left;
+
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .pm-assistant__entry-list-scroller {
+        position: relative;
+        max-height: 11em;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 0 !important;
+        }
+    }
+
+    .pm-assistant__entry-list {
+        width: 400px;
+        padding-bottom: 2.25em;
+
+        .pm-assistant__entry-item {
+            padding: 0.5em 1em;
+            cursor: pointer;
+            display: flex;
+            align-items: baseline;
+
+            .pm-entry-item__description {
+                margin-left: auto;
+                font-size: 0.8em;
+            }
+
+            &:hover {
+                background-color: darken(#F6F8F9, 2%);
+            }
+
+            &.pm-assistant__entry-item--focused {
+                background-color: rgba(85, 179, 105, 0.3);
+            }
+        }
+    }
+
+    .pm-assistant__hint {
+        background: rgb(255,255,255);
+        background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 100%);
+        bottom: 0;
+        display: flex;
+        padding: 1.5em 1em 0.25em 1em;
+        position: absolute;
+        width: 100%;
+        font-size: 0.8em;
+        color: #666666;
+    }
+
+    .pm-assistant__toggle-full-library-button {
+        color: #FF3465;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .pm-assistant__tabs {
+        border-bottom: 1px solid #E4E6E8;
+        padding: 0 1em;
+        display: flex;
+        flex-direction: row;
+        text-transform: uppercase;
+        color: #FF3465;
+    }
+
+    .pm-assistant__tab {
+        padding: 0.35em 0.45em;
+        border-bottom: 3px solid transparent;
+        font-size: 0.8em;
+        font-weight: 500;
+        letter-spacing: 1px;
+        cursor: pointer;
+        margin: 0 2px;
+
+        &.pm-assistant__tab--focused {
+            border-bottom: 3px solid #FF3465;
+        }
+
+        &:hover {
+            border-bottom: 3px solid #FF3465;
+        }
+    }
 }

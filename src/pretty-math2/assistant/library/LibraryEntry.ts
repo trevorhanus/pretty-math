@@ -6,6 +6,12 @@ export interface LibraryEntryConfig {
     // these are the search terms
     keywords: string[];
 
+    // The category the entry belongs to. The entry will show up
+    // under this tab when the Full Library is rendered. If let undefined
+    // the entry will not show up in the Full Library but will still
+    // be suggested on the keywords.
+    category?: string;
+
     // a description that will be shown to the user for the entry
     description: string;
 
@@ -38,6 +44,10 @@ export class LibraryEntry {
 
     get id(): string {
         return this._id;
+    }
+
+    get category(): string {
+        return this._config.category;
     }
 
     get description(): string {

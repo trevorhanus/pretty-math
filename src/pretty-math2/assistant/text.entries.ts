@@ -1,0 +1,5 @@
+const textEntries = [];
+
+export {
+    textEntries,
+}

@@ -1,7 +1,8 @@
 export interface IScrollIntoViewOptions {
     behavior?: 'auto' | 'smooth',
     block?: 'start' | 'center' | 'end' | 'nearest',
-    inline?: 'start' | 'center' | 'end' | 'nearest'
+    inline?: 'start' | 'center' | 'end' | 'nearest',
+    paddingBottom?: number;
 }
 
 export const scrollIntoView = (element: HTMLElement, options: boolean | IScrollIntoViewOptions) => {
@@ -18,6 +19,7 @@ export const scrollIntoView = (element: HTMLElement, options: boolean | IScrollI
     let viewportRect = viewport.getBoundingClientRect();
 
     if (typeof options != 'boolean') {
+        const paddingBottom = options.paddingBottom || 0;
 
         switch (options.block) {
 
@@ -38,11 +40,12 @@ export const scrollIntoView = (element: HTMLElement, options: boolean | IScrollI
                     deltaY = elementRect.top - viewportRect.top;
                 }
 
-                if (elementRect.top + element.offsetHeight > viewportRect.top + viewport.offsetHeight) {
-                    deltaY = (elementRect.top + element.offsetHeight) - (viewportRect.top + viewport.offsetHeight);
+                if (elementRect.top + element.offsetHeight + paddingBottom > viewportRect.top + viewport.offsetHeight) {
+                    deltaY = (elementRect.top + element.offsetHeight + paddingBottom) - (viewportRect.top + viewport.offsetHeight);
                 }
                 break;
         }
+
     }
 
     viewport.scroll(viewport.scrollLeft + deltaX, viewport.scrollTop + deltaY)
