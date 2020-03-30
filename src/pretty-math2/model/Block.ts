@@ -49,6 +49,14 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return Object.values(this.children).every(child => (child as BlockList).length === 0);
     }
 
+    @computed
+    get childrenAreOnlyEndBlock(): boolean {
+        return Object.values(this.children).every(child => {
+            return (child as BlockList).length === 1 && 
+                   (child as BlockList).start.type === 'end'
+        });
+    }
+
     get cursorOrder(): ICursorOrderConfig {
         return this.config.composite && this.config.composite.cursorOrder;
     }
@@ -102,8 +110,24 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return this.config.type;
     }
 
+    clone(): Block {
+        return new Block(this.config, this.data, this.id);
+    }
+
     contains(block: Block): boolean {
         return this === block || someObject(this.children, child => child.contains(block));
+    }
+
+    deepClone(): Block {
+        const b = this.clone();
+        if (this.children) {
+            Object.keys(this.children).forEach(key => {
+                this.children[key].blocks.forEach(block => {
+                    b.children[key].insertBlock(b.children[key].end, block.deepClone());
+                });
+            });
+        }
+        return b;
     }
 
     getBlockById(id: string): Block | null {

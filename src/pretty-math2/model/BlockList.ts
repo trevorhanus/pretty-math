@@ -36,11 +36,11 @@ export class BlockList implements IModel<BlockListState> {
         if (!this.config.canBeNull) {
             this.addEndBlock();
         }
-        reaction(
-            () => this._blocks.slice(),
-            () => this.reindex(),
-            { fireImmediately: true },
-        );
+        // reaction(
+        //     () => this._blocks.slice(),
+        //     () => this.reindex(),
+        //     { fireImmediately: true },
+        // );
     }
 
     @computed
@@ -87,13 +87,6 @@ export class BlockList implements IModel<BlockListState> {
     @computed
     get end(): Block | null {
         return this.getBlock(this.length - 1);
-    }
-
-    @action
-    addEndBlock(): EndBlock {
-        const endBlock = BlockFactory.createBlock('end');
-        this.splice(0, 0, endBlock);
-        return endBlock;
     }
 
     contains(block: Block): boolean {
@@ -154,6 +147,13 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @action
+    addEndBlock(): EndBlock {
+        const endBlock = BlockFactory.createBlock('end');
+        this.splice(0, 0, endBlock);
+        return endBlock;
+    }
+
+    @action
     applyState(state: BlockListState) {
         if (!state) {
             return;
@@ -175,7 +175,7 @@ export class BlockList implements IModel<BlockListState> {
         invariant(index == null, `BlockList.removeNext tried to remove a block that was not in the list.`);
         this.splice(index, 1);
     }
-
+    
     /**
      * splice() is a low level method that should
      * be called whenever we are adding or removing
@@ -185,6 +185,7 @@ export class BlockList implements IModel<BlockListState> {
     splice(start: number, deleteCount: number, ...blocks: Block[]) {
         this._blocks.splice(start, deleteCount, ...blocks);
         invariant(!this.config.canBeNull && this._blocks.length === 0, 'BlockList can not be null but was empty');
+        this.reindex();
     }
 
     private reindex() {
