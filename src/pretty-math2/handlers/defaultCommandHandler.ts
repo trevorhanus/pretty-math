@@ -2,11 +2,13 @@ import { action, runInAction } from 'mobx';
 import React from 'react';
 import { EditorState } from '../model/EditorState';
 import { handleCursorMove } from './handleCursorMove';
+import { handleDebugger } from './handleDebugger';
 import { handleDelete } from './handleDelete';
 import { handleSelectionMove } from './handleSelectionMove';
 
 const commands = {
     'blur': action((editor: EditorState) => editor.blur()),
+    'debugger': handleDebugger,
     'delete': handleDelete,
     'force_assistant_open': action((editor: EditorState) => editor.assistant.forceOpen()),
     'force_assistant_closed': action((editor: EditorState) => editor.assistant.forceClosed()),

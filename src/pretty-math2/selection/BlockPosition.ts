@@ -70,6 +70,13 @@ export class BlockPosition {
         return false;
     }
 
+    isLower(pos: BlockPosition): boolean {
+        if (this.depth > pos.depth) {
+            return true;
+        }
+        return false;
+    }
+
     isRightOf(pos: BlockPosition): boolean {
         let l = 0;
         let us = this.stopAt(l);

@@ -90,11 +90,11 @@ export class EditorState {
     moveCursor(dir: Dir) {
         if (!this.selection.isCollapsed) {
             if (dir === Dir.Left) {
-                this.selection.anchorAt(this.selection.selectedRange.start);
+                this.selection.anchorAt(this.selection.range.start);
                 return;
             }
             if (dir === Dir.Right) {
-                this.selection.anchorAt(this.selection.selectedRange.end);
+                this.selection.anchorAt(this.selection.range.end);
                 return;
             }
             this.selection.anchorAt(this.selection.focus);
@@ -107,6 +107,18 @@ export class EditorState {
     moveSelectionFocus(dir: Dir) {
         const { focus } = this.selection;
         this.selection.focusAt(getNextCursorPosition(focus, dir));
+        if (this.selection.focus.position.isLower(this.selection.range.start.position)) {
+            switch (dir) {
+                case Dir.Left:
+                case Dir.Up:
+                    this.selection.focusAt(this.selection.focus.parent);
+                    break;
+                case Dir.Right:
+                case Dir.Down:
+                    this.selection.focusAt(this.selection.focus.parent.next);
+                    break;
+            }
+        }
     }
 
     @action

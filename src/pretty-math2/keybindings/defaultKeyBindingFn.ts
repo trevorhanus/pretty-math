@@ -5,6 +5,13 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
         return;
     }
 
+    if (e.shiftKey && e.altKey) {
+        switch (e.keyCode) {
+            case 76:
+                return 'debugger';
+        }
+    }
+
     if (e.shiftKey) {
         switch (e.keyCode) {
 

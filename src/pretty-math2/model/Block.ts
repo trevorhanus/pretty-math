@@ -152,6 +152,19 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return
     }
 
+    getCommonParent(block: Block): Block {
+        if (this.parent === block.parent) {
+            return this.parent;
+        }
+        if (this.position.depth < block.position.depth) {
+            return this.getCommonParent(block.parent);
+        }
+        if (this.position.depth > block.position.depth) {
+            return this.parent.getCommonParent(block);
+        }
+        return this.parent.getCommonParent(block.parent);
+    }
+
     render(): React.ReactElement {
         const children = mapObject(this.children, (name: string, child: Block) => {
             return child.render();
