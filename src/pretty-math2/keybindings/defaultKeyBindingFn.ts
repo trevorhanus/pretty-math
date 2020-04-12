@@ -5,10 +5,21 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
         return;
     }
 
-    if (e.shiftKey && e.altKey) {
+    if (e.shiftKey && e.metaKey && e.altKey) {
         switch (e.keyCode) {
-            case 76:
-                return 'debugger';
+
+            case 67: // C
+                return 'log_calchub';
+
+            case 76: // L
+                return 'log_state';
+
+            case 83: // S
+                return 'log_selection';
+
+            default:
+                // fall through
+
         }
     }
 

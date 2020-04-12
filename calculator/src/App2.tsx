@@ -47,7 +47,7 @@ export class App2 extends React.Component<IApp2Props, {}> {
                     <h1 className="text-xl text-center mb-4">Pretty Math Input</h1>
                     <div className="w-1/2">
                         <PrettyMathInput
-                            // editorState={INITIAL_STATE}
+                            editorState={INITIAL_STATE}
                         />
                     </div>
                 </div>

@@ -21,8 +21,7 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
 
     @computed
     get mode(): string {
-        if (this.config.type === 'root:math') return 'math';
-        return 'text';
+        return this.config.type === 'root:math' ? 'math' : 'text';
     }
 
     @computed

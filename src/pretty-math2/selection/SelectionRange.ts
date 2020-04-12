@@ -1,6 +1,8 @@
 import { Block } from 'pretty-math2/model';
 import { observable, computed, action } from 'mobx';
 import { invariant } from 'pretty-math2/utils/invariant';
+import { getCommonParent } from '../utils/BlockUtils';
+import { sortLeftToRight } from './BlockPosition';
 
 export class SelectionRange {
     @observable _anchor: Block;
@@ -13,14 +15,13 @@ export class SelectionRange {
 
     @computed
     get end(): Block {
-        let start = this.anchor.position.isLeftOf(this.focus.position) ||
-                    this.focus.position.isBelow(this.anchor.position) ? this.anchor : this.focus;
-        let end = this.anchor.position.isRightOf(this.focus.position) ||
-                  this.anchor.position.isBelow(this.focus.position) ? this.anchor : this.focus;
+        let [ start, end ] = sortBlocksLeftToRight(this.focus, this.anchor);
+
         if (start.list === end.list) {
             return end;
         }
-        const commonParent = start.getCommonParent(end);
+
+        const commonParent = getCommonParent(start, end);
 
         while (start.parent != commonParent) {
             start = start.parent;
@@ -65,14 +66,13 @@ export class SelectionRange {
 
     @computed
     get start(): Block {
-        let start = this.anchor.position.isLeftOf(this.focus.position) ||
-                    this.focus.position.isBelow(this.anchor.position) ? this.anchor : this.focus;
-        let end = this.anchor.position.isRightOf(this.focus.position) ||
-                  this.anchor.position.isBelow(this.focus.position) ? this.anchor : this.focus;
+        let [ start, end ] = sortBlocksLeftToRight(this.focus, this.anchor);
+
         if (start.list === end.list) {
             return start;
         }
-        const commonParent = start.getCommonParent(end);
+
+        const commonParent = getCommonParent(start, end);
 
         while (start.parent != commonParent) {
             start = start.parent;
@@ -81,6 +81,7 @@ export class SelectionRange {
                 return null;
             }
         }
+
         while (end.parent != commonParent) {
             end = end.parent;
             invariant(end == null, "commonParent was not found for SelectionRange.end.");
@@ -88,9 +89,11 @@ export class SelectionRange {
                 return null;
             }
         }
+
         if (start.list != end.list) {
             return commonParent;
         }
+
         return start;
     }
 
@@ -110,6 +113,15 @@ export class SelectionRange {
     }
 }
 
+export function sortBlocksLeftToRight(b1: Block, b2: Block): [Block, Block] {
+    const [ pLeft, pRight ] = sortLeftToRight(b1.position, b2.position);
+    if (b1.position === pLeft) {
+        return [b1, b2];
+    } else {
+        return [b2, b1];
+    }
+}
+
 /*
 
 
@@ -119,7 +131,7 @@ export class SelectionRange {
 
     private static removeRangeRecursion(curBlock: Block, endBlock: Block): Block[] {
         let list = [];
-        while (curBlock.position.isLeftOf(endBlock.position) || 
+        while (curBlock.position.isLeftOf(endBlock.position) ||
                endBlock.position.isBelow(curBlock.position)) {
             if (curBlock.type === 'end') {
                 const { parent, name } = curBlock.list;

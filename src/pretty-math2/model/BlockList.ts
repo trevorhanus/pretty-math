@@ -36,11 +36,6 @@ export class BlockList implements IModel<BlockListState> {
         if (!this.config.canBeNull) {
             this.addEndBlock();
         }
-        // reaction(
-        //     () => this._blocks.slice(),
-        //     () => this.reindex(),
-        //     { fireImmediately: true },
-        // );
     }
 
     @computed
@@ -96,7 +91,7 @@ export class BlockList implements IModel<BlockListState> {
     createChildPosition(child: Block): BlockPosition {
         const index = this.getIndex(child);
         invariant(index == null, `BlockList.createChildPosition was invoked with a block that is not a child of the list.`);
-        return new BlockPosition(this.position.path, index);
+        return this.position.forIndex(index);
     }
 
     getBlock(i: number): Block {
@@ -147,10 +142,25 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @action
+    addBlocks(...blocks: Block[]) {
+        if (!blocks || blocks.length === 0) {
+            return;
+        }
+        if (this.isEmpty) {
+            this.addEndBlock();
+        }
+        blocks.forEach(b => {
+            this.insertBlock(this.end, b);
+        });
+    }
+
+    @action
     addEndBlock(): EndBlock {
-        const endBlock = BlockFactory.createBlock('end');
-        this.splice(0, 0, endBlock);
-        return endBlock;
+        if (this.isEmpty || this.end.type !== 'end') {
+            const endBlock = BlockFactory.createBlock('end');
+            this.splice(-1, 0, endBlock);
+        }
+        return this.end;
     }
 
     @action
@@ -161,6 +171,7 @@ export class BlockList implements IModel<BlockListState> {
         this._blocks.replace(state.map(s => {
             return BlockFactory.createBlockFromState(s);
         }));
+        this.reindex();
     }
 
     @action
@@ -175,7 +186,7 @@ export class BlockList implements IModel<BlockListState> {
         invariant(index == null, `BlockList.removeNext tried to remove a block that was not in the list.`);
         this.splice(index, 1);
     }
-    
+
     /**
      * splice() is a low level method that should
      * be called whenever we are adding or removing

@@ -1,0 +1,5 @@
+-r ts-node/register
+-r module-alias/register
+--watch-extensions ts
+--watch-files ./src/pretty-math2/**/*.test.ts
+src/pretty-math2/**/*.test.ts

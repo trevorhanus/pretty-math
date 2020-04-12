@@ -1,214 +1,165 @@
-import { Block, BlockList } from '../model';
+import { invariant } from '../utils/invariant';
 
-export interface PathStop {
-    index: number;
-    childNumber?: number;
-}
+/**
+ * A block position is just an array of numbers
+ * with the pattern [listNo, index, listNo, index, ...]
+ *
+ * We can also represent a block position as a string
+ * that looks like this
+ *
+ * root:listNo.index:listNo.index
+ */
 
 export class BlockPosition {
-    readonly path: PathStop[];
-    readonly index: number;
+    readonly path: number[];
 
-    constructor(path: PathStop[], index: number) {
-        this.path = (path && [...path]) || [];
-        this.index = index;
+    constructor(path: number[]) {
+        this.path = path;
     }
 
     get depth(): number {
-        return this.path.length;
+        return Math.ceil(this.path.length / 2);
+    }
+
+    get isRoot(): boolean {
+        return this.path.length === 0;
+    }
+
+    get index(): number {
+        if (this.path.length === 0) {
+            return null;
+        }
+        // if the length is odd, no index
+        const isEven = this.path.length % 2 === 0;
+        return isEven ? this.path[this.path.length - 1] : null;
+    }
+
+    get listNumber(): number {
+        if (this.path.length === 0) {
+            return null;
+        }
+        const isOdd = this.path.length % 2 === 1;
+        return isOdd ? this.path[this.path.length - 1] : this.path[this.path.length - 2];
     }
 
     equals(pos: BlockPosition): boolean {
-        return this.path.length === pos.path.length
-            && this.index === pos.index
-            && this.path.every((stop, i) => isEqual(stop, pos.stopAt(i)));
+        return this.path.length === pos.path.length && this.path.every((num, i) => num === pos.path[i]);
     }
 
-    incIndex(): BlockPosition {
-        return new BlockPosition(this.path, this.index + 1);
+    incLevel(listNumber: number): BlockPosition {
+        return new BlockPosition([...this.path, listNumber]);
     }
 
-    incLevel(childNumber: number): BlockPosition {
-        const pathStop = {
-            index: this.index,
-            childNumber,
-        };
-
-        const path = [...this.path, pathStop];
-        return new BlockPosition(path, 0);
+    forIndex(index: number): BlockPosition {
+        invariant(this.path.length % 2 === 0, `cannot create a new BlockPosition for an index from ${this.toString()}`);
+        return new BlockPosition([...this.path, index]);
     }
 
     isBelow(pos: BlockPosition): boolean {
-        if (this.depth <= pos.depth) {
+        if (this.depth < pos.depth) {
             return false;
         }
 
-        return this.toString().startsWith(pos.toString());
+        return pos.path.every((num, i) => {
+            return num === this.path[i];
+        });
     }
 
     isLeftOf(pos: BlockPosition): boolean {
-        let l = 0;
-        let us = this.stopAt(l);
-        let them = pos.stopAt(l);
-        while (us && them) {
-            if (isLeftOf(us, them)) {
-                return true;
-            }
+        for (let i = 0; i < this.path.length; i++) {
+            const target = this.path[i];
+            const comparer = pos.path[i];
 
-            if (isRightOf(us, them)) {
+            if (comparer == null) {
+                // pos has the same path
+                // and is higher up
                 return false;
             }
 
-            // else it's the same stop
-            l++;
-            us = this.stopAt(l);
-            them = pos.stopAt(l);
+            if (target === comparer) {
+                continue;
+            }
+
+            return target <= comparer;
         }
 
-        // every stop was the same, so the higher
-        // pos is a parent
+        // they are exactly the same
         return false;
     }
 
     isLower(pos: BlockPosition): boolean {
-        if (this.depth > pos.depth) {
-            return true;
-        }
-        return false;
+        return this.depth > pos.depth;
     }
 
     isRightOf(pos: BlockPosition): boolean {
-        let l = 0;
-        let us = this.stopAt(l);
-        let them = pos.stopAt(l);
-        while (us && them) {
-            if (isLeftOf(us, them)) {
-                return false;
-            }
-
-            if (isRightOf(us, them)) {
-                return true;
-            }
-
-            // else it's the same stop
-            l++;
-            us = this.stopAt(l);
-            them = pos.stopAt(l);
-        }
-
-        // every stop was the same, so the higher
-        // pos is a parent
-        return false;
-    }
-
-    stopAt(level: number): PathStop {
-        switch (true) {
-            case level < this.path.length:
-                return this.path[level];
-            case level === this.path.length:
-                return { index: this.index };
-            default:
-                return null;
-        }
+        return pos.isLeftOf(this);
     }
 
     toString(): string {
-        // should end up looking like: 0.1:1.2:3.1:4
-        const stops = this.path.map(stop => {
-            return `${stop.index}.${stop.childNumber}`;
-        });
+        let str = 'root';
 
-        stops.push(`${this.index}`);
-        return stops.join(':')
+        for (let i = 0; i < this.path.length; i++) {
+            if (i % 2 === 0) {
+                // evens are listNo
+                str += `:${this.path[i]}`;
+            } else {
+                // odds are indices
+                str += `.${this.path[i]}`;
+            }
+        }
+
+        return str;
     }
 
     // for testing
     static fromString(str: string): BlockPosition {
-        const parts = str.split(':');
-        const index = parseInt(parts.pop());
-        const paths = parts.map(path => {
-            const [ index, childNumber ] = path.split('.');
+        if (!str) {
+            return null;
+        }
 
-            return {
-                index: parseInt(index),
-                childNumber: parseInt(childNumber),
-            };
-        });
+        invariant(!str.startsWith('root'), `invalid BlockPosition string '${str}'`);
 
-        return new BlockPosition(paths, index);
+        const path = str.split(/[\.:]/).slice(1);
+        return new BlockPosition(path.map(str => parseInt(str)));
     }
 
     static root(): BlockPosition {
-        return new BlockPosition([], 0);
+        return new BlockPosition([]);
     }
 }
 
-function isEqual(s1: PathStop, s2: PathStop): boolean {
-    return s1.index === s2.index && s1.childNumber === s2.childNumber;
+export function sortLeftToRight(p1: BlockPosition, p2: BlockPosition): [BlockPosition, BlockPosition] {
+    if (p1.isLeftOf(p2)) {
+        return [p1, p2];
+    } else {
+        return [p2, p1];
+    }
 }
 
-function isLeftOf(us: PathStop, them: PathStop): boolean {
-    if (us.index < them.index) {
-        return true;
-    }
+export function getCommonAncestor(p1: BlockPosition, p2: BlockPosition): BlockPosition {
+    const [ higher, lower ] = sortHighestToLowest(p1, p2);
 
-    if (us.index > them.index) {
-        return false;
-    }
+    const hPath = higher.path;
+    const lPath = lower.path;
 
-    // index is the same
-    if (us.childNumber == null || them.childNumber == null) {
-        return false;
-    }
+    // loop through the higher block's path until they don't match
+    const commonPath = [];
 
-    return us.childNumber < them.childNumber;
-}
-
-function isRightOf(us: PathStop, them: PathStop): boolean {
-    if (us.index > them.index) {
-        return true;
-    }
-
-    if (us.index < them.index) {
-        return false;
-    }
-
-    // index is the same
-    if (us.childNumber == null || them.childNumber == null) {
-        return false;
-    }
-
-    return us.childNumber > them.childNumber;
-}
-
-export function getBlockAtPosition(blockList: BlockList, pos: BlockPosition | string): Block {
-    if (typeof pos === 'string') {
-        pos = BlockPosition.fromString(pos);
-    }
-
-    const { path, index } = pos;
-
-    let stopNum = 0;
-    let list = blockList;
-
-    while (stopNum < path.length) {
-        if (!blockList) {
-            return null;
+    for (let i = 0; i < hPath.length; i++) {
+        if (hPath[i] === lPath[i]) {
+            commonPath.push(hPath[i]);
+        } else {
+            break;
         }
-
-        const pathStop = path[stopNum];
-
-        // 0.1 -> index: 0, childNumber: 1
-        const { index, childNumber } = pathStop;
-        const nextBlock = list.blocks[index];
-
-        if (!nextBlock) {
-            return null;
-        }
-
-        list = nextBlock.getChildByNumber(childNumber);
-        stopNum++;
     }
 
-    return list && list.blocks[index];
+    return new BlockPosition(commonPath);
+}
+
+export function sortHighestToLowest(p1: BlockPosition, p2: BlockPosition): [BlockPosition, BlockPosition] {
+    if (p1.path.length < p2.path.length) {
+        return [p1, p2];
+    } else {
+        return [p2, p1];
+    }
 }
