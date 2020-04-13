@@ -5,6 +5,7 @@ import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 import { EditorController } from '../model/EditorController';
 import { EditorState, SerializedEditorState } from '../model/EditorState';
+import { findClosestBlock } from '../utils/BlockUtils';
 import { Content } from './Content';
 import { Cursor } from './Cursor';
 
@@ -66,6 +67,11 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
             return;
         }
 
+        const closestBlock = findClosestBlock(this.editor, e);
+        if (closestBlock) {
+            console.log(closestBlock);
+            this.editor.selection.anchorAt(closestBlock);
+        }
         this.editor.focus();
     };
 }

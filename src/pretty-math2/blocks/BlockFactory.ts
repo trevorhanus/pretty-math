@@ -1,6 +1,6 @@
 import { action } from 'mobx';
 import { IBlockConfig } from '../interfaces';
-import { Block, BlockState, RootBlock } from '../model';
+import { Block, BlockState, MathRootBlock, RootBlock } from '../model';
 import { invariant } from '../utils/invariant';
 import { atomicBlockConfig } from './AtomicBlock';
 import { endBlockConfig } from './EndBlock';
@@ -27,13 +27,17 @@ const addBlockType = (config: IBlockConfig<Block>) => {
 const createBlock = action((type: string, data?: any, id?: string): Block => {
     const config = blocks[type];
     invariant(!config, `Could not find config for block type '${type}'.`);
-    return new Block(config, data, id);
-});
 
-const createRootBlock = action((type: string): RootBlock => {
-    const config = blocks[type];
-    invariant(!config, `Could not find config for block type '${type}'.`);
-    return new RootBlock(config);
+    // blocks with special Constructors
+    if (type === 'root:math') {
+        return new MathRootBlock(config, data, id);
+    }
+
+    if (type.startsWith('root')) {
+        return new RootBlock(config, data, id);
+    }
+
+    return new Block(config, data, id);
 });
 
 const createBlockFromState = action((state: BlockState): Block => {
@@ -50,12 +54,11 @@ export const BlockFactory = {
     addBlockType,
     createBlock,
     createBlockFromState,
-    createRootBlock,
 };
 
 // Add the default block types
 
-[
+const DEFAULT_BLOCKS = [
     atomicBlockConfig,
     endBlockConfig,
     fractionBlockConfig,
@@ -65,4 +68,6 @@ export const BlockFactory = {
     mathSymbolBlockConfig,
     rootBlockConfig,
     supSubBlockConfig,
-].forEach(config => BlockFactory.addBlockType(config));
+];
+
+DEFAULT_BLOCKS.forEach(config => BlockFactory.addBlockType(config));

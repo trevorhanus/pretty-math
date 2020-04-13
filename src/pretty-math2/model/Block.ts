@@ -4,6 +4,7 @@ import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { BlockList, BlockListState } from '.';
 import { generateId, omitEmpty } from '../../common';
+import { INode } from '../../math';
 import {
     IBlockConfig,
     IBlockListConfig,
@@ -34,6 +35,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     @observable readonly ref: React.RefObject<HTMLElement>;
     @observable.ref data: D;
     @observable.ref list: BlockList | null;
+    @observable.ref mathNode: INode;
 
     constructor(config: IBlockConfig<Block<D, C>>, data?: D, id?: string) {
         this.childMap = this.initChildrenMap(config.composite);
@@ -226,6 +228,14 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
             const list = this.childMap[childName];
             const childState = childrenState[childName];
             list.applyState(childState);
+        }
+    }
+
+    @action
+    setData(data: Partial<D>) {
+        this.data = {
+            ...this.data,
+            ...data,
         }
     }
 

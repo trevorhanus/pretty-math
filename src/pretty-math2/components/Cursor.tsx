@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import * as React from 'react';
 import { haveWindow } from '../../common';
 import { EditorState } from '../model/EditorState';
+import { offsetFromAncestor } from '../utils/DOMUtils';
 
 export interface ICursorProps {
     editorState: EditorState;
@@ -81,16 +82,16 @@ export class Cursor extends React.Component<ICursorProps, {}> {
             return;
         }
 
+        const containerRef = this.props.editorState.containerRef.current;
         const targetRef = this.props.editorState.selection.focus.ref.current;
         const cursorRef = this.cursorRef.current;
 
-        if (targetRef != null && cursorRef != null) {
-            const left = targetRef.offsetLeft + 1;
-            const top = targetRef.offsetTop;
+        if (containerRef != null && targetRef != null && cursorRef != null) {
+            const { offsetLeft, offsetTop } = offsetFromAncestor(containerRef, targetRef);
             const height = targetRef.offsetHeight;
 
-            cursorRef.style.left = `${left}px`;
-            cursorRef.style.top = `${top}px`;
+            cursorRef.style.left = `${offsetLeft + 1}px`;
+            cursorRef.style.top = `${offsetTop}px`;
             cursorRef.style.height = `${height}px`;
         }
 

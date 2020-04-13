@@ -7,7 +7,7 @@ describe('BlockUtils', () => {
     describe('getCommonParent', () => {
 
         it('blocks in the same list', () => {
-            const root = BlockFactory.createRootBlock('root:math');
+            const root = BlockFactory.createBlock('root:math');
             const a = BlockFactory.createBlock('atomic', { text: 'a' });
             const plus = BlockFactory.createBlock('atomic', { text: '+' });
             const b = BlockFactory.createBlock('atomic', { text: 'b' });
@@ -19,7 +19,7 @@ describe('BlockUtils', () => {
 
         it('block1 is higher', () => {
             // root(sin(a)+b)
-            const root = BlockFactory.createRootBlock('root:math');
+            const root = BlockFactory.createBlock('root:math');
             const sin = BlockFactory.createBlock('math:function', { displayValue: 'sin' });
             const a = BlockFactory.createBlock('atomic', { text: 'a' });
             const plus = BlockFactory.createBlock('atomic', { text: '+' });
