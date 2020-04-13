@@ -32,8 +32,11 @@
         animation: 1s cursor-blink step-end infinite;
     }
 
-    .selected-block {
-        background-color: lightblue;
+    &:focus-within {
+
+        .selected-block {
+            background-color: lightblue;
+        }
     }
 
     .end-block {

@@ -100,7 +100,8 @@ export class AssistantStore {
 
     @computed
     get suggestions(): LibraryEntry[] {
-        const phrase = rangeToText(this.editor.selection.trailingPhraseRange);
+        const phrase = rangeToCalchub(this.editor.selection.trailingPhraseRange);
+        console.log(`phrase: ${phrase}`);
         return phrase ? this.library.getSuggested(phrase, this.editor) : [];
     }
 
@@ -184,14 +185,22 @@ export class AssistantStore {
     }
 }
 
-function rangeToText(range: SelectionRange): string {
+function rangeToCalchub(range: SelectionRange): string {
     if (range.isEmpty) {
         return '';
     }
-    return '';
 
-    // return range.blocks.reduce((text, b) => {
-    //     text = text + b.data.text || '';
-    //     return text;
-    // }, '');
+    let text = '';
+    let block = range.start;
+
+    while (block) {
+        text += block.toCalchub().text;
+        if (block === range.end) {
+            return text;
+        } else {
+            block = block.next;
+        }
+    }
+
+    return text;
 }

@@ -18,7 +18,12 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
     type: 'math:function',
 
     render: ({ block, children, style }) => (
-        <span style={style}>{block.data.displayValue}({children.inner})</span>
+        <span
+            className="function"
+            style={style}
+        >
+            {block.data.displayValue}({children.inner})
+        </span>
     ),
 
     printers: {

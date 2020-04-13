@@ -1,5 +1,5 @@
 import React from 'react';
-import { hasTripleModifier } from 'pretty-math2/utils/KeyUtils';
+import { hasTripleModifier, hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
 
 export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
     if (e.defaultPrevented) {
@@ -28,19 +28,31 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
         switch (e.keyCode) {
 
             case 37: // ArrowLeft
-                return 'move_selection';
+                return 'expand_selection';
 
             case 38: // ArrowUp
-                return 'move_selection';
+                return 'expand_selection';
 
             case 39: // ArrowRight
-                return 'move_selection';
+                return 'expand_selection';
 
             case 40: // ArrowDown
-                return 'move_selection';
+                return 'expand_selection';
 
             default:
                 // fall through to non-shift bindings
+        }
+    }
+
+    if (hasCommandModifier(e)) {
+        switch (e.keyCode) {
+
+            case 37: // ArrowLeft
+            case 39: // ArrowRight
+                return 'move_cursor_end';
+
+            default:
+                // fall through to non-modified bindings
         }
     }
 
@@ -56,14 +68,8 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
             return 'blur';
 
         case 37: // ArrowLeft
-            return 'move_cursor';
-
         case 38: // ArrowUp
-            return 'move_cursor';
-
         case 39: // ArrowRight
-            return 'move_cursor';
-
         case 40: // ArrowDown
             return 'move_cursor';
 

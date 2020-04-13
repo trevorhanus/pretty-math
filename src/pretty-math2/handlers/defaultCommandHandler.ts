@@ -1,13 +1,13 @@
 import { action, runInAction } from 'mobx';
 import React from 'react';
 import { EditorState } from '../model/EditorState';
-import { handleCursorMove } from './handleCursorMove';
 import { handleDelete } from './handleDelete';
-import { handleSelectionMove } from './handleSelectionMove';
+import { handleExpandSelection } from './handleExpandSelection';
+import { handleMoveCursor, handleMoveCursorEnd } from './handleMoveCursor';
 
 const logSelection = (editor: EditorState) => {
     const { start, end } = editor.selection.range;
-    
+
     const startData = {
         type: start ? start.type : 'no start block',
         text: start ? start.toCalchub().text : '',
@@ -20,7 +20,7 @@ const logSelection = (editor: EditorState) => {
 
     console.log(`Start: ${JSON.stringify(startData)}`);
     console.log(`End: ${JSON.stringify(endData)}`);
-}
+};
 
 const commands = {
     'blur': action((editor: EditorState) => editor.blur()),
@@ -30,8 +30,9 @@ const commands = {
     'log_calchub': editor => console.log(JSON.stringify(editor.root.toCalchub().text, null, 2)),
     'log_selection': logSelection,
     'log_state': editor => console.log(JSON.stringify(editor.serialize(), null, 2)),
-    'move_cursor': handleCursorMove,
-    'move_selection': handleSelectionMove,
+    'move_cursor': handleMoveCursor,
+    'move_cursor_end': handleMoveCursorEnd,
+    'expand_selection': handleExpandSelection,
 };
 
 export function defaultCommandHandler(command: string, editorState: EditorState, e?: React.SyntheticEvent) {

@@ -1,13 +1,13 @@
 import { action, computed, observable } from 'mobx';
+import { Dir } from 'pretty-math2/interfaces';
+import { getNextCursorPosition } from 'pretty-math2/selection/CursorPositioner';
 import * as React from 'react';
 import { AssistantStore } from '../assistant/stores/AssistantStore';
 import { BlockFactory } from '../blocks/BlockFactory';
 import { Selection } from '../selection/Selection';
-import { BlockState, Block } from './Block';
+import { Block, BlockState } from './Block';
 import { BlockList } from './BlockList';
-import { RootBlock } from './RootBlock';
-import { Dir } from 'pretty-math2/interfaces';
-import { getNextCursorPosition } from 'pretty-math2/selection/CursorPositioner';
+import { MathRootBlock, RootBlock } from './RootBlock';
 
 export interface SerializedEditorState {
     root: BlockState;
@@ -104,6 +104,18 @@ export class EditorState {
     }
 
     @action
+    moveCursorEnd(dir: Dir) {
+        switch (dir) {
+            case Dir.Left:
+                this.selection.anchorAt(this.root.childMap.inner.start);
+                break;
+            case Dir.Right:
+                this.selection.anchorAt(this.root.childMap.inner.end);
+                break;
+        }
+    }
+
+    @action
     moveSelectionFocus(dir: Dir) {
         const { focus } = this.selection;
         this.selection.focusAt(getNextCursorPosition(focus, dir));
@@ -159,7 +171,7 @@ export class EditorState {
 
     @action
     static createTextRoot(state?: SerializedEditorState) {
-        const root = BlockFactory.createRootBlock('root');
+        const root = BlockFactory.createBlock('root') as RootBlock;
         const editor = new EditorState(root);
         if (state) {
             editor.applyState(state);
@@ -169,7 +181,7 @@ export class EditorState {
 
     @action
     static createMathRoot(state?: SerializedEditorState): EditorState {
-        const root = BlockFactory.createRootBlock('root:math');
+        const root = BlockFactory.createBlock('root:math') as MathRootBlock;
         const editor = new EditorState(root);
         if (state) {
             editor.applyState(state);
