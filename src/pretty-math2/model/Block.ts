@@ -17,6 +17,13 @@ import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
+import { getTargetedSide } from 'pretty-math2/utils/BlockUtils';
+
+declare global {
+    interface MouseEvent {
+        blockData?: Block;
+    }
+}
 
 export type BlockChildrenState<ChildNames extends string> = Record<ChildNames, BlockListState>;
 
@@ -153,6 +160,48 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return
     }
 
+    handleMouseDown = (e: React.MouseEvent) => {
+        if (e.nativeEvent.blockData) {
+            // some child already handled it
+            return;
+        }
+
+        const side = getTargetedSide(e, e.nativeEvent.target as HTMLSpanElement);
+
+        if (side === 0) {
+            e.nativeEvent.blockData = this;
+        } else if (side === 1) {
+            if (this.next) {
+                e.nativeEvent.blockData = this.next;
+            } else {
+                e.nativeEvent.blockData = this;
+            }
+        }
+    };
+    
+    handleMouseMove = (e: React.MouseEvent) => {
+        if (e.buttons !== 1) {
+            return;
+        }
+
+        if (e.nativeEvent.blockData) {
+            // some child already handled it
+            return;
+        }
+
+        const side = getTargetedSide(e, e.nativeEvent.target as HTMLSpanElement);
+
+        if (side === 0) {
+            e.nativeEvent.blockData = this;
+        } else if (side === 1) {
+            if (this.next) {
+                e.nativeEvent.blockData = this.next;
+            } else {
+                e.nativeEvent.blockData = this;
+            }
+        }
+    };
+
     render(): React.ReactElement {
         const children = mapObject(this.childMap, (name: string, child: Block) => {
             return child.render();
@@ -174,6 +223,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
             ...renderedBlock.props,
             key: this.id,
             ref: this.ref,
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
             className
         };
 

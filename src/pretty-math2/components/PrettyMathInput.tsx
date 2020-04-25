@@ -62,10 +62,48 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
     handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
 
-        if (this.props.readOnly) {
-            return;
+        const blockData = e.nativeEvent.blockData;
+        if (blockData) {
+            this.editor.selection.anchorAt(blockData);
+        } else {
+            let cur = this.editor.inner.start;
+            while (cur != null) {
+                const curBoundingRect = cur.ref.current.getBoundingClientRect();
+                if ((e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right)
+                    || cur.type === "end") {
+                    this.editor.selection.anchorAt(cur);
+                    break;
+                }
+                cur = cur.next;
+            }
         }
 
+        window.addEventListener('mouseup', this.handleMouseUp);
+        window.addEventListener('mousemove', this.handleMouseMove);
+
         this.editor.focus();
+    };
+
+    handleMouseMove = (e: MouseEvent) => {
+        const blockData = (e as any).blockData;
+        if (blockData) {
+            this.editor.selection.focusAt(blockData);
+        } else {
+            let cur = this.editor.inner.start;
+            while (cur != null) {
+                const curBoundingRect = cur.ref.current.getBoundingClientRect();
+                if ((e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right)
+                    || cur.type === "end") {
+                    this.editor.selection.focusAt(cur);
+                    break;
+                }
+                cur = cur.next;
+            }
+        }
+    };
+
+    handleMouseUp = (e: MouseEvent) => {
+        window.removeEventListener('mousemove', this.handleMouseMove);
+        window.removeEventListener('mouseup', this.handleMouseUp);
     };
 }

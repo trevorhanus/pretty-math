@@ -22,3 +22,15 @@ export function getCommonParent(b1: Block, b2: Block): Block {
     // b2 is higher up
     return getCommonParent(b1.parent, b2);
 }
+
+export function getTargetedSide(e: MouseEvent | React.MouseEvent, target: HTMLElement): number {
+    const localOffset = e.clientX - target.getBoundingClientRect().left;
+    const width = target.offsetWidth;
+
+    if (localOffset < 0 || localOffset > width) {
+        // out of bounds
+        return -1;
+    }
+
+    return Math.round(localOffset / width);
+}
