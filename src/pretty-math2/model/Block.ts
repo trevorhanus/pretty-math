@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 import React from 'react';
 import { BlockList, BlockListState } from '.';
-import { generateId, omitNulls } from '../../common';
+import { generateId, omitEmpty } from '../../common';
 import {
     IBlockConfig,
     IBlockListConfig,
@@ -28,7 +28,7 @@ export interface BlockState<D = any, C extends string = string> {
 }
 
 export class Block<D = any, C extends string = string> implements IModel<BlockState<D, C>> {
-    readonly children: Record<C, BlockList>;
+    readonly childMap: Record<C, BlockList>;
     readonly config: IBlockConfig<Block<D, C>>;
     readonly id: string;
     @observable readonly ref: React.RefObject<HTMLElement>;
@@ -36,7 +36,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     @observable.ref list: BlockList | null;
 
     constructor(config: IBlockConfig<Block<D, C>>, data?: D, id?: string) {
-        this.children = this.initChildrenMap(config.composite);
+        this.childMap = this.initChildrenMap(config.composite);
         this.config = config;
         this.data = data || ({} as D);
         this.id = id || generateId();
@@ -45,16 +45,17 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @computed
-    get childrenAreEmtpy(): boolean {
-        return Object.values(this.children).every(child => (child as BlockList).length === 0);
+    get allChildrenAreEmpty(): boolean {
+        return this.children.every(c => c.isEmpty);
+    }
+
+    get children(): BlockList[] {
+        return Object.values(this.childMap);
     }
 
     @computed
     get childrenAreOnlyEndBlock(): boolean {
-        return Object.values(this.children).every(child => {
-            return (child as BlockList).length === 1 && 
-                   (child as BlockList).start.type === 'end'
-        });
+        return this.children.every(c => c.isOnlyEndBlock);
     }
 
     get cursorOrder(): ICursorOrderConfig {
@@ -74,11 +75,11 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     get isComposite(): boolean {
-        return Object.keys(this.children).length > 0;
+        return this.children.length > 0;
     }
 
     get isSelected(): boolean {
-        return this.editor.selection.isBlockSelected(this);
+        return this.editor && this.editor.selection.isBlockSelected(this);
     }
 
     @computed
@@ -111,19 +112,19 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     clone(): Block {
-        return new Block(this.config, this.data, this.id);
+        return new Block(this.config, { ...this.data });
     }
 
     contains(block: Block): boolean {
-        return this === block || someObject(this.children, child => child.contains(block));
+        return this === block || someObject(this.childMap, child => child.contains(block));
     }
 
     deepClone(): Block {
         const b = this.clone();
-        if (this.children) {
-            Object.keys(this.children).forEach(key => {
-                this.children[key].blocks.forEach(block => {
-                    b.children[key].insertBlock(b.children[key].end, block.deepClone());
+        if (this.childMap) {
+            Object.keys(this.childMap).forEach(key => {
+                this.childMap[key].blocks.forEach(block => {
+                    b.childMap[key].insertBlock(b.childMap[key].end, block.deepClone());
                 });
             });
         }
@@ -134,8 +135,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         if (this.id === id) {
             return this;
         }
-        for (let listName in this.children) {
-            const list = this.children[listName];
+        for (let listName in this.childMap) {
+            const list = this.childMap[listName];
             const block = list.getBlockById(id);
             if (block) {
                 return block;
@@ -146,27 +147,14 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
 
     getChildByNumber(childNumber: number): BlockList {
         let list = null;
-        for (let child in this.children) {
+        for (let child in this.childMap) {
 
         }
         return
     }
 
-    getCommonParent(block: Block): Block {
-        if (this.parent === block.parent) {
-            return this.parent;
-        }
-        if (this.position.depth < block.position.depth) {
-            return this.getCommonParent(block.parent);
-        }
-        if (this.position.depth > block.position.depth) {
-            return this.parent.getCommonParent(block);
-        }
-        return this.parent.getCommonParent(block.parent);
-    }
-
     render(): React.ReactElement {
-        const children = mapObject(this.children, (name: string, child: Block) => {
+        const children = mapObject(this.childMap, (name: string, child: Block) => {
             return child.render();
         });
 
@@ -193,18 +181,18 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     serialize(): BlockState<D, C> {
-        return {
+        return omitEmpty({
             id: this.id,
             type: this.type,
             data: this.data,
-            children: mapObject(this.children, (childName: string, list: BlockList) => {
+            children: mapObject(this.childMap, (childName: string, list: BlockList) => {
                 return list.serialize();
             }),
-        }
+        });
     }
 
     toCalchub(): PrinterOutput {
-        const children = mapObject(this.children, (name: C, child: Block) => {
+        const children = mapObject(this.childMap, (name: C, child: Block) => {
             return child.toCalchub();
         }) as Record<C, PrinterOutput>;
 
@@ -217,7 +205,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     toPython(): PrinterOutput {
-        const children = mapObject(this.children, (name: C, child: Block) => {
+        const children = mapObject(this.childMap, (name: C, child: Block) => {
             return child.toPython();
         }) as Record<C, PrinterOutput>;
 
@@ -234,14 +222,13 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         state = state || {} as BlockState<D>;
         this.data = state.data || {} as D;
         const childrenState = state.children || {};
-        for (let childName in this.children) {
-            const list = this.children[childName];
+        for (let childName in this.childMap) {
+            const list = this.childMap[childName];
             const childState = childrenState[childName];
             list.applyState(childState);
         }
     }
 
-    // Question: Is this ICompositeBlockConfig correct?
     private initChildrenMap(config?: ICompositeBlockConfig): Record<C, BlockList> {
         const childrenConfig = config ? config.children : {};
         return mapObject(childrenConfig, (childName: string, config: IBlockListConfig) => {

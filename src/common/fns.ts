@@ -83,3 +83,14 @@ export function omitNulls<T>(obj: any): T {
     });
     return cleaned as T;
 }
+
+export function omitEmpty<T>(obj: any): T {
+    const cleaned: any = {};
+    Object.keys(obj).forEach(key => {
+        const val = obj[key];
+        if (!isEmpty(val)) {
+            cleaned[key] = val;
+        }
+    });
+    return cleaned as T;
+}

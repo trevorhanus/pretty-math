@@ -37,7 +37,7 @@ export class EditorState {
     }
 
     get inner(): BlockList {
-        return this.root.children.inner;
+        return this.root.childMap.inner;
     }
 
     @computed
@@ -64,7 +64,7 @@ export class EditorState {
         const oldFocus = this.selection.focus;
         this.root.applyState(state.root);
         // does the previously focused block still exist?
-        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.children.inner.start;
+        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.childMap.inner.start;
         this.selection.anchorAt(newFocus);
     }
 
@@ -135,7 +135,7 @@ export class EditorState {
         if (focus.list.isOnlyEndBlock && focus.list.config.canBeNull) {
             const { parent } = focus;
             focus.list.removeBlock(focus);
-            if (parent.childrenAreEmtpy) {
+            if (parent.allChildrenAreEmpty) {
                 const { list, next } = parent;
                 list.removeBlock(parent);
                 this.selection.anchorAt(next);

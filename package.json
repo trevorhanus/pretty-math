@@ -9,7 +9,8 @@
     "start:explorer": "webpack-dev-server --config tree-explorer/webpack.config.js --env.command=start",
     "storybook": "start-storybook",
     "install-peers": "install-peers",
-    "test": "mocha -r ts-node/register -r module-alias/register"
+    "test": "mocha --opts mocha.opts",
+    "test:watch": "mocha --opts mocha.opts --watch"
   },
   "_moduleAliases": {
     "pretty-math2": "src/pretty-math2",
