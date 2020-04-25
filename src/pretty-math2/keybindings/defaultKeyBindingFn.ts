@@ -1,11 +1,12 @@
 import React from 'react';
+import { hasTripleModifier } from 'pretty-math2/utils/KeyUtils';
 
 export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
     if (e.defaultPrevented) {
         return;
     }
 
-    if (e.shiftKey && e.metaKey && e.altKey) {
+    if (hasTripleModifier(e)) {
         switch (e.keyCode) {
 
             case 67: // C
