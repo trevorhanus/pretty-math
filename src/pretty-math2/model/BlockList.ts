@@ -36,11 +36,6 @@ export class BlockList implements IModel<BlockListState> {
         if (!this.config.canBeNull) {
             this.addEndBlock();
         }
-        reaction(
-            () => this._blocks.slice(),
-            () => this.reindex(),
-            { fireImmediately: true },
-        );
     }
 
     @computed
@@ -89,13 +84,6 @@ export class BlockList implements IModel<BlockListState> {
         return this.getBlock(this.length - 1);
     }
 
-    @action
-    addEndBlock(): EndBlock {
-        const endBlock = BlockFactory.createBlock('end');
-        this.splice(0, 0, endBlock);
-        return endBlock;
-    }
-
     contains(block: Block): boolean {
         return this.blocks.indexOf(block) > -1 || this.blocks.some(b => b.contains(block));
     }
@@ -103,7 +91,7 @@ export class BlockList implements IModel<BlockListState> {
     createChildPosition(child: Block): BlockPosition {
         const index = this.getIndex(child);
         invariant(index == null, `BlockList.createChildPosition was invoked with a block that is not a child of the list.`);
-        return new BlockPosition(this.position.path, index);
+        return this.position.forIndex(index);
     }
 
     getBlock(i: number): Block {
@@ -154,6 +142,28 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @action
+    addBlocks(...blocks: Block[]) {
+        if (!blocks || blocks.length === 0) {
+            return;
+        }
+        if (this.isEmpty) {
+            this.addEndBlock();
+        }
+        blocks.forEach(b => {
+            this.insertBlock(this.end, b);
+        });
+    }
+
+    @action
+    addEndBlock(): EndBlock {
+        if (this.isEmpty || this.end.type !== 'end') {
+            const endBlock = BlockFactory.createBlock('end');
+            this.splice(-1, 0, endBlock);
+        }
+        return this.end;
+    }
+
+    @action
     applyState(state: BlockListState) {
         if (!state) {
             return;
@@ -161,6 +171,7 @@ export class BlockList implements IModel<BlockListState> {
         this._blocks.replace(state.map(s => {
             return BlockFactory.createBlockFromState(s);
         }));
+        this.reindex();
     }
 
     @action
@@ -185,6 +196,7 @@ export class BlockList implements IModel<BlockListState> {
     splice(start: number, deleteCount: number, ...blocks: Block[]) {
         this._blocks.splice(start, deleteCount, ...blocks);
         invariant(!this.config.canBeNull && this._blocks.length === 0, 'BlockList can not be null but was empty');
+        this.reindex();
     }
 
     private reindex() {

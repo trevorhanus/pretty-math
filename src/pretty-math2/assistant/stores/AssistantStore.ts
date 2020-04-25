@@ -188,9 +188,10 @@ function rangeToText(range: SelectionRange): string {
     if (range.isEmpty) {
         return '';
     }
+    return '';
 
-    return range.blocks.reduce((text, b) => {
-        text = text + b.data.text || '';
-        return text;
-    }, '');
+    // return range.blocks.reduce((text, b) => {
+    //     text = text + b.data.text || '';
+    //     return text;
+    // }, '');
 }

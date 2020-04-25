@@ -31,11 +31,6 @@ export class Selection {
     }
 
     @computed
-    get selectedRange(): SelectionRange {
-        return this.range;
-    }
-
-    @computed
     get trailingPhraseRange(): SelectionRange {
         const anchor = this.focus;
 
@@ -63,7 +58,7 @@ export class Selection {
             this.range.setAnchor(block);
             return;
         }
-        console.warn("Attempted to set cursor position at a block that isn't in the chain. Set cursor position to start.");
+        console.warn("Attempted to set cursor position at a block that isn't in root. Set cursor position to start.");
         this.anchorAtStart();
     }
 

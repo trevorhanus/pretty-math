@@ -37,7 +37,7 @@ export class EditorState {
     }
 
     get inner(): BlockList {
-        return this.root.children.inner;
+        return this.root.childMap.inner;
     }
 
     @computed
@@ -64,7 +64,7 @@ export class EditorState {
         const oldFocus = this.selection.focus;
         this.root.applyState(state.root);
         // does the previously focused block still exist?
-        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.children.inner.start;
+        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.childMap.inner.start;
         this.selection.anchorAt(newFocus);
     }
 
@@ -90,11 +90,11 @@ export class EditorState {
     moveCursor(dir: Dir) {
         if (!this.selection.isCollapsed) {
             if (dir === Dir.Left) {
-                this.selection.anchorAt(this.selection.selectedRange.start);
+                this.selection.anchorAt(this.selection.range.start);
                 return;
             }
             if (dir === Dir.Right) {
-                this.selection.anchorAt(this.selection.selectedRange.end);
+                this.selection.anchorAt(this.selection.range.end);
                 return;
             }
             this.selection.anchorAt(this.selection.focus);
@@ -107,6 +107,18 @@ export class EditorState {
     moveSelectionFocus(dir: Dir) {
         const { focus } = this.selection;
         this.selection.focusAt(getNextCursorPosition(focus, dir));
+        if (this.selection.focus.position.isLower(this.selection.range.start.position)) {
+            switch (dir) {
+                case Dir.Left:
+                case Dir.Up:
+                    this.selection.focusAt(this.selection.focus.parent);
+                    break;
+                case Dir.Right:
+                case Dir.Down:
+                    this.selection.focusAt(this.selection.focus.parent.next);
+                    break;
+            }
+        }
     }
 
     @action
@@ -123,7 +135,7 @@ export class EditorState {
         if (focus.list.isOnlyEndBlock && focus.list.config.canBeNull) {
             const { parent } = focus;
             focus.list.removeBlock(focus);
-            if (parent.childrenAreEmtpy) {
+            if (parent.allChildrenAreEmpty) {
                 const { list, next } = parent;
                 list.removeBlock(parent);
                 this.selection.anchorAt(next);

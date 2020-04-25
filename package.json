@@ -9,7 +9,12 @@
     "start:explorer": "webpack-dev-server --config tree-explorer/webpack.config.js --env.command=start",
     "storybook": "start-storybook",
     "install-peers": "install-peers",
-    "test": "mocha -r ts-node/register"
+    "test": "mocha --opts mocha.opts",
+    "test:watch": "mocha --opts mocha.opts --watch"
+  },
+  "_moduleAliases": {
+    "pretty-math2": "src/pretty-math2",
+    "common": "src/common"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -55,6 +60,7 @@
     "lodash.isequal": "^4.5.0",
     "mobx": "^4",
     "mobx-validated-field": "^0",
+    "module-alias": "^2.2.2",
     "mutationobserver-shim": "^0.3.3",
     "react": "^16.13.0",
     "react-color": "^2.18.0",

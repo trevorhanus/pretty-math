@@ -1,6 +1,6 @@
 import { Dir } from 'pretty-math2/interfaces';
 import { Block, BlockList } from 'pretty-math2/model';
-import { isRootBlock } from 'pretty-math2/utils/blockUtils';
+import { isRootBlock } from 'pretty-math2/utils/BlockUtils';
 import { invariant } from '../utils/invariant';
 
 export function getNextCursorPosition(block: Block, dir: Dir): Block {
@@ -75,25 +75,25 @@ export function getNextCursorPositionOutOf(child: Block, dir: Dir): Block {
         case Dir.Left:
             if (leftToRightIndex > 0) {
                 const childname = parent.cursorOrder.leftToRight[leftToRightIndex - 1];
-                return parent.children[childname].end;
+                return parent.childMap[childname].end;
             }
             return parent;
         case Dir.Right:
             if (leftToRightIndex != -1 && leftToRightIndex < parent.cursorOrder.leftToRight.length - 1) {
                 const childname = parent.cursorOrder.leftToRight[leftToRightIndex + 1];
-                return parent.children[childname].start;
+                return parent.childMap[childname].start;
             }
             return parent.next;
         case Dir.Up:
             if (upToDownIndex > 0) {
                 const childname = parent.cursorOrder.upToDown[upToDownIndex - 1];
-                return parent.children[childname].end;
+                return parent.childMap[childname].end;
             }
             return getNextCursorPositionOutOf(parent, dir);
         case Dir.Down:
             if (upToDownIndex != -1 && upToDownIndex < parent.cursorOrder.upToDown.length - 1) {
                 const childname = parent.cursorOrder.upToDown[upToDownIndex + 1];
-                return parent.children[childname].start;
+                return parent.childMap[childname].start;
             }
             return getNextCursorPositionOutOf(parent, dir);
     }
@@ -104,8 +104,8 @@ function getNonNullEntryBlockList(block: Block, list: string[]): BlockList {
         return null;
     }
     let index = 0;
-    while (index < list.length && block.children[list[index]].isEmpty) {
+    while (index < list.length && block.childMap[list[index]].isEmpty) {
         index++;
     }
-    return block.children[list[index]];
+    return block.childMap[list[index]];
 }

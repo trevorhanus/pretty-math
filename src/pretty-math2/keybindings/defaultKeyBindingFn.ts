@@ -1,8 +1,27 @@
 import React from 'react';
+import { hasTripleModifier } from 'pretty-math2/utils/KeyUtils';
 
 export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
     if (e.defaultPrevented) {
         return;
+    }
+
+    if (hasTripleModifier(e)) {
+        switch (e.keyCode) {
+
+            case 67: // C
+                return 'log_calchub';
+
+            case 76: // L
+                return 'log_state';
+
+            case 83: // S
+                return 'log_selection';
+
+            default:
+                // fall through
+
+        }
     }
 
     if (e.shiftKey) {

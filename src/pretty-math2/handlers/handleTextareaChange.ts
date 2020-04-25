@@ -34,23 +34,23 @@ function handleSuperscript(editorState: EditorState) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {
-        if (prev.children.sup.isEmpty) {
-            prev.children.sup.addEndBlock();
+        if (prev.childMap.sup.isEmpty) {
+            prev.childMap.sup.addEndBlock();
         }
-        editorState.selection.anchorAt(prev.children.sup.end);
+        editorState.selection.anchorAt(prev.childMap.sup.end);
         return;
     }
     if (focus.type === 'math:supsub') {
-        if (focus.children.sup.isEmpty) {
-            focus.children.sup.addEndBlock();
+        if (focus.childMap.sup.isEmpty) {
+            focus.childMap.sup.addEndBlock();
         }
-        editorState.selection.anchorAt(focus.children.sup.start);
+        editorState.selection.anchorAt(focus.childMap.sup.start);
         return;
     }
     const newBlock = BlockFactory.createBlock('math:supsub');
-    newBlock.children.sup.addEndBlock();
+    newBlock.childMap.sup.addEndBlock();
     editorState.insertBlock(newBlock);
-    editorState.selection.anchorAt(newBlock.children.sup.start);
+    editorState.selection.anchorAt(newBlock.childMap.sup.start);
     return;
 }
 
@@ -58,22 +58,22 @@ function handleSubscript(editorState: EditorState) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {
-        if (prev.children.sub.isEmpty) {
-            prev.children.sub.addEndBlock();
+        if (prev.childMap.sub.isEmpty) {
+            prev.childMap.sub.addEndBlock();
         }
-        editorState.selection.anchorAt(prev.children.sub.end);
+        editorState.selection.anchorAt(prev.childMap.sub.end);
         return;
     }
     if (focus.type === 'math:supsub') {
-        if (focus.children.sub.isEmpty) {
-            focus.children.sub.addEndBlock();
+        if (focus.childMap.sub.isEmpty) {
+            focus.childMap.sub.addEndBlock();
         }
-        editorState.selection.anchorAt(focus.children.sub.start);
+        editorState.selection.anchorAt(focus.childMap.sub.start);
         return;
     }
     const newBlock = BlockFactory.createBlock('math:supsub');
-    newBlock.children.sub.addEndBlock();
+    newBlock.childMap.sub.addEndBlock();
     editorState.insertBlock(newBlock);
-    editorState.selection.anchorAt(newBlock.children.sub.start);
+    editorState.selection.anchorAt(newBlock.childMap.sub.start);
     return;
 }
