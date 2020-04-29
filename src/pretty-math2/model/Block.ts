@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { action, computed, observable } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
+import { getTargetedSide } from 'pretty-math2/utils/BlockUtils';
 import React from 'react';
 import { BlockList, BlockListState } from '.';
 import { generateId, omitEmpty } from '../../common';
@@ -18,6 +19,14 @@ import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
 import { EditorState } from './EditorState';
+
+declare global {
+    interface MouseEvent {
+        blockData?: {
+            block: Block;
+        };
+    }
+}
 
 export type BlockChildrenState<ChildNames extends string> = Record<ChildNames, BlockListState>;
 
@@ -147,13 +156,27 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return null;
     }
 
-    getChildByNumber(childNumber: number): BlockList {
-        let list = null;
-        for (let child in this.childMap) {
-
+    handleMouseDown = (e: React.MouseEvent) => {
+        if (e.nativeEvent.blockData) {
+            // some child already handled it
+            return;
         }
-        return
-    }
+
+        addBlockData(e, this);
+    };
+
+    handleMouseMove = (e: React.MouseEvent) => {
+        if (e.buttons !== 1) {
+            return;
+        }
+
+        if (e.nativeEvent.blockData) {
+            // some child already handled it
+            return;
+        }
+
+        addBlockData(e, this);
+    };
 
     render(): React.ReactElement {
         const children = mapObject(this.childMap, (name: string, child: Block) => {
@@ -176,6 +199,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
             ...renderedBlock.props,
             key: this.id,
             ref: this.ref,
+            onMouseDown: this.handleMouseDown,
+            onMouseMove: this.handleMouseMove,
             className
         };
 
@@ -244,5 +269,21 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return mapObject(childrenConfig, (childName: string, config: IBlockListConfig) => {
             return new BlockList(this, childName, config);
         });
+    }
+}
+
+function addBlockData(e: React.MouseEvent, block: Block) {
+    const side = getTargetedSide(e, e.nativeEvent.target as HTMLSpanElement);
+
+    if (side === 0) {
+        e.nativeEvent.blockData = { block };
+    }
+
+    if (side === 1) {
+        if (block.next) {
+            e.nativeEvent.blockData = { block: block.next };
+        } else {
+            e.nativeEvent.blockData = { block };
+        }
     }
 }

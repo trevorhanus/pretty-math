@@ -101,3 +101,15 @@ function isInside(e: React.MouseEvent, rect: DOMRect): boolean {
         && clientY > rect.top
         && clientY < rect.bottom;
 }
+
+export function getTargetedSide(e: MouseEvent | React.MouseEvent, target: HTMLElement): number {
+    const localOffset = e.clientX - target.getBoundingClientRect().left;
+    const width = target.offsetWidth;
+
+    if (localOffset < 0 || localOffset > width) {
+        // out of bounds
+        return -1;
+    }
+
+    return Math.round(localOffset / width);
+}
