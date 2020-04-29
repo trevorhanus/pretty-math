@@ -40,7 +40,7 @@ const config = () => {
     return {
         devtool: 'eval',
         mode: 'production',
-        entry: path.join(__dirname, './src/pretty-math/index'),
+        entry: path.join(__dirname, './src/pretty-math2/index'),
         output: {
             path: path.join(__dirname, '.dist'),
             filename: 'bundle.[hash:8].js',
@@ -75,7 +75,7 @@ const config = () => {
                         {
                             loader: 'ts-loader',
                             options: {
-                                transpileOnly: true,
+                                // transpileOnly: true,
                                 experimentalWatchApi: true,
                                 compilerOptions: {
                                     // need to use esnext here so that typescript

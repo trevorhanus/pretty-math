@@ -6,9 +6,9 @@ import * as React from 'react';
 
 declare global {
     interface MouseEvent {
-        blockData?: {
+        blockData1?: {
             block: IBlock;
-            offset: number,
+            offset?: number,
         }
     }
 }

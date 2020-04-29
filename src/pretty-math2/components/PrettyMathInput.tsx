@@ -5,7 +5,6 @@ import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 import { EditorController } from '../model/EditorController';
 import { EditorState, SerializedEditorState } from '../model/EditorState';
-import { findClosestBlock } from '../utils/BlockUtils';
 import { Content } from './Content';
 import { Cursor } from './Cursor';
 
@@ -63,15 +62,42 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
     handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
 
-        if (this.props.readOnly) {
-            return;
+        const blockData = e.nativeEvent.blockData;
+        if (blockData) {
+            this.editor.selection.anchorAt(blockData.block);
+        } else {
+            let cur = this.editor.inner.start;
+            while (cur != null) {
+                const curBoundingRect = cur.ref.current.getBoundingClientRect();
+                if ((e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right)
+                    || cur.type === "end") {
+                    this.editor.selection.anchorAt(cur);
+                    break;
+                }
+                cur = cur.next;
+            }
         }
 
-        const closestBlock = findClosestBlock(this.editor, e);
-        if (closestBlock) {
-            console.log(closestBlock);
-            this.editor.selection.anchorAt(closestBlock);
-        }
+        // const closestBlock = findClosestBlock(this.editor, e);
+        // if (closestBlock) {
+        //     this.editor.selection.anchorAt(closestBlock);
+        // }
+
+        window.addEventListener('mouseup', this.handleMouseUp);
+        window.addEventListener('mousemove', this.handleMouseMove);
+
         this.editor.focus();
+    };
+
+    handleMouseMove = (e: MouseEvent) => {
+        const blockData = (e as any).blockData;
+        if (blockData) {
+            this.editor.selection.focusAt(blockData.block);
+        }
+    };
+
+    handleMouseUp = (e: MouseEvent) => {
+        window.removeEventListener('mousemove', this.handleMouseMove);
+        window.removeEventListener('mouseup', this.handleMouseUp);
     };
 }
