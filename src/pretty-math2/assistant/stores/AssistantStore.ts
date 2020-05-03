@@ -185,7 +185,7 @@ export class AssistantStore {
     }
 }
 
-function rangeToCalchub(range: SelectionRange): string {
+export function rangeToCalchub(range: SelectionRange): string {
     if (range.isEmpty) {
         return '';
     }
@@ -194,10 +194,10 @@ function rangeToCalchub(range: SelectionRange): string {
     let block = range.start;
 
     while (block) {
-        text += block.toCalchub().text;
         if (block === range.end) {
             return text;
         } else {
+            text += block.toCalchub().text;
             block = block.next;
         }
     }

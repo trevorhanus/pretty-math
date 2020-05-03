@@ -11,6 +11,8 @@ import { mathSymbolBlockConfig } from './MathSymbolBlock';
 import { paragraphBlockConfig } from './ParagraphBlock';
 import { rootBlockConfig } from './RootBlock';
 import { supSubBlockConfig } from './SupSubBlock';
+import { rightParenBlockConfig } from './RightParenBlock';
+import { leftParenBlockConfig } from './LeftParentBlock';
 
 const blocks: { [type: string]: IBlockConfig<Block> } = {};
 
@@ -63,9 +65,11 @@ const DEFAULT_BLOCKS = [
     endBlockConfig,
     fractionBlockConfig,
     functionBlockConfig,
+    leftParenBlockConfig,
     paragraphBlockConfig,
     mathRootBlockConfig,
     mathSymbolBlockConfig,
+    rightParenBlockConfig,
     rootBlockConfig,
     supSubBlockConfig,
 ];

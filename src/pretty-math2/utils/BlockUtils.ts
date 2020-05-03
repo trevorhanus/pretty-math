@@ -1,6 +1,8 @@
 import { Block } from 'pretty-math2/model';
 import { EditorState } from '../model/EditorState';
+import { isBinaryOpFam } from 'math';
 import { offsetFromAncestor } from './DOMUtils';
+import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
 
 export function isRootBlock(block: Block): boolean {
     return block.type === 'root' || block.type === 'root:math';
@@ -23,6 +25,59 @@ export function getCommonParent(b1: Block, b2: Block): Block {
 
     // b2 is higher up
     return getCommonParent(b1.parent, b2);
+}
+
+export function getNumeratorRangeLeftOfBlock(block: Block) {
+    if (block == null) return null;
+
+    const sr = new SelectionRange();
+    sr.setAnchor(block);
+    let cur = block.prev;
+    if (cur.type === 'math:right_paren') {
+        const parenPair = getLeftParenPair(cur);
+        if (parenPair != null) {
+            sr.setFocus(parenPair);
+        }
+    } else if (cur.type === 'atomic') {
+        if (!isBinaryOpFam(cur.mathNode)) {
+            sr.setFocus(cur);
+            cur = cur.prev;
+            while (cur != null && !isBinaryOpFam(cur.mathNode)) {
+                sr.setFocus(cur);
+                cur = cur.prev;
+            }
+        }
+    } else if (cur.type === 'math:supsub') {
+        sr.setFocus(cur);
+        cur = cur.prev;
+        while (cur != null && !isBinaryOpFam(cur.mathNode)) {
+            sr.setFocus(cur);
+            cur = cur.prev;
+        }
+    } else if (cur.type === 'math:function' || cur.type === 'math:radical' || cur.type === 'math:fraction') {
+        sr.setFocus(cur);
+    }
+    return sr;
+}
+
+export function getLeftParenPair(rightParen: Block) {
+    const parenStack = [];
+    let next = rightParen.prev;
+
+    while (next != null) {
+        if (next.type === 'math:left_paren' && parenStack.length === 0) {
+            return next;
+        }
+        if (next.type === 'math:left_paren') {
+            parenStack.pop();
+        }
+        if (next.type === 'math:right_paren') {
+            parenStack.push(next);
+        }
+        next = next.prev;
+    }
+
+    return null;
 }
 
 export function walkTree(block: Block, iterator: (block: Block) => void) {

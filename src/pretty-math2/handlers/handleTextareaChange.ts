@@ -1,6 +1,8 @@
 import React from 'react';
 import { BlockFactory } from '../blocks/BlockFactory';
 import { EditorState } from '../model/EditorState';
+import { getNumeratorRangeLeftOfBlock } from 'pretty-math2/utils/BlockUtils';
+import { rangeToCalchub } from 'pretty-math2/assistant/stores/AssistantStore';
 
 export function handleTextareaChange(editorState: EditorState, e: React.ChangeEvent<HTMLTextAreaElement>) {
     // Still a work in progress. Looking into other ways to find the keys we want
@@ -13,8 +15,11 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     }
     // Fraction
     if (keyValue === '/') {
-        const newBlock = BlockFactory.createBlock('math:fraction', {});
-        editorState.insertBlock(newBlock);
+        const { focus } = editorState.selection;
+        const range = getNumeratorRangeLeftOfBlock(focus);
+        console.log(rangeToCalchub(range));
+        // const newBlock = BlockFactory.createBlock('math:fraction', {});
+        // editorState.insertBlock(newBlock);
         return;
     }
     if (keyValue === '^') {
@@ -23,6 +28,16 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     }
     if (keyValue === '_') {
         handleSubscript(editorState);
+        return;
+    }
+    if (keyValue === ')') {
+        const newBlock = BlockFactory.createBlock('math:right_paren');
+        editorState.insertBlock(newBlock);
+        return;
+    }
+    if (keyValue === '(') {
+        const newBlock = BlockFactory.createBlock('math:left_paren');
+        editorState.insertBlock(newBlock);
         return;
     }
 
