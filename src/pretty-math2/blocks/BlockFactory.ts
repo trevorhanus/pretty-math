@@ -6,9 +6,11 @@ import { atomicBlockConfig } from './AtomicBlock';
 import { endBlockConfig } from './EndBlock';
 import { fractionBlockConfig } from './FractionBlock';
 import { functionBlockConfig } from './FunctionBlock';
+import { leftParenBlockConfig } from './LeftParenBlock';
 import { mathRootBlockConfig } from './MathRootBlock';
 import { mathSymbolBlockConfig } from './MathSymbolBlock';
 import { paragraphBlockConfig } from './ParagraphBlock';
+import { rightParenBlockConfig } from './RightParenBlock';
 import { rootBlockConfig } from './RootBlock';
 import { supSubBlockConfig } from './SupSubBlock';
 
@@ -63,9 +65,11 @@ const DEFAULT_BLOCKS = [
     endBlockConfig,
     fractionBlockConfig,
     functionBlockConfig,
+    leftParenBlockConfig,
     paragraphBlockConfig,
     mathRootBlockConfig,
     mathSymbolBlockConfig,
+    rightParenBlockConfig,
     rootBlockConfig,
     supSubBlockConfig,
 ];

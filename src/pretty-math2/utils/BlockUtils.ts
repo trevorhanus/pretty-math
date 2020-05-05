@@ -1,6 +1,7 @@
 import { Block } from 'pretty-math2/model';
 import { EditorState } from '../model/EditorState';
 import { offsetFromAncestor } from './DOMUtils';
+import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
 
 export function isRootBlock(block: Block): boolean {
     return block.type === 'root' || block.type === 'root:math';
@@ -23,6 +24,30 @@ export function getCommonParent(b1: Block, b2: Block): Block {
 
     // b2 is higher up
     return getCommonParent(b1.parent, b2);
+}
+
+export function getNumeratorRangeLeftOfBlock(block: Block, anchor?: Block): SelectionRange {
+    return SelectionRange.empty();
+}
+
+export function getLeftParenPair(rightParen: Block) {
+    const parenStack = [];
+    let next = rightParen.prev;
+
+    while (next != null) {
+        if (next.type === 'math:left_paren' && parenStack.length === 0) {
+            return next;
+        }
+        if (next.type === 'math:left_paren') {
+            parenStack.pop();
+        }
+        if (next.type === 'math:right_paren') {
+            parenStack.push(next);
+        }
+        next = next.prev;
+    }
+
+    return null;
 }
 
 export function walkTree(block: Block, iterator: (block: Block) => void) {

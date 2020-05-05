@@ -67,15 +67,15 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
             this.editor.selection.anchorAt(blockData.block);
         } else {
             let cur = this.editor.inner.start;
-            while (cur != null) {
-                const curBoundingRect = cur.ref.current.getBoundingClientRect();
-                if ((e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right)
-                    || cur.type === "end") {
-                    this.editor.selection.anchorAt(cur);
+            let curBoundingRect = cur.ref.current.getBoundingClientRect();
+            while (cur.type != "end" && e.clientX >= curBoundingRect.left) {
+                if (e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right) {
                     break;
                 }
                 cur = cur.next;
+                curBoundingRect = cur.ref.current.getBoundingClientRect();
             }
+            this.editor.selection.anchorAt(cur);
         }
 
         // const closestBlock = findClosestBlock(this.editor, e);
@@ -93,6 +93,17 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
         const blockData = (e as any).blockData;
         if (blockData) {
             this.editor.selection.focusAt(blockData.block);
+        } else {
+            let cur = this.editor.inner.start;
+            let curBoundingRect = cur.ref.current.getBoundingClientRect();
+            while (cur.type != "end" && e.clientX >= curBoundingRect.left) {
+                if (e.clientX >= curBoundingRect.left && e.clientX <= curBoundingRect.right) {
+                    break;
+                }
+                cur = cur.next;
+                curBoundingRect = cur.ref.current.getBoundingClientRect();
+            }
+            this.editor.selection.focusAt(cur);
         }
     };
 

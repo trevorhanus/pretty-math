@@ -3,7 +3,7 @@ import React from 'react';
 import { EditorState } from '../model/EditorState';
 import { handleDelete } from './handleDelete';
 import { handleExpandSelection } from './handleExpandSelection';
-import { handleMoveCursor, handleMoveCursorEnd } from './handleMoveCursor';
+import { handleMoveCursor } from './handleMoveCursor';
 
 const logSelection = (editor: EditorState) => {
     const { start, end } = editor.selection.range;
@@ -31,7 +31,6 @@ const commands = {
     'log_selection': logSelection,
     'log_state': editor => console.log(JSON.stringify(editor.serialize(), null, 2)),
     'move_cursor': handleMoveCursor,
-    'move_cursor_end': handleMoveCursorEnd,
     'expand_selection': handleExpandSelection,
 };
 

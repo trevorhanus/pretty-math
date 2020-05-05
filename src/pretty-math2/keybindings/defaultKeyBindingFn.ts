@@ -47,10 +47,6 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
     if (hasCommandModifier(e)) {
         switch (e.keyCode) {
 
-            case 37: // ArrowLeft
-            case 39: // ArrowRight
-                return 'move_cursor_end';
-
             default:
                 // fall through to non-modified bindings
         }
