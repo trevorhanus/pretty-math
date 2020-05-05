@@ -54,6 +54,70 @@
         }
     }
 
+    .integral {
+        position: relative;
+        display: inline-flex;
+        align-items: baseline;
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
+
+        .integral-symbol {
+            font-size: 250%;
+            font-family: Symbola;
+            transform: scaleX(0.7);
+            vertical-align: middle;
+
+            span {
+                vertical-align: inherit;
+            }
+        }
+
+        .integral-bounds {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-self: normal;
+
+            .right-bound {
+                font-size: 80%;
+            }
+
+            .left-bound {
+                font-size: 80%;
+                margin-left: -75%;
+            }
+        }
+
+        .inner {
+            margin-left: 0.1rem;
+            margin-right: 0.2rem;
+        }
+
+        .wrt {
+            font-style: italic;
+        }
+    }
+
+    .radical {
+        position: relative;
+        display: inline-flex;
+
+        .inner {
+            padding: 0.1em 1px 0 1px;
+            margin: 0.1em 0.1em 0 1em;
+        }
+
+        .radical-symbol {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
+        }
+    }
+
     .sup-sub {
         display: inline-block;
         position: relative;

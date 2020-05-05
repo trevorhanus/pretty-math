@@ -33,16 +33,22 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
         children: {
             num: {
                 canBeNull: false,
-                order: 0
+                childNumber: 0
             },
             denom: {
                 canBeNull: false,
-                order: 1
+                childNumber: 1
             }
         },
         cursorOrder: {
-            leftToRight: [],
-            upToDown: ['num', 'denom']
+            right: {},
+            left: {},
+            up: {
+                'denom': 'num'
+            },
+            down: {
+                'num': 'denom'
+            }
         },
         entry: {
             fromLeft: {

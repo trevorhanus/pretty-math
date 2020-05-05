@@ -69,34 +69,60 @@ export function getNextCursorPositionOutOf(child: Block, dir: Dir): Block {
 
     if (!parent || isRootBlock(parent)) return null;
 
-    const leftToRightIndex = parent.cursorOrder.leftToRight.findIndex(val => val === child.list.name);
-    const upToDownIndex =  parent.cursorOrder.upToDown.findIndex(val => val === child.list.name);
+    const list = getNonNullList(parent, child.list.name, dir);
     switch (dir) {
         case Dir.Left:
-            if (leftToRightIndex > 0) {
-                const childname = parent.cursorOrder.leftToRight[leftToRightIndex - 1];
-                return parent.childMap[childname].end;
+            if (list) {
+                return list.end;
             }
             return parent;
         case Dir.Right:
-            if (leftToRightIndex != -1 && leftToRightIndex < parent.cursorOrder.leftToRight.length - 1) {
-                const childname = parent.cursorOrder.leftToRight[leftToRightIndex + 1];
-                return parent.childMap[childname].start;
+            if (list) {
+                return list.start;
             }
             return parent.next;
         case Dir.Up:
-            if (upToDownIndex > 0) {
-                const childname = parent.cursorOrder.upToDown[upToDownIndex - 1];
-                return parent.childMap[childname].end;
+            if (list) {
+                return list.end;
             }
             return getNextCursorPositionOutOf(parent, dir);
         case Dir.Down:
-            if (upToDownIndex != -1 && upToDownIndex < parent.cursorOrder.upToDown.length - 1) {
-                const childname = parent.cursorOrder.upToDown[upToDownIndex + 1];
-                return parent.childMap[childname].start;
+            if (list) {
+                return list.end;
             }
             return getNextCursorPositionOutOf(parent, dir);
     }
+}
+
+function getNonNullList(parent: Block, name: string, dir: Dir): BlockList {
+    let direction: string;
+    switch (dir) {
+        case Dir.Left:
+            direction = 'left'
+            break;
+            
+        case Dir.Right:
+            direction = 'right'
+            break;
+
+        case Dir.Up:
+            direction = 'up'
+            break;
+
+        case Dir.Down:
+            direction = 'down'
+            break;
+    }
+    let childName = parent.cursorOrder[direction][name];
+    if (childName) {
+        while (parent.childMap[childName].isEmpty) {
+            childName = parent.cursorOrder[direction][childName];
+            if (!childName) {
+                return null;
+            }
+        }
+    }
+    return parent.childMap[childName];
 }
 
 function getNonNullEntryBlockList(block: Block, list: string[]): BlockList {

@@ -60,7 +60,7 @@ export class BlockList implements IModel<BlockListState> {
 
     get position(): BlockPosition {
         invariant(!this.parent, `BlockList does not have a parent.`);
-        return this.parent.position.incLevel(this.config.order);
+        return this.parent.position.incLevel(this.config.childNumber);
     }
 
     @computed

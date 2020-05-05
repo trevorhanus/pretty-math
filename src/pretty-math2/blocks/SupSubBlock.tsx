@@ -44,16 +44,22 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
         children: {
             sub: {
                 canBeNull: true,
-                order: 0
+                childNumber: 0
             },
             sup: {
                 canBeNull: true,
-                order: 1
+                childNumber: 1
             }
         },
         cursorOrder: {
-            leftToRight: [],
-            upToDown: ['sup', 'sub']
+            right: {},
+            left: {},
+            up: {
+                'sub': 'sup'
+            },
+            down: {
+                'sup': 'sub'
+            }
         },
         entry: {
             fromLeft: {

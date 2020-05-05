@@ -11,6 +11,16 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         editorState.insertBlock(newBlock);
         return;
     }
+    if (keyValue === 'r') {
+        const newBlock = BlockFactory.createBlock('math:squareRoot');
+        editorState.insertBlock(newBlock);
+        editorState.selection.anchorAt(newBlock.childMap.inner.start);
+        return;
+    }
+    if (keyValue === 'i') {
+        handleIntegral(editorState);
+        return;
+    }
     // Fraction
     if (keyValue === '/') {
         handleFraction(editorState);
@@ -43,6 +53,14 @@ function handleFraction(editorState: EditorState) {
     const newBlock = BlockFactory.createBlock('math:fraction');
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.childMap['num'].start);
+}
+
+function handleIntegral(editorState: EditorState) {
+    const newBlock = BlockFactory.createBlock('math:integral');
+    newBlock.childMap.rightBound.addEndBlock();
+    newBlock.childMap.leftBound.addEndBlock();
+    editorState.insertBlock(newBlock);
+    editorState.selection.anchorAt(newBlock.childMap.rightBound.start);
 }
 
 function handleSubscript(editorState: EditorState) {
