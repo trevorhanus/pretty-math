@@ -13,8 +13,7 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     }
     // Fraction
     if (keyValue === '/') {
-        const newBlock = BlockFactory.createBlock('math:fraction', {});
-        editorState.insertBlock(newBlock);
+        handleFraction(editorState);
         return;
     }
     if (keyValue === '^') {
@@ -25,33 +24,25 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         handleSubscript(editorState);
         return;
     }
+    if (keyValue === ')') {
+        const newBlock = BlockFactory.createBlock('math:right_paren');
+        editorState.insertBlock(newBlock);
+        return;
+    }
+    if (keyValue === '(') {
+        const newBlock = BlockFactory.createBlock('math:left_paren');
+        editorState.insertBlock(newBlock);
+        return;
+    }
 
     const newBlock = BlockFactory.createBlock('atomic', { text: keyValue });
     editorState.insertBlock(newBlock);
 }
 
-function handleSuperscript(editorState: EditorState) {
-    const { focus } = editorState.selection;
-    const { prev } = focus;
-    if (prev && prev.type === 'math:supsub') {
-        if (prev.childMap.sup.isEmpty) {
-            prev.childMap.sup.addEndBlock();
-        }
-        editorState.selection.anchorAt(prev.childMap.sup.end);
-        return;
-    }
-    if (focus.type === 'math:supsub') {
-        if (focus.childMap.sup.isEmpty) {
-            focus.childMap.sup.addEndBlock();
-        }
-        editorState.selection.anchorAt(focus.childMap.sup.start);
-        return;
-    }
-    const newBlock = BlockFactory.createBlock('math:supsub');
-    newBlock.childMap.sup.addEndBlock();
+function handleFraction(editorState: EditorState) {
+    const newBlock = BlockFactory.createBlock('math:fraction');
     editorState.insertBlock(newBlock);
-    editorState.selection.anchorAt(newBlock.childMap.sup.start);
-    return;
+    editorState.selection.anchorAt(newBlock.childMap['num'].start);
 }
 
 function handleSubscript(editorState: EditorState) {
@@ -75,5 +66,27 @@ function handleSubscript(editorState: EditorState) {
     newBlock.childMap.sub.addEndBlock();
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.childMap.sub.start);
-    return;
+}
+
+function handleSuperscript(editorState: EditorState) {
+    const { focus } = editorState.selection;
+    const { prev } = focus;
+    if (prev && prev.type === 'math:supsub') {
+        if (prev.childMap.sup.isEmpty) {
+            prev.childMap.sup.addEndBlock();
+        }
+        editorState.selection.anchorAt(prev.childMap.sup.end);
+        return;
+    }
+    if (focus.type === 'math:supsub') {
+        if (focus.childMap.sup.isEmpty) {
+            focus.childMap.sup.addEndBlock();
+        }
+        editorState.selection.anchorAt(focus.childMap.sup.start);
+        return;
+    }
+    const newBlock = BlockFactory.createBlock('math:supsub');
+    newBlock.childMap.sup.addEndBlock();
+    editorState.insertBlock(newBlock);
+    editorState.selection.anchorAt(newBlock.childMap.sup.start);
 }

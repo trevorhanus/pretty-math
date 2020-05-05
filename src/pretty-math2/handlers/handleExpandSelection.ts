@@ -1,8 +1,29 @@
 import React from 'react';
-import { EditorState } from 'pretty-math2/model/EditorState';
 import { Dir } from 'pretty-math2/interfaces';
+import { EditorState } from 'pretty-math2/model/EditorState';
+import { hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
 
 export function handleExpandSelection(editorState: EditorState, e: React.KeyboardEvent) {
+    if (hasCommandModifier(e)) {
+        switch (e.keyCode) {
+            case 37: // Left
+                editorState.moveSelectionFocusToFringe(Dir.Left);
+                return;
+
+            case 38: // Up
+                editorState.moveSelectionFocusToFringe(Dir.Up);
+                return;
+
+            case 39: // Right
+                editorState.moveSelectionFocusToFringe(Dir.Right);
+                return;
+
+            case 40: // Down
+                editorState.moveSelectionFocusToFringe(Dir.Down);
+                return;
+        }
+    }
+
     switch (e.keyCode) {
         case 37: // Left
             editorState.moveSelectionFocus(Dir.Left);

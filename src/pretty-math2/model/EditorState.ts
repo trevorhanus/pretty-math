@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { Dir } from 'pretty-math2/interfaces';
 import { getNextCursorPosition } from 'pretty-math2/selection/CursorPositioner';
+import { removeRange } from 'pretty-math2/utils/RangeUtils';
 import * as React from 'react';
 import { AssistantStore } from '../assistant/stores/AssistantStore';
 import { BlockFactory } from '../blocks/BlockFactory';
@@ -21,8 +22,6 @@ export class EditorState {
     readonly assistant: AssistantStore;
     readonly root: RootBlock;
     readonly selection: Selection;
-    // readonly inlineStyles: InlineStyles;
-    // readonly history: History;
 
     constructor(rootBlock: RootBlock, initialState?: SerializedEditorState) {
         this.containerRef = React.createRef<HTMLDivElement>();
@@ -104,13 +103,14 @@ export class EditorState {
     }
 
     @action
-    moveCursorEnd(dir: Dir) {
+    moveCursorToFringe(dir: Dir) {
         switch (dir) {
             case Dir.Left:
-                this.selection.anchorAt(this.root.childMap.inner.start);
+                this.selection.anchorAt(this.selection.focus.list.start);
                 break;
+
             case Dir.Right:
-                this.selection.anchorAt(this.root.childMap.inner.end);
+                this.selection.anchorAt(this.selection.focus.list.end);
                 break;
         }
     }
@@ -125,6 +125,7 @@ export class EditorState {
                 case Dir.Up:
                     this.selection.focusAt(this.selection.focus.parent);
                     break;
+
                 case Dir.Right:
                 case Dir.Down:
                     this.selection.focusAt(this.selection.focus.parent.next);
@@ -134,16 +135,35 @@ export class EditorState {
     }
 
     @action
+    moveSelectionFocusToFringe(dir: Dir) {
+        switch (dir) {
+            case Dir.Left:
+                this.selection.focusAt(this.selection.focus.list.start);
+                break;
+
+            case Dir.Right:
+                this.selection.focusAt(this.selection.focus.list.end);
+                break;
+        }
+    }
+
+    @action
     remove() {
         if (!this.selection.isCollapsed) {
-            // handle range deletion
+            const { end } = this.selection.range;
+            removeRange(this.selection.range);
+            this.selection.anchorAt(end);
+            return;
         }
+
         const { focus } = this.selection;
         const { prev } = focus;
+
         if (prev) {
             prev.list.removeBlock(prev);
             return;
         }
+
         if (focus.list.isOnlyEndBlock && focus.list.config.canBeNull) {
             const { parent } = focus;
             focus.list.removeBlock(focus);
@@ -154,6 +174,7 @@ export class EditorState {
                 return;
             }
         }
+
         this.selection.anchorAt(focus.parent);
     }
 
