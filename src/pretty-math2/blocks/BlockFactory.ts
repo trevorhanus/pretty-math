@@ -15,6 +15,7 @@ import { rootBlockConfig } from './RootBlock';
 import { supSubBlockConfig } from './SupSubBlock';
 import { radicalBlockConfig } from './RadicalBlock';
 import { integralBlockConfig } from './IntegralBlock';
+import { derivativeBlockConfig } from './DerivativeBlock';
 
 const blocks: { [type: string]: IBlockConfig<Block> } = {};
 
@@ -64,6 +65,7 @@ export const BlockFactory = {
 
 const DEFAULT_BLOCKS = [
     atomicBlockConfig,
+    derivativeBlockConfig,
     endBlockConfig,
     fractionBlockConfig,
     functionBlockConfig,

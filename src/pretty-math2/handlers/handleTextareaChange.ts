@@ -17,6 +17,15 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
         editorState.selection.anchorAt(newBlock.childMap.inner.start);
         return;
     }
+    if (keyValue === 'd') {
+        const newBlock = BlockFactory.createBlock('math:derivative', {
+            differentialValue: '∂',
+            derivativeOrder: 1
+        });
+        editorState.insertBlock(newBlock);
+        editorState.selection.anchorAt(newBlock.childMap.wrt.start);
+        return;
+    }
     if (keyValue === 'i') {
         handleIntegral(editorState);
         return;
