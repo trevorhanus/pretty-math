@@ -21,11 +21,23 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
     ),
 
     printers: {
-        calchub: ({ children }) => {
-            return PrinterOutput.blank();
+        calchub: ({ block, children }) => {
+            return PrinterOutput.fromMany([
+                { text: '\\frac{', source: block },
+                children.num,
+                { text: ',', source: block },
+                children.denom,
+                { text: '}', source: block },
+            ]);
         },
-        python: ({ children }) => {
-            return PrinterOutput.blank();
+        python: ({ block, children }) => {
+            return PrinterOutput.fromMany([
+                { text: '(', source: block },
+                children.num,
+                { text: ')/(', source: block },
+                children.denom,
+                { text: ')', source: block },
+            ]);
         }
     },
 

@@ -133,12 +133,16 @@ export class BlockList implements IModel<BlockListState> {
         );
     }
 
-    serialize(): BlockListState {
-        return this.blocks.map(b => b.serialize());
+    serialize(opts?: { omitId: boolean }): BlockListState {
+        return this.blocks.map(b => b.serialize(opts));
     }
 
     toCalchub(): PrinterOutput {
         return PrinterOutput.fromMany(this.blocks.map(b => b.toCalchub()));
+    }
+
+    toPython(): PrinterOutput {
+        return PrinterOutput.fromMany(this.blocks.map(b => b.toPython()));
     }
 
     @action

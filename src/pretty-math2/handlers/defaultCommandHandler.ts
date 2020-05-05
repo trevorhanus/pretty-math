@@ -1,9 +1,12 @@
 import { action, runInAction } from 'mobx';
 import React from 'react';
 import { Editor } from '../model/Editor';
+import { handleCopy } from './handleCopy';
+import { handleCut } from './handleCut';
 import { handleDelete } from './handleDelete';
 import { handleExpandSelection } from './handleExpandSelection';
 import { handleMoveCursor } from './handleMoveCursor';
+import { handlePaste } from './handlePaste';
 
 const logSelection = (editor: Editor) => {
     const { start, end } = editor.selection.range;
@@ -24,6 +27,8 @@ const logSelection = (editor: Editor) => {
 
 const commands = {
     'blur': action((editor: Editor) => editor.blur()),
+    'copy': handleCopy,
+    'cut': handleCut,
     'delete': handleDelete,
     'expand_selection': handleExpandSelection,
     'force_assistant_open': action((editor: Editor) => editor.assistant.forceOpen()),
@@ -32,6 +37,7 @@ const commands = {
     'log_selection': logSelection,
     'log_state': editor => console.log(JSON.stringify(editor.serialize(), null, 2)),
     'move_cursor': handleMoveCursor,
+    'paste': handlePaste,
     'redo': action((editor: Editor) => editor.history.redo()),
     'undo': action((editor: Editor) => editor.history.undo()),
 };

@@ -45,9 +45,12 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
                 <textarea
                     className="hidden-textarea"
                     onBlur={() => this.editor.setFocus(false)}
+                    onCopy={this.handleCopy}
                     onChange={this.controller.handleTextareaChange}
+                    onCut={this.handleCut}
                     onFocus={() => this.editor.setFocus(true)}
                     onKeyDown={this.controller.handleKeyDown}
+                    onPaste={this.handlePaste}
                     readOnly={this.props.readOnly}
                     ref={this.editor.hiddenTextareaRef}
                     value={""}
@@ -61,6 +64,16 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
                 />
             </div>
         );
+    }
+
+    handleCopy = (e: React.ClipboardEvent) => {
+        e.preventDefault();
+        this.controller.handleCommand('copy', e);
+    }
+
+    handleCut = (e: React.ClipboardEvent) => {
+        e.preventDefault();
+        this.controller.handleCommand('cut', e);
     }
 
     handleMouseDown = (e: React.MouseEvent) => {
@@ -115,4 +128,9 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
         window.removeEventListener('mousemove', this.handleMouseMove);
         window.removeEventListener('mouseup', this.handleMouseUp);
     };
+
+    handlePaste = (e: React.ClipboardEvent) => {
+        e.preventDefault();
+        this.controller.handleCommand('paste', e);
+    }
 }
