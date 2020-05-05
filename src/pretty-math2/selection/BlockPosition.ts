@@ -34,7 +34,7 @@ export class BlockPosition {
         return isEven ? this.path[this.path.length - 1] : null;
     }
 
-    get listNumber(): number {
+    get childNumber(): number {
         if (this.path.length === 0) {
             return null;
         }

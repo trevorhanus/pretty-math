@@ -13,6 +13,10 @@ import { paragraphBlockConfig } from './ParagraphBlock';
 import { rightParenBlockConfig } from './RightParenBlock';
 import { rootBlockConfig } from './RootBlock';
 import { supSubBlockConfig } from './SupSubBlock';
+import { radicalBlockConfig } from './RadicalBlock';
+import { integralBlockConfig } from './IntegralBlock';
+import { derivativeBlockConfig } from './DerivativeBlock';
+import { differentialBlockConfig } from './DifferentialBlock';
 
 const blocks: { [type: string]: IBlockConfig<Block> } = {};
 
@@ -62,13 +66,17 @@ export const BlockFactory = {
 
 const DEFAULT_BLOCKS = [
     atomicBlockConfig,
+    derivativeBlockConfig,
+    differentialBlockConfig,
     endBlockConfig,
     fractionBlockConfig,
     functionBlockConfig,
+    integralBlockConfig,
     leftParenBlockConfig,
     paragraphBlockConfig,
     mathRootBlockConfig,
     mathSymbolBlockConfig,
+    radicalBlockConfig,
     rightParenBlockConfig,
     rootBlockConfig,
     supSubBlockConfig,

@@ -1,3 +1,21 @@
+@font-face {
+    font-family: "Symbola";
+    src: url("./fonts/Symbola.ttf") format('truetype'),
+        url("./fonts/Symbola.otf") format('opentype'),
+        url("./fonts/Symbola.woff") format('woff'),
+        url("./fonts/Symbola.woff2") format('woff2'),
+        url("./fonts/Symbola.svg") format('svg'),
+        url("./fonts/Symbola.eot");
+}
+
+@font-face {
+    font-family: "Symbola-basic";
+    src: url("./fonts/Symbola-basic.ttf") format('truetype'),
+        url("./fonts/Symbola-basic.woff") format('woff'),
+        url("./fonts/Symbola-basic.woff2") format('woff2'),
+        url("./fonts/Symbola-basic.eot");
+}
+
 .pm-math {
     font-family: "Times New Roman", Symbola, serif;
 
@@ -15,6 +33,12 @@
 
         &.no-padding-left {
             padding-left: 0;
+        }
+    }
+
+    .differential {
+        .has-focus {
+            background-color: rgba(255, 217, 168, 0.62);
         }
     }
 
@@ -51,6 +75,70 @@
             width: 100%;
             text-align: center;
             padding-left: 1px;
+        }
+    }
+
+    .integral {
+        position: relative;
+        display: inline-flex;
+        align-items: baseline;
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
+
+        .integral-symbol {
+            font-size: 250%;
+            font-family: Symbola;
+            transform: scaleX(0.7);
+            vertical-align: middle;
+
+            span {
+                vertical-align: inherit;
+            }
+        }
+
+        .integral-bounds {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-self: normal;
+
+            .right-bound {
+                font-size: 80%;
+            }
+
+            .left-bound {
+                font-size: 80%;
+                margin-left: -75%;
+            }
+        }
+
+        .inner {
+            margin-left: 0.1rem;
+            margin-right: 0.2rem;
+        }
+
+        .wrt {
+            font-style: italic;
+        }
+    }
+
+    .radical {
+        position: relative;
+        display: inline-flex;
+
+        .inner {
+            padding: 0.1em 1px 0 1px;
+            margin: 0.1em 0.1em 0 1em;
+        }
+
+        .radical-symbol {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
         }
     }
 

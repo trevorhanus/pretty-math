@@ -44,13 +44,15 @@ export const paragraphBlockConfig: IBlockConfig<ParagraphBlock> = {
         children: {
             inner: {
                 canBeNull: false,
-                order: 0,
+                childNumber: 0,
                 transparentEndBlock: true,
             },
         },
         cursorOrder: {
-            leftToRight: [],
-            upToDown: [],
+            right: {},
+            left: {},
+            up: {},
+            down: {}
         },
         entry: {
             fromLeft: {
