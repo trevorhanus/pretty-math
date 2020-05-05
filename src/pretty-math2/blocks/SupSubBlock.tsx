@@ -22,12 +22,29 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
 
     printers: {
         calchub: ({ block, children }) => {
+            let subscipt: PrinterOutput;
+
+            if (!block.childMap.sub.isEmpty) {
+                subscipt = PrinterOutput.fromMany([
+                    { text: '_{', source: block },
+                    children.sub,
+                    { text: '}', source: block }
+                ]);
+            }
+
+            let superscript: PrinterOutput;
+
+            if (!block.childMap.sup.isEmpty) {
+                superscript = PrinterOutput.fromMany([
+                    { text: '^{', source: block },
+                    children.sup,
+                    { text: '}', source: block }
+                ]);
+            }
+
             return PrinterOutput.fromMany([
-                { text: '_{', source: block },
-                children.sub,
-                { text: '}^{', source: block },
-                children.sup,
-                { text: '}', source: block }
+                subscipt,
+                superscript
             ]);
         },
         python: ({ block, children }) => {
@@ -44,16 +61,22 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
         children: {
             sub: {
                 canBeNull: true,
-                order: 0
+                childNumber: 0
             },
             sup: {
                 canBeNull: true,
-                order: 1
+                childNumber: 1
             }
         },
         cursorOrder: {
-            leftToRight: [],
-            upToDown: ['sup', 'sub']
+            right: {},
+            left: {},
+            up: {
+                'sub': 'sup'
+            },
+            down: {
+                'sup': 'sub'
+            }
         },
         entry: {
             fromLeft: {

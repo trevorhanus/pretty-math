@@ -6,9 +6,36 @@ export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<H
     // Still a work in progress. Looking into other ways to find the keys we want
     const keyValue = e.target.value;
 
+    const { focus } = editorState.selection;
+    if (focus.parent.type === 'math:derivative' && focus.list.name === 'wrt') {
+        if (keyValue === 'd') {
+            const newBlock = BlockFactory.createBlock('math:differential', { displayValue: '∂' });
+            editorState.insertBlock(newBlock);
+            editorState.selection.anchorAt(newBlock.childMap.inner.start);
+            return;
+        }
+        return;
+    }
     if (keyValue === 's') {
         const newBlock = BlockFactory.createBlock('math:function', { displayValue: 'sin' });
         editorState.insertBlock(newBlock);
+        return;
+    }
+    if (keyValue === 'r') {
+        const newBlock = BlockFactory.createBlock('math:squareRoot');
+        editorState.insertBlock(newBlock);
+        editorState.selection.anchorAt(newBlock.childMap.inner.start);
+        return;
+    }
+    if (keyValue === 'v') {
+        const newBlock = BlockFactory.createBlock('math:derivative');
+        newBlock.childMap.wrt.insertBlock(newBlock.childMap.wrt.start, BlockFactory.createBlock('math:differential', { displayValue: '∂' }));
+        editorState.insertBlock(newBlock);
+        editorState.selection.anchorAt(newBlock.childMap.wrt.start);
+        return;
+    }
+    if (keyValue === 'i') {
+        handleIntegral(editorState);
         return;
     }
     // Fraction
@@ -43,6 +70,14 @@ function handleFraction(editorState: Editor) {
     const newBlock = BlockFactory.createBlock('math:fraction');
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.childMap['num'].start);
+}
+
+function handleIntegral(editorState: Editor) {
+    const newBlock = BlockFactory.createBlock('math:integral');
+    newBlock.childMap.rightBound.addEndBlock();
+    newBlock.childMap.leftBound.addEndBlock();
+    editorState.insertBlock(newBlock);
+    editorState.selection.anchorAt(newBlock.childMap.rightBound.start);
 }
 
 function handleSubscript(editorState: Editor) {

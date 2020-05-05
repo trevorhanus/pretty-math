@@ -59,22 +59,26 @@ export class MathRootBlock extends RootBlock {
 
     @action
     handleContentChange() {
-        const { text, sourceMap } = this.toCalchub();
-        const parseResult = parseCalchub(text);
-
-        if (parseResult.error) {
-            return;
-        }
-
-        // now for every block, set the corresponding mathNode
-        walkTree(this, block => {
-            const startIndex = getStartIndexForSource(block, sourceMap);
-
-            if (startIndex == null) {
+        try {
+            const { text, sourceMap } = this.toCalchub();
+            const parseResult = parseCalchub(text);
+    
+            if (parseResult.error) {
                 return;
             }
-
-            block.mathNode = parseResult.sourceMap[startIndex];
-        });
+    
+            // now for every block, set the corresponding mathNode
+            walkTree(this, block => {
+                const startIndex = getStartIndexForSource(block, sourceMap);
+    
+                if (startIndex == null) {
+                    return;
+                }
+    
+                block.mathNode = parseResult.sourceMap[startIndex];
+            });
+        } catch (e) {
+            
+        }
     }
 }

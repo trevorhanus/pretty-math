@@ -56,15 +56,23 @@ export interface IEntryConfig {
 }
 
 export interface ICursorOrderConfig {
-    leftToRight: ChildName[];
-    rightToLeft?: ChildName[];
-    upToDown: ChildName[];
-    downToUp?: ChildName[];
+    right: {
+        [name: string]: ChildName;
+    },
+    left: {
+        [name: string]: ChildName;
+    },
+    up: {
+        [name: string]: ChildName;
+    },
+    down: {
+        [name: string]: ChildName;
+    }
 }
 
 export interface IBlockListConfig {
-    canBeNull?: boolean;
-    order: number;
+    canBeNull: boolean;
+    childNumber: number;
     transparentEndBlock?: boolean;
 }
 

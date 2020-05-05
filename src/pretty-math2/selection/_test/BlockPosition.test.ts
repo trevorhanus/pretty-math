@@ -11,7 +11,7 @@ describe('BlockPosition', () => {
             expect(root.toString()).to.eq('root');
             expect(root.depth).to.eq(0);
             expect(root.index).to.eq(null);
-            expect(root.listNumber).to.eq(null);
+            expect(root.childNumber).to.eq(null);
         });
 
         it('incLevel', () => {
@@ -21,7 +21,7 @@ describe('BlockPosition', () => {
             expect(l1.depth).to.eq(1);
             expect(l1.toString()).to.eq('root:0');
             expect(l1.index).to.eq(null);
-            expect(l1.listNumber).to.eq(0);
+            expect(l1.childNumber).to.eq(0);
         });
 
         it('forIndex', () => {
@@ -31,7 +31,7 @@ describe('BlockPosition', () => {
             expect(i2.isRoot).to.eq(false);
             expect(i2.depth).to.eq(1);
             expect(i2.index).to.eq(2);
-            expect(i2.listNumber).to.eq(0);
+            expect(i2.childNumber).to.eq(0);
             expect(i2.toString()).to.eq('root:0.2');
         });
 
@@ -42,13 +42,13 @@ describe('BlockPosition', () => {
             const p1Str = 'root:4.2:5.4';
             const p1 = BlockPosition.fromString(p1Str);
             expect(p1.toString()).to.eq(p1Str);
-            expect(p1.listNumber).to.eq(5);
+            expect(p1.childNumber).to.eq(5);
             expect(p1.index).to.eq(4);
 
             const p2Str = 'root:1.2';
             const p2 = BlockPosition.fromString(p2Str);
             expect(p2.toString()).to.eq(p2Str);
-            expect(p2.listNumber).to.eq(1);
+            expect(p2.childNumber).to.eq(1);
             expect(p2.index).to.eq(2);
         });
 
