@@ -207,19 +207,20 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return React.cloneElement(renderedBlock, props);
     }
 
-    serialize(): BlockState<D, C> {
+    serialize(opts?: { omitId: boolean }): BlockState<D, C> {
+        opts = opts || { omitId: false };
         return omitEmpty({
-            id: this.id,
+            id: opts.omitId ? null : this.id,
             type: this.type,
             data: this.data,
             children: mapObject(this.childMap, (childName: string, list: BlockList) => {
-                return list.serialize();
+                return list.serialize(opts);
             }),
         });
     }
 
     toCalchub(): PrinterOutput {
-        const children = mapObject(this.childMap, (name: C, child: Block) => {
+        const children = mapObject(this.childMap, (name: C, child: BlockList) => {
             return child.toCalchub();
         }) as Record<C, PrinterOutput>;
 
@@ -232,7 +233,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     toPython(): PrinterOutput {
-        const children = mapObject(this.childMap, (name: C, child: Block) => {
+        const children = mapObject(this.childMap, (name: C, child: BlockList) => {
             return child.toPython();
         }) as Record<C, PrinterOutput>;
 
