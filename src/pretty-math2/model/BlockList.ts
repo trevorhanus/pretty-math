@@ -7,7 +7,7 @@ import { BlockFactory } from '../blocks/BlockFactory';
 import { IBlockListConfig, IModel } from '../interfaces';
 import { invariant } from '../utils/invariant';
 import { PrinterOutput } from '../utils/PrinterOutput';
-import { EditorState } from './EditorState';
+import { Editor } from './Editor';
 
 export type BlockListState = BlockState[];
 
@@ -43,7 +43,7 @@ export class BlockList implements IModel<BlockListState> {
         return this._blocks;
     }
 
-    get editor(): EditorState {
+    get editor(): Editor {
         invariant(!this.parent, `BlockList does not have a parent.`);
         return this.parent.editor;
     }

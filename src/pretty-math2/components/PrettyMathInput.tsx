@@ -3,8 +3,8 @@ import * as React from 'react';
 import { Assistant } from '../assistant/components/Assistant';
 import { IBlockConfig } from '../interfaces';
 import { Block } from '../model';
+import { Editor, SerializedEditorState } from '../model/Editor';
 import { EditorController } from '../model/EditorController';
-import { EditorState, SerializedEditorState } from '../model/EditorState';
 import { Content } from './Content';
 import { Cursor } from './Cursor';
 
@@ -13,7 +13,7 @@ export type CommandHandlerResponse = 'handled' | 'not_handled';
 export interface IPrettyMathInputProps {
     editorState?: SerializedEditorState;
     keyBindingFn?: (e: React.KeyboardEvent) => string;
-    handleCommand?: (command: string, editor: EditorState, e?: React.KeyboardEvent) => CommandHandlerResponse;
+    handleCommand?: (command: string, editor: Editor, e?: React.KeyboardEvent) => CommandHandlerResponse;
     customBlocks?: IBlockConfig<Block>[];
     onBlur?: (e: React.FocusEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;
@@ -23,12 +23,16 @@ export interface IPrettyMathInputProps {
 @observer
 export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> {
     readonly controller: EditorController;
-    readonly editor: EditorState;
+    readonly editor: Editor;
 
     constructor(props: IPrettyMathInputProps) {
         super(props);
-        this.editor = EditorState.createMathRoot(props.editorState);
+        this.editor = Editor.createMathRoot(props.editorState);
         this.controller = new EditorController(props, this.editor);
+    }
+
+    componentWillUnmount() {
+        this.editor.dispose();
     }
 
     render() {

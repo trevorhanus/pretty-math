@@ -1,6 +1,6 @@
 import { action, computed, observable, reaction } from 'mobx';
 import { between, scrollIntoView } from '../../../common';
-import { EditorState } from '../../model/EditorState';
+import { Editor } from '../../model/Editor';
 import { SelectionRange } from '../../selection/SelectionRange';
 import { getMathLibrary, Library } from '../library/Library';
 import { LibraryEntry } from '../library/LibraryEntry';
@@ -15,19 +15,20 @@ const unitsLibrary = null;
 const textLibrary = null;
 
 export class AssistantStore {
-    readonly editor: EditorState;
+    readonly editor: Editor;
+    private _disposeReaction: () => void;
     @observable private _entryIndex: number;
     @observable private _force: AssistantForce;
     @observable private _fullLibrary: boolean;
     @observable private _categoryIndex: number;
 
-    constructor(editor: EditorState) {
+    constructor(editor: Editor) {
         this.editor = editor;
         this._entryIndex = -1;
         this._force = null;
         this._fullLibrary = false;
         this._categoryIndex = 0;
-        reaction(
+        this._disposeReaction = reaction(
             () => this.editor.lastCommand,
             command => {
                 if (command !== 'force_assistant_open' && command !== 'force_assistant_closed') {
@@ -101,7 +102,6 @@ export class AssistantStore {
     @computed
     get suggestions(): LibraryEntry[] {
         const phrase = rangeToCalchub(this.editor.selection.trailingPhraseRange);
-        console.log(`phrase: ${phrase}`);
         return phrase ? this.library.getSuggested(phrase, this.editor) : [];
     }
 
@@ -117,6 +117,10 @@ export class AssistantStore {
     isFocusedCategory(category: string): boolean {
         const index = this.categories.indexOf(category);
         return this._categoryIndex === index;
+    }
+
+    dispose() {
+        this._disposeReaction();
     }
 
     @action

@@ -1,9 +1,9 @@
 import React from 'react';
-import { EditorState } from 'pretty-math2/model/EditorState';
+import { Editor } from 'pretty-math2/model/Editor';
 import { Dir } from 'pretty-math2/interfaces';
 import { hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
 
-export function handleMoveCursor(editorState: EditorState, e: React.KeyboardEvent) {
+export function handleMoveCursor(editorState: Editor, e: React.KeyboardEvent) {
     if (hasCommandModifier(e)) {
 
         switch (e.keyCode) {

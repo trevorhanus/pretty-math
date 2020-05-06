@@ -24,6 +24,15 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
         }
     }
 
+    if (e.shiftKey && hasCommandModifier(e)) {
+        switch (e.keyCode) {
+
+            case 90: // Z
+                return 'redo';
+
+        }
+    }
+
     if (e.shiftKey) {
         switch (e.keyCode) {
 
@@ -46,6 +55,12 @@ export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
 
     if (hasCommandModifier(e)) {
         switch (e.keyCode) {
+
+            case 89: // Y
+                return 'redo';
+
+            case 90: // Z
+                return 'undo';
 
             default:
                 // fall through to non-modified bindings

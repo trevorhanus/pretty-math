@@ -4,12 +4,12 @@ import { walkTree } from '../utils/BlockUtils';
 import { getStartIndexForSource } from '../utils/PrinterOutput';
 import { Block, BlockState } from './Block';
 import { RootBlock as RootBlockType, RootBlockData, RootBlockChildNames } from '../blocks/RootBlock';
-import { EditorState } from './EditorState';
+import { Editor } from './Editor';
 import { action, computed, reaction } from 'mobx';
 import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
 
 export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
-    private _editor: EditorState;
+    private _editor: Editor;
     readonly _position: BlockPosition;
 
     constructor(config: IBlockConfig<RootBlockType>, data?: RootBlockData, id?: string) {
@@ -18,7 +18,7 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     }
 
     @computed
-    get editor(): EditorState | null {
+    get editor(): Editor | null {
         return this._editor;
     }
 
@@ -41,7 +41,7 @@ export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     }
 
     @action
-    setEditor(editor: EditorState) {
+    setEditor(editor: Editor) {
         this._editor = editor;
     }
 }

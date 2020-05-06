@@ -1,5 +1,5 @@
 import { BlockFactory } from '../blocks/BlockFactory';
-import { EditorState } from '../model/EditorState';
+import { Editor } from '../model/Editor';
 import { LibraryEntryConfig } from './library/LibraryEntry';
 
 const algebra: LibraryEntryConfig[] = [
@@ -29,7 +29,7 @@ const algebra: LibraryEntryConfig[] = [
                 }
             }
         },
-        onSelect: (editor: EditorState) => {
+        onSelect: (editor: Editor) => {
             // editor.removeRange(editor.selection.trailingPhraseRange);
             // editor.insertBlock(BlockFactory.createBlock('atomic', { text: '+' }));
             console.log('Addition selected!');
@@ -57,7 +57,7 @@ const algebra: LibraryEntryConfig[] = [
                 }
             }
         },
-        onSelect: (editorState: EditorState) => {
+        onSelect: (editorState: Editor) => {
             const data = {
                 text: '∞',
                 calchub: '\\inf',
@@ -246,7 +246,7 @@ const greek = [
                 }
             }
         },
-        onSelect: (editor: EditorState) => {
+        onSelect: (editor: Editor) => {
             // editor.removeRange(editor.selection.trailingPhraseRange);
             // editor.insertBlock(BlockFactory.createBlock('atomic', { text: '+' }));
             console.log('Alpha selected!');

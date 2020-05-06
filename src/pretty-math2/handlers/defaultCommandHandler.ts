@@ -1,11 +1,11 @@
 import { action, runInAction } from 'mobx';
 import React from 'react';
-import { EditorState } from '../model/EditorState';
+import { Editor } from '../model/Editor';
 import { handleDelete } from './handleDelete';
 import { handleExpandSelection } from './handleExpandSelection';
 import { handleMoveCursor } from './handleMoveCursor';
 
-const logSelection = (editor: EditorState) => {
+const logSelection = (editor: Editor) => {
     const { start, end } = editor.selection.range;
 
     const startData = {
@@ -23,18 +23,20 @@ const logSelection = (editor: EditorState) => {
 };
 
 const commands = {
-    'blur': action((editor: EditorState) => editor.blur()),
+    'blur': action((editor: Editor) => editor.blur()),
     'delete': handleDelete,
-    'force_assistant_open': action((editor: EditorState) => editor.assistant.forceOpen()),
-    'force_assistant_closed': action((editor: EditorState) => editor.assistant.forceClosed()),
+    'expand_selection': handleExpandSelection,
+    'force_assistant_open': action((editor: Editor) => editor.assistant.forceOpen()),
+    'force_assistant_closed': action((editor: Editor) => editor.assistant.forceClosed()),
     'log_calchub': editor => console.log(JSON.stringify(editor.root.toCalchub().text, null, 2)),
     'log_selection': logSelection,
     'log_state': editor => console.log(JSON.stringify(editor.serialize(), null, 2)),
     'move_cursor': handleMoveCursor,
-    'expand_selection': handleExpandSelection,
+    'redo': action((editor: Editor) => editor.history.redo()),
+    'undo': action((editor: Editor) => editor.history.undo()),
 };
 
-export function defaultCommandHandler(command: string, editorState: EditorState, e?: React.SyntheticEvent) {
+export function defaultCommandHandler(command: string, editorState: Editor, e?: React.SyntheticEvent) {
     return runInAction(() => {
         const handler = commands[command];
 

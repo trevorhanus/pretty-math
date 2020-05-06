@@ -1,8 +1,8 @@
 import React from 'react';
 import { BlockFactory } from '../blocks/BlockFactory';
-import { EditorState } from '../model/EditorState';
+import { Editor } from '../model/Editor';
 
-export function handleTextareaChange(editorState: EditorState, e: React.ChangeEvent<HTMLTextAreaElement>) {
+export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<HTMLTextAreaElement>) {
     // Still a work in progress. Looking into other ways to find the keys we want
     const keyValue = e.target.value;
 
@@ -39,13 +39,13 @@ export function handleTextareaChange(editorState: EditorState, e: React.ChangeEv
     editorState.insertBlock(newBlock);
 }
 
-function handleFraction(editorState: EditorState) {
+function handleFraction(editorState: Editor) {
     const newBlock = BlockFactory.createBlock('math:fraction');
     editorState.insertBlock(newBlock);
     editorState.selection.anchorAt(newBlock.childMap['num'].start);
 }
 
-function handleSubscript(editorState: EditorState) {
+function handleSubscript(editorState: Editor) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {
@@ -68,7 +68,7 @@ function handleSubscript(editorState: EditorState) {
     editorState.selection.anchorAt(newBlock.childMap.sub.start);
 }
 
-function handleSuperscript(editorState: EditorState) {
+function handleSuperscript(editorState: Editor) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {

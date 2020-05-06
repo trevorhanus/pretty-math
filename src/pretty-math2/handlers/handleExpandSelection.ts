@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dir } from 'pretty-math2/interfaces';
-import { EditorState } from 'pretty-math2/model/EditorState';
+import { Editor } from 'pretty-math2/model/Editor';
 import { hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
 
-export function handleExpandSelection(editorState: EditorState, e: React.KeyboardEvent) {
+export function handleExpandSelection(editorState: Editor, e: React.KeyboardEvent) {
     if (hasCommandModifier(e)) {
         switch (e.keyCode) {
             case 37: // Left

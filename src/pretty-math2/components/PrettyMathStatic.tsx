@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { EditorState, SerializedEditorState } from '../model/EditorState';
+import { Editor, SerializedEditorState } from '../model/Editor';
 import { Content } from './Content';
 
 export interface IPrettyMathStaticProps {
@@ -9,11 +9,11 @@ export interface IPrettyMathStaticProps {
 
 @observer
 export class PrettyMathStatic extends React.Component<IPrettyMathStaticProps, {}> {
-    editor: EditorState;
+    editor: Editor;
 
     constructor(props: IPrettyMathStaticProps) {
         super(props);
-        this.editor = EditorState.fromState(this.props.editorState);
+        this.editor = Editor.fromState(this.props.editorState);
     }
 
     render() {
