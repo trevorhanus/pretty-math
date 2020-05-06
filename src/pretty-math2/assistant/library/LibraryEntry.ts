@@ -1,5 +1,5 @@
 import { generateId } from 'common';
-import { EditorState, SerializedEditorState } from '../../model/EditorState';
+import { Editor, SerializedEditorState } from '../../model/Editor';
 
 export interface LibraryEntryConfig {
     // keywords are words that will be used when indexing the entry
@@ -25,11 +25,11 @@ export interface LibraryEntryConfig {
     // an optional callback that allows the entry to
     // determine if it should be suggested based on the current
     // state of the engine
-    doSuggest?: (editor: EditorState) => boolean;
+    doSuggest?: (editor: Editor) => boolean;
 
     // required callback that is invoked when the user
     // selects the entry. This callback should modify the editorState
-    onSelect: (editor: EditorState, entry: LibraryEntry) => void;
+    onSelect: (editor: Editor, entry: LibraryEntry) => void;
 }
 
 export class LibraryEntry {
@@ -66,11 +66,11 @@ export class LibraryEntry {
         return this._config.keywords || [];
     }
 
-    doSuggest(editor: EditorState): boolean {
+    doSuggest(editor: Editor): boolean {
         return this._config.doSuggest ? this._config.doSuggest(editor) : true;
     }
 
-    onSelect(editor: EditorState) {
+    onSelect(editor: Editor) {
         this._config.onSelect(editor, this);
     }
 

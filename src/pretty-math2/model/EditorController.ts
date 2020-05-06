@@ -3,14 +3,14 @@ import * as React from 'react';
 import { IPrettyMathInputProps } from '../components/PrettyMathInput';
 import { defaultCommandHandler } from '../handlers/defaultCommandHandler';
 import { defaultKeyBindingFn } from '../keybindings/defaultKeyBindingFn';
-import { EditorState } from './EditorState';
+import { Editor } from './Editor';
 import { handleTextareaChange } from 'pretty-math2/handlers/handleTextareaChange';
 
 export class EditorController {
-    readonly editorState: EditorState;
+    readonly editorState: Editor;
     readonly props: IPrettyMathInputProps;
 
-    constructor(props: IPrettyMathInputProps, editorState: EditorState) {
+    constructor(props: IPrettyMathInputProps, editorState: Editor) {
         this.editorState = editorState;
         this.props = props;
     }

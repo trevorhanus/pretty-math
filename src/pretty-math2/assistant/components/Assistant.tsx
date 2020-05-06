@@ -2,7 +2,7 @@ import { action } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { EditorState } from '../../model/EditorState';
+import { Editor } from '../../model/EditorState';
 import { LibraryEntry } from '../library/LibraryEntry';
 import { AssistantForce } from '../stores/AssistantStore';
 import { AssistantDialog } from './AssistantDialog';
@@ -12,7 +12,7 @@ const PM_ASSISTANT_PORTAL_ID = 'pm-assistant-portal';
 
 export interface IAssistantProps {
     boundingViewport?: HTMLElement;
-    editor: EditorState;
+    editor: Editor;
     onCloseRequested: () => void;
     target: HTMLElement;
 }

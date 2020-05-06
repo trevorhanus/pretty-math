@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe } from "mocha";
-import { SerializedEditorState } from 'pretty-math2/model/EditorState';
+import { SerializedEditorState } from 'pretty-math2/model/Editor';
 
 describe('Selection Range', () => {
     it.skip('TODO: Need to add Selection Range tests');

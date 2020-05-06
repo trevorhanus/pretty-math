@@ -5,21 +5,24 @@ import { removeRange } from 'pretty-math2/utils/RangeUtils';
 import * as React from 'react';
 import { AssistantStore } from '../assistant/stores/AssistantStore';
 import { BlockFactory } from '../blocks/BlockFactory';
-import { Selection } from '../selection/Selection';
+import { History } from '../history/History';
+import { Selection, SerializedSelectionState } from '../selection/Selection';
 import { Block, BlockState } from './Block';
 import { BlockList } from './BlockList';
 import { MathRootBlock, RootBlock } from './RootBlock';
 
 export interface SerializedEditorState {
     root: BlockState;
+    selection: SerializedSelectionState;
 }
 
-export class EditorState {
+export class Editor {
     @observable readonly containerRef: React.RefObject<HTMLDivElement>;
     readonly hiddenTextareaRef: React.RefObject<HTMLTextAreaElement>;
     @observable private _hasFocus: boolean;
     @observable private _lastCommand: string;
     readonly assistant: AssistantStore;
+    readonly history: History;
     readonly root: RootBlock;
     readonly selection: Selection;
 
@@ -29,10 +32,12 @@ export class EditorState {
         this._hasFocus = false;
         this._lastCommand = null;
         this.assistant = new AssistantStore(this);
+        this.history = new History(this);
         this.root = rootBlock;
         this.root.setEditor(this);
         this.selection = new Selection(this);
         this.applyState(initialState);
+        this.history.init();
     }
 
     get inner(): BlockList {
@@ -62,9 +67,13 @@ export class EditorState {
 
         const oldFocus = this.selection.focus;
         this.root.applyState(state.root);
-        // does the previously focused block still exist?
-        const newFocus = this.root.getBlockById(oldFocus.id) || this.root.childMap.inner.start;
-        this.selection.anchorAt(newFocus);
+        if (state.selection) {
+            this.selection.applyState(state.selection);
+        } else {
+            // does the previously focused block still exist?
+            const newFocus = this.root.getBlockById(oldFocus.id) || this.root.childMap.inner.start;
+            this.selection.anchorAt(newFocus);
+        }
     }
 
     blur() {
@@ -73,6 +82,12 @@ export class EditorState {
 
     focus() {
         this.hiddenTextareaRef.current.focus();
+    }
+
+    @action
+    dispose() {
+        this.assistant.dispose();
+        this.history.dispose();
     }
 
     // Didn't import Block before this
@@ -193,17 +208,17 @@ export class EditorState {
     @action
     static createTextRoot(state?: SerializedEditorState) {
         const root = BlockFactory.createBlock('root') as RootBlock;
-        const editor = new EditorState(root);
+        const editor = new Editor(root);
         if (state) {
             editor.applyState(state);
         }
-        return new EditorState(root);
+        return new Editor(root);
     }
 
     @action
-    static createMathRoot(state?: SerializedEditorState): EditorState {
+    static createMathRoot(state?: SerializedEditorState): Editor {
         const root = BlockFactory.createBlock('root:math') as MathRootBlock;
-        const editor = new EditorState(root);
+        const editor = new Editor(root);
         if (state) {
             editor.applyState(state);
         }
@@ -211,12 +226,12 @@ export class EditorState {
     }
 
     @action
-    static fromState(state: SerializedEditorState): EditorState {
+    static fromState(state: SerializedEditorState): Editor {
         if (state.root.type === 'root:math') {
-            return EditorState.createMathRoot(state);
+            return Editor.createMathRoot(state);
         }
         if (state.root.type === 'root') {
-            return EditorState.createTextRoot(state);
+            return Editor.createTextRoot(state);
         }
         throw new Error('Invalid state object.');
     }
@@ -224,6 +239,7 @@ export class EditorState {
     serialize(): SerializedEditorState {
         return {
             root: this.root.serialize(),
+            selection: this.selection.serialize(),
         }
     }
 }

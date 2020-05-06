@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { EditorState } from './model/EditorState';
+import { Editor } from './model/Editor';
 import { PrinterOutput } from './utils/PrinterOutput';
 
 export enum Dir {
@@ -23,7 +23,7 @@ export type PrinterFn<B> = (props: PrinterProps<B>) => PrinterOutput;
 
 export interface BlockRenderProps<B> {
     block: B;
-    editor: EditorState;
+    editor: Editor;
     style: CSSProperties;
     children?: Record<string, React.ReactElement>;
 }

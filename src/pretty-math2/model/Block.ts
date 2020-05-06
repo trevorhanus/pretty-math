@@ -18,7 +18,7 @@ import {
 import { mapObject } from '../utils/mapObject';
 import { PrinterOutput } from '../utils/PrinterOutput';
 import { someObject } from '../utils/someObject';
-import { EditorState } from './EditorState';
+import { Editor } from './Editor';
 
 declare global {
     interface MouseEvent {
@@ -73,7 +73,7 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
         return this.config.composite && this.config.composite.cursorOrder;
     }
 
-    get editor(): EditorState {
+    get editor(): Editor {
         return this.list && this.list.editor;
     }
 

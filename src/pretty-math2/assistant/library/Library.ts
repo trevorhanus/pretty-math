@@ -1,5 +1,5 @@
 import elasticlunr from 'elasticlunr';
-import { EditorState } from '../../model/EditorState';
+import { Editor } from '../../model/Editor';
 import { LibraryEntry } from './LibraryEntry';
 import { mathEntries } from '../math.entries';
 
@@ -34,7 +34,7 @@ export class Library {
         return this._categories.get(category);
     }
 
-    getSuggested(phrase: string, editorState: EditorState): LibraryEntry[] {
+    getSuggested(phrase: string, editorState: Editor): LibraryEntry[] {
         return this.search(phrase, entry => {
             return entry.doSuggest(editorState);
         });

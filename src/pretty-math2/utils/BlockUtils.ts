@@ -1,5 +1,5 @@
 import { Block } from 'pretty-math2/model';
-import { EditorState } from '../model/EditorState';
+import { Editor } from '../model/Editor';
 import { offsetFromAncestor } from './DOMUtils';
 import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
 
@@ -66,7 +66,7 @@ export function walkTree(block: Block, iterator: (block: Block) => void) {
     }
 }
 
-export function findClosestBlock(editor: EditorState, e: React.MouseEvent): Block {
+export function findClosestBlock(editor: Editor, e: React.MouseEvent): Block {
     const containerRef = editor.containerRef.current;
 
     if (!containerRef) {

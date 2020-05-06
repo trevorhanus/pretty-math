@@ -1,14 +1,19 @@
 import { action, computed } from 'mobx';
 import { Block } from 'pretty-math2/model';
-import { EditorState } from 'pretty-math2/model/EditorState';
+import { Editor } from '../model/Editor';
 import { SelectionRange } from './SelectionRange';
 
+export interface SerializedSelectionState {
+    anchor: string;
+    focus: string;
+}
+
 export class Selection {
-    readonly editorState: EditorState;
+    readonly editor: Editor;
     readonly range: SelectionRange;
 
-    constructor(editorState: EditorState) {
-        this.editorState = editorState;
+    constructor(editor: Editor) {
+        this.editor = editor;
         this.range = new SelectionRange();
         this.anchorAtStart();
     }
@@ -50,11 +55,18 @@ export class Selection {
         return range;
     }
 
+    isBlockSelected(block: Block): boolean {
+        return !this.isCollapsed &&
+            (block === this.range.start ||
+                (block.position.isRightOf(this.range.start.position) &&
+                    block.position.isLeftOf(this.range.end.position)));
+    }
+
     @action
     anchorAt(block: Block) {
         if (block == null) return;
 
-        if (this.editorState.root.contains(block)) {
+        if (this.editor.root.contains(block)) {
             this.range.setAnchor(block);
             return;
         }
@@ -64,29 +76,40 @@ export class Selection {
 
     @action
     anchorAtEnd() {
-        this.anchorAt(this.editorState.inner.end);
+        this.anchorAt(this.editor.inner.end);
     }
 
     @action
     anchorAtStart() {
-        this.anchorAt(this.editorState.inner.start);
+        this.anchorAt(this.editor.inner.start);
+    }
+
+    @action
+    applyState(state?: SerializedSelectionState) {
+        if (!state) {
+            return;
+        }
+
+        const { anchor, focus } = state;
+        this.anchorAt(this.editor.root.getBlockById(anchor));
+        this.focusAt(this.editor.root.getBlockById(focus));
     }
 
     @action
     focusAt(block: Block) {
         if (block == null) return;
-        if (this.editorState.root.contains(block)) {
+        if (this.editor.root.contains(block)) {
             this.range.setFocus(block);
             return;
         }
-        console.warn("Attempted to set the cursor focus to an invalid block.");
+        console.warn("Attempted to set the cursor focus to a block not in the tree.");
     }
 
-    isBlockSelected(block: Block): boolean {
-        return !this.isCollapsed &&
-            (block === this.range.start ||
-            (block.position.isRightOf(this.range.start.position) &&
-             block.position.isLeftOf(this.range.end.position)));
+    serialize(): SerializedSelectionState {
+        return {
+            anchor: this.range.anchor ? this.range.anchor.id : null,
+            focus: this.range.focus ? this.range.focus.id : null,
+        };
     }
 }
 

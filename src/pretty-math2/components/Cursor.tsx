@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { haveWindow } from '../../common';
-import { EditorState } from '../model/EditorState';
+import { Editor } from '../model/EditorState';
 import { offsetFromAncestor } from '../utils/DOMUtils';
 
 export interface ICursorProps {
-    editorState: EditorState;
+    editorState: Editor;
 }
 
 const BLINK_DELAY = 300;
