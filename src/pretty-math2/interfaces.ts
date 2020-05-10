@@ -1,4 +1,5 @@
 import React, { CSSProperties } from 'react';
+import { Block } from './model/Block';
 import { Editor } from './model/Editor';
 import { PrinterOutput } from './utils/PrinterOutput';
 
@@ -82,4 +83,5 @@ export interface ICompositeBlockConfig {
     };
     cursorOrder: ICursorOrderConfig;
     entry: IEntryConfig;
+    handleRemoveOutOf?: (block: Block, childList: string, editor: Editor) => 'handled' | 'not_handled';
 }

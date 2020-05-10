@@ -179,18 +179,18 @@ export class Editor {
             return;
         }
 
-        if (focus.list.isOnlyEndBlock && focus.list.config.canBeNull) {
-            const { parent } = focus;
-            focus.list.removeBlock(focus);
-            if (parent.allChildrenAreEmpty) {
-                const { list, next } = parent;
-                list.removeBlock(parent);
-                this.selection.anchorAt(next);
-                return;
-            }
+        const { parent } = focus;
+        const { composite } = parent.config;
+
+        let handled = null;
+        if (composite && composite.handleRemoveOutOf) {
+            handled = composite.handleRemoveOutOf(parent, focus.list.name, this);
         }
 
-        this.selection.anchorAt(focus.parent);
+        if (handled !== 'handled') {
+            this.selection.anchorAt(parent);
+            this.selection.focusAt(parent.next);
+        }
     }
 
     @action

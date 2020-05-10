@@ -1,5 +1,7 @@
 import React from 'react';
 import { Block, BlockList } from 'pretty-math2/model';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
+import { Editor } from 'pretty-math2/model/Editor';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
@@ -139,6 +141,25 @@ export const integralBlockConfig: IBlockConfig<IntegralBlock> = {
                 left: ['wrt'],
                 down: []
             }
+        },
+        handleRemoveOutOf: (block: IntegralBlock, childList: string, editor: Editor) => {
+            if (childList === 'rightBound' || childList === 'leftBound') {
+                if (block.childMap.rightBound.isEmpty &&
+                    block.childMap.leftBound.isEmpty) {
+                    block.childMap.rightBound.removeBlock(block.childMap.rightBound.start);
+                    block.childMap.leftBound.removeBlock(block.childMap.leftBound.start);
+                    editor.selection.anchorAt(block.childMap.inner.start);
+                    return 'handled';
+                }
+            }
+            if (childList === 'inner') {
+                const blocks = copyBlocksInChild(block, 'inner');
+                insertBlocksToRight(block, blocks);
+                editor.selection.anchorAt(block.next);
+                block.list.removeBlock(block);
+                return 'handled';
+            }
+            return 'not_handled';
         }
     }
 };

@@ -56,8 +56,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @computed
-    get allChildrenAreEmpty(): boolean {
-        return this.children.every(c => c.isEmpty);
+    get allChildrenAreNull(): boolean {
+        return this.children.every(c => c.isNull);
     }
 
     get children(): BlockList[] {
@@ -65,8 +65,8 @@ export class Block<D = any, C extends string = string> implements IModel<BlockSt
     }
 
     @computed
-    get childrenAreOnlyEndBlock(): boolean {
-        return this.children.every(c => c.isOnlyEndBlock);
+    get childrenAreEmpty(): boolean {
+        return this.children.every(c => c.isEmpty);
     }
 
     get cursorOrder(): ICursorOrderConfig {

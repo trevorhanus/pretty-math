@@ -1,7 +1,9 @@
+import React from 'react';
+import { Block, BlockList } from 'pretty-math2/model';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
+import { Editor } from 'pretty-math2/model/Editor';
 import { extractDifferentialSymbolNames, parseCalchub } from 'math';
 import { IBlockConfig } from 'pretty-math2/interfaces';
-import { Block, BlockList } from 'pretty-math2/model';
-import React from 'react';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
 export interface DerivativeBlockData {}
@@ -125,6 +127,13 @@ export const derivativeBlockConfig: IBlockConfig<DerivativeBlock> = {
                 left: ['inner'],
                 down: []
             }
+        },
+        handleRemoveOutOf: (block: DerivativeBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+            const blocks = copyBlocksInChild(block, 'inner');
+            insertBlocksToRight(block, blocks);
+            editor.selection.anchorAt(block.next);
+            block.list.removeBlock(block);
+            return 'handled';
         }
     }
 };

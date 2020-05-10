@@ -2,6 +2,15 @@ import { Block } from 'pretty-math2/model';
 import { Editor } from '../model/Editor';
 import { offsetFromAncestor } from './DOMUtils';
 import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
+import { invariant } from './invariant';
+
+export function cloneBlocks(blocks: Block[]): Block[] {
+    const clone = [];
+    blocks.forEach(block => {
+        clone.push(block.deepClone());
+    });
+    return clone;
+}
 
 export function isRootBlock(block: Block): boolean {
     return block.type === 'root' || block.type === 'root:math';
@@ -48,6 +57,27 @@ export function getLeftParenPair(rightParen: Block) {
     }
 
     return null;
+}
+
+export function copyBlocksInChild(block: Block, child: string): Block[] {
+    invariant(block.childMap[child] == null, `Cannot copy blocks in child: ${child}. Not a valid child of block type: ${block.type}`);
+    return cloneBlocks(block.childMap[child].blocks);
+}
+
+export function insertBlocksToRight(block: Block, blocks: Block[]) {
+    if (block.type === 'end') {
+        invariant(block.type === 'end', 'Attempted to insert blocks right of end block');
+        return;
+    }
+    blocks.forEach(b => {
+        block.list.insertBlock(block.next, b);
+    });
+}
+
+export function insertBlocksToLeft(block: Block, blocks: Block[]) {
+    blocks.forEach(b => {
+        block.list.insertBlock(block, b);
+    });
 }
 
 export function walkTree(block: Block, iterator: (block: Block) => void) {
