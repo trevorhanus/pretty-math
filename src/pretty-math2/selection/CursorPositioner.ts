@@ -115,7 +115,7 @@ function getNonNullList(parent: Block, name: string, dir: Dir): BlockList {
     }
     let childName = parent.cursorOrder[direction][name];
     if (childName) {
-        while (parent.childMap[childName].isEmpty) {
+        while (parent.childMap[childName].isNull) {
             childName = parent.cursorOrder[direction][childName];
             if (!childName) {
                 return null;
@@ -130,7 +130,7 @@ function getNonNullEntryBlockList(block: Block, list: string[]): BlockList {
         return null;
     }
     let index = 0;
-    while (index < list.length && block.childMap[list[index]].isEmpty) {
+    while (index < list.length && block.childMap[list[index]].isNull) {
         index++;
     }
     return block.childMap[list[index]];

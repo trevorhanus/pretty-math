@@ -49,12 +49,12 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     @computed
-    get isEmpty(): boolean {
+    get isNull(): boolean {
         return this.blocks.length === 0;
     }
 
     @computed
-    get isOnlyEndBlock(): boolean {
+    get isEmpty(): boolean {
         return this.blocks.length === 1 && this.blocks[0].type === 'end';
     }
 
@@ -150,7 +150,7 @@ export class BlockList implements IModel<BlockListState> {
         if (!blocks || blocks.length === 0) {
             return;
         }
-        if (this.isEmpty) {
+        if (this.isNull) {
             this.addEndBlock();
         }
         blocks.forEach(b => {
@@ -160,7 +160,7 @@ export class BlockList implements IModel<BlockListState> {
 
     @action
     addEndBlock(): EndBlock {
-        if (this.isEmpty || this.end.type !== 'end') {
+        if (this.isNull || this.end.type !== 'end') {
             const endBlock = BlockFactory.createBlock('end');
             this.splice(-1, 0, endBlock);
         }
@@ -180,6 +180,10 @@ export class BlockList implements IModel<BlockListState> {
 
     @action
     insertBlock(focus: Block, insertBlock: Block) {
+        // End blocks can only be inserted using the addEndBlock() function
+        if (insertBlock.type === 'end') {
+            return;
+        }
         invariant(!this.contains(focus), `BlockList.insertBlock invoked with a block not in the list.`);
         this.splice(this.getIndex(focus), 0, insertBlock);
     }

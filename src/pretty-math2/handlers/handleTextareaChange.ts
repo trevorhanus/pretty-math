@@ -84,14 +84,14 @@ function handleSubscript(editorState: Editor) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {
-        if (prev.childMap.sub.isEmpty) {
+        if (prev.childMap.sub.isNull) {
             prev.childMap.sub.addEndBlock();
         }
         editorState.selection.anchorAt(prev.childMap.sub.end);
         return;
     }
     if (focus.type === 'math:supsub') {
-        if (focus.childMap.sub.isEmpty) {
+        if (focus.childMap.sub.isNull) {
             focus.childMap.sub.addEndBlock();
         }
         editorState.selection.anchorAt(focus.childMap.sub.start);
@@ -107,14 +107,14 @@ function handleSuperscript(editorState: Editor) {
     const { focus } = editorState.selection;
     const { prev } = focus;
     if (prev && prev.type === 'math:supsub') {
-        if (prev.childMap.sup.isEmpty) {
+        if (prev.childMap.sup.isNull) {
             prev.childMap.sup.addEndBlock();
         }
         editorState.selection.anchorAt(prev.childMap.sup.end);
         return;
     }
     if (focus.type === 'math:supsub') {
-        if (focus.childMap.sup.isEmpty) {
+        if (focus.childMap.sup.isNull) {
             focus.childMap.sup.addEndBlock();
         }
         editorState.selection.anchorAt(focus.childMap.sup.start);

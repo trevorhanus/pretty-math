@@ -1,7 +1,10 @@
+import React from 'react';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 import { Block } from 'pretty-math2/model';
+import { BlockFactory } from './BlockFactory';
+import { copyBlocksInChild, insertBlocksToRight, insertBlocksToLeft } from 'pretty-math2/utils/BlockUtils';
+import { Editor } from 'pretty-math2/model/Editor';
 import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
-import React from 'react';
 
 export interface FractionBlockData {}
 export type FractionBlockChildNames = 'num' | 'denom';
@@ -73,6 +76,27 @@ export const fractionBlockConfig: IBlockConfig<FractionBlock> = {
                 left: ['num'],
                 down: ['denom']
             }
+        },
+        handleRemoveOutOf: (block: FractionBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+            if (childList === 'num' && block.childMap.denom.isEmpty) {
+                const blocks = copyBlocksInChild(block, 'num');
+                insertBlocksToRight(block, blocks);
+                editor.selection.anchorAt(block.next);
+                block.list.removeBlock(block);
+                return 'handled';
+            }
+            if (childList === 'denom') {
+                const numBlocks = copyBlocksInChild(block, 'num');
+                insertBlocksToLeft(block, numBlocks);
+                const denomBlocks = copyBlocksInChild(block, 'denom');
+                insertBlocksToRight(block, denomBlocks);
+                const newBlock = BlockFactory.createBlock('atomic', { text: '/' });
+                block.list.insertBlock(block, newBlock);
+                editor.selection.anchorAt(block.next);
+                block.list.removeBlock(block);
+                return 'handled';
+            }
+            return 'not_handled';
         }
     }
 };

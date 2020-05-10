@@ -1,7 +1,9 @@
-import { IBlockConfig } from 'pretty-math2/interfaces';
-import { Block } from 'pretty-math2/model';
-import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
 import React from 'react';
+import { Block } from 'pretty-math2/model';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
+import { Editor } from 'pretty-math2/model/Editor';
+import { IBlockConfig } from 'pretty-math2/interfaces';
+import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
 
 export interface SupSubBlockData {}
 export type SupSubBlockChildNames = 'sup' | 'sub';
@@ -24,7 +26,7 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
         calchub: ({ block, children }) => {
             let subscipt: PrinterOutput;
 
-            if (!block.childMap.sub.isEmpty) {
+            if (!block.childMap.sub.isNull) {
                 subscipt = PrinterOutput.fromMany([
                     { text: '_{', source: block },
                     children.sub,
@@ -34,7 +36,7 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
 
             let superscript: PrinterOutput;
 
-            if (!block.childMap.sup.isEmpty) {
+            if (!block.childMap.sup.isNull) {
                 superscript = PrinterOutput.fromMany([
                     { text: '^{', source: block },
                     children.sup,
@@ -89,6 +91,42 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
                 left: ['sub', 'sup'],
                 down: ['sub', 'sup']
             }
+        },
+        handleRemoveOutOf: (block: SupSubBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+            let handled: 'handled' | 'not_handled' = 'not_handled';
+            if (childList === 'sup') {
+                if (block.childMap.sup.isEmpty) {
+                    block.childMap.sup.removeBlock(block.childMap.sup.start);
+                    editor.selection.anchorAt(block);
+                    handled = 'handled';
+                }
+                if (block.childMap.sub.isNull) {
+                    const blocks = copyBlocksInChild(block, 'sup');
+                    insertBlocksToRight(block, blocks);
+                    editor.selection.anchorAt(block.next);
+                    block.list.removeBlock(block);
+                    handled = 'handled';
+                }
+            }
+            if (childList === 'sub') {
+                if (block.childMap.sub.isEmpty) {
+                    block.childMap.sub.removeBlock(block.childMap.sub.start);
+                    editor.selection.anchorAt(block);
+                    handled = 'handled';
+                }
+                if (block.childMap.sup.isNull) {
+                    const blocks = copyBlocksInChild(block, 'sub');
+                    insertBlocksToRight(block, blocks);
+                    editor.selection.anchorAt(block.next);
+                    block.list.removeBlock(block);
+                    handled = 'handled';
+                }
+            }
+            if (block.childMap.sub.isNull && block.childMap.sup.isNull) {
+                editor.selection.anchorAt(block.next);
+                block.list.removeBlock(block);
+            }
+            return handled;
         }
     }
 };
