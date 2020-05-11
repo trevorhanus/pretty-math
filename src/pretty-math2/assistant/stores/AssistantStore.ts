@@ -1,15 +1,18 @@
 import { action, computed, observable, reaction } from 'mobx';
-import { between, scrollIntoView } from '../../../common';
-import { Editor } from '../../model/Editor';
-import { BlockRange } from '../../selection/BlockRange';
-import { getMathLibrary, Library, LibrarySearchItem } from '../library/Library';
+import { between, scrollIntoView } from 'common';
+import {
+    Editor,
+    getMathLibrary,
+    Library,
+    LibrarySearchItem,
+    BlockRange,
+} from 'pretty-math2/internal';
 
 export enum AssistantForce {
     Open,
     Closed,
 }
 
-const mathLibrary = getMathLibrary();
 const unitsLibrary = null;
 const textLibrary = null;
 
@@ -85,7 +88,7 @@ export class AssistantStore {
     get library(): Library {
         switch (this.editor.mode) {
             case 'math':
-                return mathLibrary;
+                return getMathLibrary();
 
             case 'text':
                 return textLibrary;

@@ -34,6 +34,7 @@ import {
     TokenName,
 } from '../internal';
 import { replaceToken } from './tokenizers/TokenUtils';
+import { isLeftCurlyParenNode, isParensType } from './nodes/NodeUtils';
 
 export class Parser {
     private warnings: MathWarning[];
@@ -280,7 +281,11 @@ export class Parser {
             this.outputStack.push(array);
         }
 
-        this.opStack.pop();
+        if (isLeftCurlyParenNode(nextOp) || (isParensType(nextOp) && nextOp.isArrayOpener)) {
+            this.opStack.pop();
+        } else {
+            this.placeNextOpOnOutputStack();
+        }
     }
 
     private insertImplicitMultiplicationIfRequired(node: INode) {

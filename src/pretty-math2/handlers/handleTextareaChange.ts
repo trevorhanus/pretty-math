@@ -1,7 +1,12 @@
 import React from 'react';
-import { BlockFactory } from '../blocks/BlockFactory';
-import { Editor } from '../model/Editor';
-import { isType } from '../utils/BlockUtils';
+import { extractFractionNumerator, parseCalchub } from 'math';
+import {
+    BlockFactory,
+    Editor,
+    rangeToCalchub,
+    blocksFromNodeTree,
+    isType,
+} from 'pretty-math2/internal';
 
 export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<HTMLTextAreaElement>) {
     // Still a work in progress. Looking into other ways to find the keys we want
@@ -38,13 +43,13 @@ export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<H
     }
 
     if (keyValue === ')') {
-        const newBlock = BlockFactory.createBlock('math:right_paren');
+        const newBlock = BlockFactory.createBlock('math:rightParen');
         editorState.insertBlock(newBlock);
         return;
     }
 
     if (keyValue === '(') {
-        const newBlock = BlockFactory.createBlock('math:left_paren');
+        const newBlock = BlockFactory.createBlock('math:leftParen');
         editorState.insertBlock(newBlock);
         return;
     }
@@ -53,10 +58,23 @@ export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<H
     editorState.insertBlock(newBlock);
 }
 
-function handleFraction(editorState: Editor) {
+function handleFraction(editor: Editor) {
+    const { focus } = editor.selection;
+    const sr = new SelectionRange();
+    sr.setAnchor(focus);
+    sr.setFocus(focus.list.start);
+    const node = extractFractionNumerator(parseCalchub(rangeToCalchub(sr)).root);
+    const numBlocks = blocksFromNodeTree(node)
     const newBlock = BlockFactory.createBlock('math:fraction');
-    editorState.insertBlock(newBlock);
-    editorState.selection.anchorAt(newBlock.childMap['num'].start);
+    if (numBlocks.length > 0) {
+        numBlocks.forEach(block => editor.remove());
+        newBlock.childMap.num.addBlocks(...numBlocks);
+        editor.insertBlock(newBlock);
+        editor.selection.anchorAt(newBlock.childMap['denom'].start);
+    } else {
+        editor.insertBlock(newBlock);
+        editor.selection.anchorAt(newBlock.childMap['num'].start);
+    }
 }
 
 function handleIntegral(editorState: Editor) {

@@ -12,12 +12,12 @@ import {
 
 export class DataTable implements IDataTable {
     @observable private _tableName: string;
-    private _cells: ObservableMap<DataTableCell>;
+    private _cells: ObservableMap<string, DataTableCell>;
     @observable.ref private _cxt: MathContext;
 
     constructor(tableName?: string) {
         this._tableName = tableName;
-        this._cells = observable.map<DataTableCell>();
+        this._cells = observable.map<string, DataTableCell>();
         this._cxt = null;
     }
 

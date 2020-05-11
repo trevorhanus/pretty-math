@@ -1,6 +1,6 @@
 import { action, IObservableArray, observable, ObservableMap, reaction } from 'mobx';
 import { CSSProperties } from 'react';
-import { IModel } from '../interfaces';
+import { IModel } from 'pretty-math2/internal';
 
 export type BlockPosition = string;
 

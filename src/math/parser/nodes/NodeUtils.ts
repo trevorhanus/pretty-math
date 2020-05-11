@@ -67,6 +67,10 @@ export function isIntegralNode(node: INode): node is IntegralNode {
     return node && node.tokenName == TokenName.Integral;
 }
 
+export function isLeftCurlyParenNode(node: INode): node is ParensNode {
+    return node && node.tokenName == TokenName.LeftCurlyParens;
+}
+
 export function isMatrixNode(node: INode): node is MatrixNode {
     return node && node.tokenName === TokenName.Matrix;
 }

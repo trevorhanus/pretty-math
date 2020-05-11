@@ -157,7 +157,10 @@ describe('Parser.calchub', () => {
                         },
                         right: {
                             op: '\\cos',
-                            left: 't',
+                            left: {
+                                op: '()',
+                                left: 't'
+                            }
                         }
                     }
                 },
@@ -167,9 +170,12 @@ describe('Parser.calchub', () => {
                 shorthand: {
                     op: UC.ImplicitM,
                     left: {
-                        op: '/',
-                        left: '1',
-                        right: '4'
+                        op: '()',
+                        left: {
+                            op: '/',
+                            left: '1',
+                            right: '4'
+                        }
                     },
                     right: {
                         op: '^',

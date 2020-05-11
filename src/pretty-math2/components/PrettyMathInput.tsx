@@ -1,13 +1,17 @@
 import { action } from 'mobx';
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { Assistant } from '../assistant/components/Assistant';
-import { HandlerResponse, IBlockConfig } from '../interfaces';
-import { Block } from '../model';
-import { Editor, SerializedEditorState } from '../model/Editor';
-import { EditorController } from '../model/EditorController';
-import { Content } from './Content';
-import { Cursor } from './Cursor';
+import {
+    Assistant,
+    Block,
+    Content,
+    Cursor,
+    Editor,
+    EditorController,
+    HandlerResponse,
+    IBlockConfig,
+    SerializedEditorState
+} from 'pretty-math2/internal';
 
 export interface IPrettyMathInputProps {
     editorState?: Partial<SerializedEditorState>;

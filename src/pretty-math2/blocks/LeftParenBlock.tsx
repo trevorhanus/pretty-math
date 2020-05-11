@@ -1,31 +1,38 @@
 import React from 'react';
-import { IBlockConfig } from '../interfaces';
-import { Block } from '../model';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import {
+    Block,
+    IBlockConfig,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
-export interface LeftParenBlockData {}
+export interface LeftParenBlockData {
+    text?: string;
+}
 export type LeftParenBlock = Block<LeftParenBlockData>;
 
 export const leftParenBlockConfig: IBlockConfig<LeftParenBlock> = {
-    type: 'math:left_paren',
+    type: 'math:leftParen',
 
     render: ({ block, style }) => {
+        const text = block.data.text ? block.data.text : '(';
         return (
-            <span style={style}>(</span>
+            <span style={style}>{text}</span>
         );
     },
 
     printers: {
-        calchub: props => {
+        calchub: ({ block }) => {
+            const text = block.data.text ? block.data.text : '(';
             return PrinterOutput.fromOne({
-                source: props.block,
-                text: '(',
+                source: block,
+                text: text,
             });
         },
-        python: props => {
+        python: ({ block }) => {
+            const text = block.data.text ? block.data.text : '(';
             return PrinterOutput.fromOne({
-                source: props.block,
-                text: '(',
+                source: block,
+                text: text,
             });
         }
     },

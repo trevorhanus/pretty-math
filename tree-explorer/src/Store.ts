@@ -19,7 +19,7 @@ export class Store {
     @observable _activeExprId: string;
     @observable tab: string;
     @observable.ref mathCxt: MathContext;
-    savedContexts: ObservableMap<SavedContext>;
+    savedContexts: ObservableMap<string, SavedContext>;
 
     constructor(state: SavedState) {
         this._activeContextName = '';

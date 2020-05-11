@@ -154,9 +154,12 @@ describe('Parser', () => {
                 shorthand: {
                     op: '\u229B',
                     left: {
-                        op: '+',
-                        left: '1',
-                        right: '2'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '1',
+                            right: '2'
+                        }
                     },
                     right: '4',
                 },
@@ -166,7 +169,10 @@ describe('Parser', () => {
                 tokens: [[Lp, '('], [Lit, '2'], [Rp, ')'], [Sym, 'x']],
                 shorthand: {
                     op: '\u229B',
-                    left: '2',
+                    left: {
+                        op: '()',
+                        left: '2',
+                    },
                     right: 'x',
                 },
             },
@@ -176,14 +182,20 @@ describe('Parser', () => {
                 shorthand: {
                     op: '\u229B',
                     left: {
-                        op: '+',
-                        left: '1',
-                        right: '2'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '1',
+                            right: '2'
+                        }
                     },
                     right: {
-                        op: '+',
-                        left: '3',
-                        right: '4'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '3',
+                            right: '4'
+                        }
                     },
                 },
             },
@@ -194,9 +206,12 @@ describe('Parser', () => {
                     op: '\u229B',
                     left: '2',
                     right: {
-                        op: '+',
-                        left: '3',
-                        right: '4'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '3',
+                            right: '4'
+                        }
                     },
                 },
             },
@@ -207,9 +222,12 @@ describe('Parser', () => {
                     op: '\u229B',
                     left: 'a',
                     right: {
-                        op: '+',
-                        left: '3',
-                        right: '4'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '3',
+                            right: '4'
+                        }
                     },
                 },
             },
@@ -321,7 +339,10 @@ describe('Parser', () => {
                     left: '5',
                     right: {
                         op: 'udf:f',
-                        left: 'x',
+                        left: {
+                            op: '()',
+                            left: 'x'
+                        }
                     },
                 },
             },
@@ -355,14 +376,20 @@ describe('Parser', () => {
                 shorthand: {
                     op: '\u229B',
                     left: {
-                        op: '+',
-                        left: 'a',
-                        right: '1'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: 'a',
+                            right: '1'
+                        }
                     },
                     right: {
-                        op: '-',
-                        left: 'b',
-                        right: '4',
+                        op: '()',
+                        left: {
+                            op: '-',
+                            left: 'b',
+                            right: '4',
+                        }
                     },
                 },
             },
@@ -470,9 +497,12 @@ describe('Parser', () => {
                 shorthand: {
                     op: '*',
                     left: {
-                        op: '+',
-                        left: 'x',
-                        right: '2'
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: 'x',
+                            right: '2'
+                        }
                     },
                     right: 'y'
                 },
@@ -511,12 +541,15 @@ describe('Parser', () => {
                 shorthand: {
                     op: '*',
                     left: {
-                        op: '+',
-                        left: '1',
-                        right: {
-                            op: 'sin',
-                            left: 'a'
-                        },
+                        op: '()',
+                        left: {
+                            op: '+',
+                            left: '1',
+                            right: {
+                                op: 'sin',
+                                left: 'a'
+                            }
+                        }
                     },
                     right: '2',
                 },
@@ -711,8 +744,11 @@ describe('Parser', () => {
                 descr: '[lp] [minus] [literal] [rp]: (-1)',
                 tokens: [[Lp, '('], [Sub, '-'], [Lit, '1'], [Rp, ')']],
                 shorthand: {
-                    op: 'neg',
-                    left: '1',
+                    op: '()',
+                    left: {
+                        op: 'neg',
+                        left: '1'
+                    }
                 }
             },
             {
@@ -720,7 +756,10 @@ describe('Parser', () => {
                 tokens: [[Sub, '-'], [Lp, '('], [Lit, '1'], [Rp, ')']],
                 shorthand: {
                     op: 'neg',
-                    left: '1',
+                    left: {
+                        op: '()',
+                        left: '1'
+                    }
                 }
             },
             {
@@ -760,7 +799,10 @@ describe('Parser', () => {
                 tokens: [[Udf, 'f'], [Lp, '('], [Sym, 'x'], [Rp, ')']],
                 shorthand: {
                     op: 'udf:f',
-                    left: 'x'
+                    left: {
+                        op: '()',
+                        left: 'x'
+                    }
                 }
             },
             {
@@ -769,9 +811,12 @@ describe('Parser', () => {
                 shorthand: {
                     op: 'udf:g',
                     left: {
-                        op: ',',
-                        left: 'x',
-                        right: '10',
+                        op: '()',
+                        left: {
+                            op: ',',
+                            left: 'x',
+                            right: '10'
+                        }
                     }
                 }
             },
@@ -839,7 +884,10 @@ describe('Parser', () => {
                 definedFns: ['f'],
                 shorthand: {
                     op: 'udf:f',
-                    left: '5'
+                    left: {
+                        op: '()',
+                        left: '5'
+                    }
                 }
             },
             {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { BlockPosition } from '../BlockPosition';
+import { BlockPosition } from 'pretty-math2/internal';
 
 describe('BlockPosition', () => {
 

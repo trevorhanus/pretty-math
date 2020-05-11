@@ -1,10 +1,14 @@
-import { IBlockConfig } from 'pretty-math2/interfaces';
-import { Block } from 'pretty-math2/model';
-import { Editor } from 'pretty-math2/model/Editor';
-import { copyBlocksInChild, insertBlocksToLeft, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
 import React from 'react';
-import { BlockFactory } from './BlockFactory';
+import {
+    Block,
+    BlockFactory,
+    copyBlocksInChild,
+    Editor,
+    IBlockConfig,
+    insertBlocksToLeft,
+    insertBlocksToRight,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
 export interface FractionBlockData {}
 export type FractionBlockChildNames = 'num' | 'denom';

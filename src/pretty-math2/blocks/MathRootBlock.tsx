@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Block } from '../model';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import {
+    Block,
+    IBlockConfig
+} from 'pretty-math2/internal';
 
 export interface MathRootBlockData {}
 export type MathRootBlockChildNames = 'inner';
-export type MathRootBlock = Block<MathRootBlockData>;
+export type MathRootBlockType = Block<MathRootBlockData>;
 
-export const mathRootBlockConfig: IBlockConfig<MathRootBlock> = {
+export const mathRootBlockConfig: IBlockConfig<MathRootBlockType> = {
     type: 'root:math',
 
     render: ({ children }) => {

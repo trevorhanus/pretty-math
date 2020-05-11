@@ -366,7 +366,10 @@ describe('evaluates expressions correctly', () => {
             expect(expr.resolver.primitiveNumber).to.be.NaN;
             expect(expr.resolver.simplifiedDeepFormulaTree.toShorthand()).to.deep.eq({
                 op: '+',
-                left: '1',
+                left: {
+                    op: '()',
+                    left: '1'
+                },
                 right: 'loc:y',
             });
         });

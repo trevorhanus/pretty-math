@@ -124,6 +124,14 @@ export class OperatorNode extends BaseNode implements IOperatorNode {
 
         const shorthand: any = super.toShorthand();
 
+        if (this.tokenName === TokenName.LeftRoundParens) {
+            shorthand.op = '()';
+        }
+
+        if (this.tokenName === TokenName.EscapedLeftCurlyParens) {
+            shorthand.op = '\\{\\}';
+        }
+
         if (this.left != null) {
             shorthand.left = this.left.toShorthand();
         }

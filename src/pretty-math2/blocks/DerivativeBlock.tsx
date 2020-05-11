@@ -1,10 +1,7 @@
-import React from 'react';
-import { Block, BlockList } from 'pretty-math2/model';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { Editor } from 'pretty-math2/model/Editor';
 import { extractDifferentialSymbolNames, parseCalchub } from 'math';
-import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import { copyBlocksInChild, insertBlocksToRight, PrinterOutput } from 'pretty-math2/internal';
+import type { Block, BlockList, Editor, HandlerResponse, IBlockConfig } from 'pretty-math2/internal';
+import React from 'react';
 
 export interface DerivativeBlockData {}
 export interface DerivativeBlockChildren {

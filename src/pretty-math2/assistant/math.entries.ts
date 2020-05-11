@@ -1,7 +1,11 @@
-import { BlockFactory } from '../blocks/BlockFactory';
-import { Editor } from '../model/Editor';
-import { isType, removeTrailingPhrase } from '../utils/BlockUtils';
-import { LibraryEntry, LibraryEntryConfig } from './library/LibraryEntry';
+import {
+    Editor,
+    LibraryEntryConfig,
+    LibraryEntry,
+    removeTrailingPhrase,
+    BlockFactory,
+    isType,
+} from 'pretty-math2/internal';
 
 const algebra: LibraryEntryConfig[] = [
     {

@@ -1,12 +1,14 @@
 import { action, runInAction } from 'mobx';
 import React from 'react';
-import { Editor } from '../model/Editor';
-import { handleCopy } from './handleCopy';
-import { handleCut } from './handleCut';
-import { handleDelete } from './handleDelete';
-import { handleExpandSelection } from './handleExpandSelection';
-import { handleMoveCursor } from './handleMoveCursor';
-import { handlePaste } from './handlePaste';
+import {
+    Editor,
+    handleCopy,
+    handleCut,
+    handleDelete,
+    handleExpandSelection,
+    handleMoveCursor,
+    handlePaste
+} from 'pretty-math2/internal';
 
 const logSelection = (editor: Editor) => {
     const { start, end } = editor.selection.range;
