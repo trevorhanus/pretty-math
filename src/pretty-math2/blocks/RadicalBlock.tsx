@@ -1,13 +1,14 @@
-import React from 'react';
 import { between, haveWindow } from 'common';
 import { observer } from 'mobx-react';
+import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
 import { Block, BlockList } from 'pretty-math2/model';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import { Editor } from 'pretty-math2/model/Editor';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
+import React from 'react';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
 export interface RadicalBlockData {}
+
 export interface RadicalBlockChildren {
     inner: BlockList;
 }
@@ -72,7 +73,7 @@ export const radicalBlockConfig: IBlockConfig<RadicalBlock> = {
                 down: []
             }
         },
-        handleRemoveOutOf: (block: RadicalBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+        handleRemoveOutOf: (block: RadicalBlock, childList: string, editor: Editor): HandlerResponse => {
             const blocks = copyBlocksInChild(block, 'inner');
             insertBlocksToRight(block, blocks);
             editor.selection.anchorAt(block.next);

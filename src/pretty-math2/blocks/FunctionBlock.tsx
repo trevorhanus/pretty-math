@@ -1,7 +1,7 @@
 import React from 'react';
 import { Block, BlockList } from 'pretty-math2/model';
 import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
 import { Editor } from 'pretty-math2/model/Editor';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
@@ -72,7 +72,7 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
                 down: []
             }
         },
-        handleRemoveOutOf: (block: FunctionBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+        handleRemoveOutOf: (block: FunctionBlock, childList: string, editor: Editor): HandlerResponse => {
             const blocks = copyBlocksInChild(block, 'inner');
             insertBlocksToRight(block, blocks);
             editor.selection.anchorAt(block.next);

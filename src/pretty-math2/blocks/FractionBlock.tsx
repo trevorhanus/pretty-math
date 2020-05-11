@@ -1,10 +1,10 @@
-import React from 'react';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 import { Block } from 'pretty-math2/model';
-import { BlockFactory } from './BlockFactory';
-import { copyBlocksInChild, insertBlocksToRight, insertBlocksToLeft } from 'pretty-math2/utils/BlockUtils';
 import { Editor } from 'pretty-math2/model/Editor';
+import { copyBlocksInChild, insertBlocksToLeft, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
+import React from 'react';
+import { BlockFactory } from './BlockFactory';
 
 export interface FractionBlockData {}
 export type FractionBlockChildNames = 'num' | 'denom';

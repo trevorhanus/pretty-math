@@ -3,7 +3,7 @@ import { Block, BlockList } from 'pretty-math2/model';
 import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import { Editor } from 'pretty-math2/model/Editor';
 import { extractDifferentialSymbolNames, parseCalchub } from 'math';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
 export interface DerivativeBlockData {}
@@ -128,7 +128,7 @@ export const derivativeBlockConfig: IBlockConfig<DerivativeBlock> = {
                 down: []
             }
         },
-        handleRemoveOutOf: (block: DerivativeBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+        handleRemoveOutOf: (block: DerivativeBlock, childList: string, editor: Editor): HandlerResponse => {
             const blocks = copyBlocksInChild(block, 'inner');
             insertBlocksToRight(block, blocks);
             editor.selection.anchorAt(block.next);

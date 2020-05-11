@@ -1,9 +1,9 @@
-import React from 'react';
+import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
 import { Block } from 'pretty-math2/model';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import { Editor } from 'pretty-math2/model/Editor';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
+import React from 'react';
 
 export interface SupSubBlockData {}
 export type SupSubBlockChildNames = 'sup' | 'sub';
@@ -92,7 +92,7 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
                 down: ['sub', 'sup']
             }
         },
-        handleRemoveOutOf: (block: SupSubBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+        handleRemoveOutOf: (block: SupSubBlock, childList: string, editor: Editor): HandlerResponse => {
             let handled: 'handled' | 'not_handled' = 'not_handled';
             if (childList === 'sup') {
                 if (block.childMap.sup.isEmpty) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Block, BlockList } from 'pretty-math2/model';
 import classNames from 'classnames';
 import { Editor } from 'pretty-math2/model/Editor';
-import { IBlockConfig } from 'pretty-math2/interfaces';
+import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
 import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
 
 export interface DifferentialBlockData {
@@ -74,7 +74,7 @@ export const differentialBlockConfig: IBlockConfig<DifferentialBlock> = {
                 down: []
             },
         },
-        handleRemoveOutOf: (block: DifferentialBlock, childList: string, editor: Editor): 'handled' | 'not_handled' => {
+        handleRemoveOutOf: (block: DifferentialBlock, childList: string, editor: Editor): HandlerResponse => {
             editor.selection.anchorAt(block.next);
             block.list.removeBlock(block);
             return 'handled';
