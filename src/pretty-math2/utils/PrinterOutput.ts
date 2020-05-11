@@ -1,4 +1,4 @@
-import { toHex, fillArray } from '../../common';
+import { toHex, fillArray } from 'common';
 
 export type Source = any;
 

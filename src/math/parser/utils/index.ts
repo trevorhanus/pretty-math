@@ -1,5 +1,6 @@
 export * from './buildSourceMap';
 export * from './extractDifferentialSymbolNames';
+export * from './extractFractionNumerator';
 export * from './markLocalSymbols';
 export * from './MathSyntaxError';
 export * from './placeEqualsOnTopOfTree';

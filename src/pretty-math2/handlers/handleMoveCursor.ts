@@ -1,7 +1,9 @@
 import React from 'react';
-import { Editor } from 'pretty-math2/model/Editor';
-import { Dir } from 'pretty-math2/interfaces';
-import { hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
+import {
+    Dir,
+    Editor,
+    hasCommandModifier
+} from 'pretty-math2/internal';
 
 export function handleMoveCursor(editorState: Editor, e: React.KeyboardEvent) {
     if (hasCommandModifier(e)) {

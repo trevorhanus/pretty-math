@@ -1,9 +1,14 @@
-import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
-import { Block } from 'pretty-math2/model';
-import { Editor } from 'pretty-math2/model/Editor';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
 import React from 'react';
+import {
+    Block,
+    copyBlocksInChild,
+    Editor,
+    HandlerResponse,
+    IBlockConfig,
+    insertBlocksToRight,
+    PrinterOutput
+} from 'pretty-math2/internal';
+import { toHex } from 'common';
 
 export interface SupSubBlockData {}
 export type SupSubBlockChildNames = 'sup' | 'sub';
@@ -28,9 +33,8 @@ export const supSubBlockConfig: IBlockConfig<SupSubBlock> = {
 
             if (!block.childMap.sub.isNull) {
                 subscipt = PrinterOutput.fromMany([
-                    { text: '_{', source: block },
-                    children.sub,
-                    { text: '}', source: block }
+                    { text: '_', source: block },
+                    PrinterOutput.expandToHex(children.sub)
                 ]);
             }
 

@@ -1,8 +1,10 @@
-import { action, computed, observable } from 'mobx';
-import { Block } from 'pretty-math2/model';
-import { invariant } from 'pretty-math2/utils/invariant';
-import { getCommonParent } from '../utils/BlockUtils';
-import { sortLeftToRight } from './BlockPosition';
+import { observable, computed, action } from 'mobx';
+import {
+    Block,
+    getCommonParent,
+    invariant,
+    sortLeftToRight,
+} from 'pretty-math2/internal';
 
 export class BlockRange {
     @observable _anchor: Block;

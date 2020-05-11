@@ -1,6 +1,4 @@
-import { Editor } from 'pretty-math2/model/Editor';
-import { Dir } from '../interfaces';
-import { hasCommandModifier } from '../utils/KeyUtils';
+import { Editor, hasCommandModifier, Dir } from 'pretty-math2/internal';
 
 export function handleDelete(editor: Editor, e: React.KeyboardEvent) {
     if (hasCommandModifier(e)) {

@@ -1,4 +1,4 @@
-import { invariant } from '../utils/invariant';
+import { invariant } from 'pretty-math2/internal';
 
 /**
  * A block position is just an array of numbers

@@ -1,6 +1,5 @@
 import { action } from 'mobx';
-import { Block } from 'pretty-math2/model';
-import { BlockRange } from 'pretty-math2/selection/BlockRange';
+import { Block, BlockRange } from 'pretty-math2/internal';
 
 export function cloneBlocksInRange(range: BlockRange): Block[] {
     const { start, end } = range;

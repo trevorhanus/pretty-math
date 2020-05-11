@@ -132,9 +132,9 @@ export const TOKEN_TO_NODE: NodeMap = {
     // Parens
     // ---------------------
 
-    [_.EscapedLeftCurlyParens]: [ ParensNode,   { family: LeftParens,    parens: '\\{',  parensPair: '\\}' }],
+    [_.EscapedLeftCurlyParens]: [ ParensNode,   { family: LeftParens,    parens: '\\{',  parensPair: '\\}',     nArgs: 1,   eval: f.parens,     calchub: '\\{$0\\}',    python: '\\{$0\\}' }],
     [_.LeftCurlyParens]:        [ ParensNode,   { family: LeftParens,    parens: '{',    parensPair: '}' } ],
-    [_.LeftRoundParens]:        [ ParensNode,   { family: LeftParens,    parens: '(',    parensPair: ')' } ],
+    [_.LeftRoundParens]:        [ ParensNode,   { family: LeftParens,    parens: '(',    parensPair: ')',       nArgs: 1,   eval: f.parens,     calchub: '($0)',        python: '($0)' }],
     [_.EscapedRightCurlyParens]:[ ParensNode,   { family: RightParens,   parens: '\\}',  parensPair: '\\{' }],
     [_.RightCurlyParens]:       [ ParensNode,   { family: RightParens,   parens: '}',    parensPair: '{' } ],
     [_.RightRoundParens]:       [ ParensNode,   { family: RightParens,   parens: ')',    parensPair: '(' } ],

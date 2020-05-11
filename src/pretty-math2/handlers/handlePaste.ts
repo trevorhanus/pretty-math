@@ -1,6 +1,8 @@
-import { BlockFactory } from 'pretty-math2/blocks/BlockFactory';
-import { Editor } from 'pretty-math2/model/Editor';
 import * as React from 'react';
+import {
+    BlockFactory,
+    Editor,
+} from 'pretty-math2/internal';
 
 export function handlePaste(editor: Editor, e: React.ClipboardEvent) {
     const data = e.clipboardData.getData('text/prettyMath');

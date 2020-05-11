@@ -1,8 +1,6 @@
 import classNames from 'classnames';
+import { Block, IBlockConfig, PrinterOutput } from 'pretty-math2/internal';
 import React from 'react';
-import { IBlockConfig } from '../interfaces';
-import { Block } from '../model';
-import { PrinterOutput } from '../utils/PrinterOutput';
 
 export type EndBlock = Block<{}>;
 

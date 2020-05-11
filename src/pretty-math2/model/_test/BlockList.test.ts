@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { BlockList } from '../BlockList';
+import { BlockList } from 'pretty-math2/internal';
 
 describe('BlockList', () => {
 

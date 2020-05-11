@@ -1,9 +1,13 @@
-import { IBlockConfig } from 'pretty-math2/interfaces';
-import { Block, BlockList } from 'pretty-math2/model';
-import { Editor } from 'pretty-math2/model/Editor';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
 import React from 'react';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import {
+    Block,
+    BlockList,
+    copyBlocksInChild,
+    Editor,
+    IBlockConfig,
+    insertBlocksToRight,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
 export interface IntegralBlockData {}
 export interface IntegralBlockChildren {

@@ -16,8 +16,8 @@ import {
 } from '../internal';
 
 export class MathContext {
-    private _dataTables: ObservableMap<DataTable>;
-    private _exprs: ObservableMap<MathExpr>;
+    private _dataTables: ObservableMap<string, DataTable>;
+    private _exprs: ObservableMap<string, MathExpr>;
     private _eventEmitter: EventEmitter;
     bus: EventBus;
     history: History;
@@ -25,8 +25,8 @@ export class MathContext {
     settings: MathContextSettings;
 
     constructor() {
-        this._dataTables = observable.map<DataTable>();
-        this._exprs = observable.map<MathExpr>();
+        this._dataTables = observable.map<string, DataTable>();
+        this._exprs = observable.map<string, MathExpr>();
         this.bus = new EventBus();
         this.history = new History(this);
         // this.library = new Library(this);
@@ -36,12 +36,12 @@ export class MathContext {
 
     @computed
     get dataTables(): DataTable[] {
-        return this._dataTables.values();
+        return Array.from(this._dataTables.values());
     }
 
     @computed
     get exprs(): MathExpr[] {
-        return this._exprs.values();
+        return Array.from(this._exprs.values());
     }
 
     @computed

@@ -1,7 +1,9 @@
 import React from 'react';
-import { Dir } from 'pretty-math2/interfaces';
-import { Editor } from 'pretty-math2/model/Editor';
-import { hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
+import {
+    Dir,
+    Editor,
+    hasCommandModifier
+} from 'pretty-math2/internal';
 
 export function handleExpandSelection(editorState: Editor, e: React.KeyboardEvent) {
     if (hasCommandModifier(e)) {

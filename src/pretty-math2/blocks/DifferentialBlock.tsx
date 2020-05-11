@@ -1,9 +1,7 @@
-import React from 'react';
-import { Block, BlockList } from 'pretty-math2/model';
 import classNames from 'classnames';
-import { Editor } from 'pretty-math2/model/Editor';
-import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
-import { PrinterOutput } from 'pretty-math2/utils/PrinterOutput';
+import { PrinterOutput } from 'pretty-math2/internal';
+import type { Block, BlockList, Editor, HandlerResponse, IBlockConfig } from 'pretty-math2/internal';
+import React from 'react';
 
 export interface DifferentialBlockData {
     displayValue: string;
@@ -36,8 +34,9 @@ export const differentialBlockConfig: IBlockConfig<DifferentialBlock> = {
 
     printers: {
         calchub: ({ block, children }) => {
+            const val = block.data.displayValue === 'd' ? '\\wrt' : '\\pwrt';
             return PrinterOutput.fromMany([
-                { text: '\\wrt{', source: block },
+                { text: val + '{', source: block },
                 children.inner,
                 { text: '}', source: block}
             ]);

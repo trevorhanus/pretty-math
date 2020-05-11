@@ -1,7 +1,10 @@
-import { Dir } from 'pretty-math2/interfaces';
-import { Block, BlockList } from 'pretty-math2/model';
-import { isRootBlock } from 'pretty-math2/utils/BlockUtils';
-import { invariant } from '../utils/invariant';
+import {
+    Block,
+    BlockList,
+    Dir,
+    invariant,
+    isRootBlock
+} from 'pretty-math2/internal';
 
 export function getNextCursorPosition(block: Block, dir: Dir): Block {
     invariant(block == null, `getNextCursorPosition invoked without a block.`);

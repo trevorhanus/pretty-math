@@ -5,7 +5,7 @@ import { InputEditor } from './InputEditor';
 import { Store } from './Store';
 import { TreeViewer } from './TreeViewer';
 import { Header } from './Header';
-import * as SavedState from './state.json';
+import SavedState from './state.json';
 
 export interface IAppProps {
 }

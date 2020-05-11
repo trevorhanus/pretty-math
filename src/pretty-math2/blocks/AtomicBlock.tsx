@@ -1,23 +1,14 @@
-import React from 'react';
-import {
-    INode,
-    isBinaryOpFam,
-    isCommaNode,
-    isConstantFam,
-    isLeftParensFam, isPowerNode,
-    isRightParensFam,
-    isSymbolFam
-} from '../../math';
-import { IBlockConfig } from '../interfaces';
-import { Block } from '../model';
-import { PrinterOutput } from '../utils/PrinterOutput';
 import classNames from 'classnames';
+import { INode, isBinaryOpFam, isCommaNode, isConstantFam, isLeftParensFam, isPowerNode, isRightParensFam, isSymbolFam } from 'math';
+import { PrinterOutput } from 'pretty-math2/internal';
+import type { Block, IBlockConfig } from 'pretty-math2/internal';
+import React from 'react';
 
-export interface TextBlockData {
+export interface AtomicBlockData {
     text: string;
 }
 
-export type AtomicBlock = Block<TextBlockData>;
+export type AtomicBlock = Block<AtomicBlockData>;
 
 export const atomicBlockConfig: IBlockConfig<AtomicBlock> = {
     type: 'atomic',
