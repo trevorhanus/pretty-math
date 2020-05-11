@@ -1,8 +1,8 @@
-import React from 'react';
-import { Block, BlockList } from 'pretty-math2/model';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { Editor } from 'pretty-math2/model/Editor';
 import { IBlockConfig } from 'pretty-math2/interfaces';
+import { Block, BlockList } from 'pretty-math2/model';
+import { Editor } from 'pretty-math2/model/Editor';
+import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
+import React from 'react';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
 export interface IntegralBlockData {}
@@ -49,7 +49,7 @@ export const integralBlockConfig: IBlockConfig<IntegralBlock> = {
                     { text: ',', source: this },
                 ]);
             }
-    
+
             if (children.rightBound != null) {
                 bounds = bounds.append(children.rightBound);
             }
@@ -73,7 +73,7 @@ export const integralBlockConfig: IBlockConfig<IntegralBlock> = {
                     { text: ',', source: this },
                 ]);
             }
-    
+
             if (children.rightBound != null) {
                 bounds = bounds.append(children.rightBound);
             }

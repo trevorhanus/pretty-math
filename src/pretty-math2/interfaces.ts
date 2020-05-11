@@ -3,6 +3,8 @@ import { Block } from './model/Block';
 import { Editor } from './model/Editor';
 import { PrinterOutput } from './utils/PrinterOutput';
 
+export type HandlerResponse = 'handled' | 'not_handled' | null;
+
 export enum Dir {
     Down,
     Right,
@@ -83,5 +85,5 @@ export interface ICompositeBlockConfig {
     };
     cursorOrder: ICursorOrderConfig;
     entry: IEntryConfig;
-    handleRemoveOutOf?: (block: Block, childList: string, editor: Editor) => 'handled' | 'not_handled';
+    handleRemoveOutOf?: (block: Block, childList: string, editor: Editor) => HandlerResponse;
 }

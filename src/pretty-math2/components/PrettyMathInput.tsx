@@ -1,19 +1,17 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Assistant } from '../assistant/components/Assistant';
-import { IBlockConfig } from '../interfaces';
+import { HandlerResponse, IBlockConfig } from '../interfaces';
 import { Block } from '../model';
 import { Editor, SerializedEditorState } from '../model/Editor';
 import { EditorController } from '../model/EditorController';
 import { Content } from './Content';
 import { Cursor } from './Cursor';
 
-export type CommandHandlerResponse = 'handled' | 'not_handled';
-
 export interface IPrettyMathInputProps {
     editorState?: SerializedEditorState;
     keyBindingFn?: (e: React.KeyboardEvent) => string;
-    handleCommand?: (command: string, editor: Editor, e?: React.KeyboardEvent) => CommandHandlerResponse;
+    handleCommand?: (command: string, editor: Editor, e?: React.KeyboardEvent) => HandlerResponse;
     customBlocks?: IBlockConfig<Block>[];
     onBlur?: (e: React.FocusEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;
