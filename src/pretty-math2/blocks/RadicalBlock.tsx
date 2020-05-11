@@ -1,8 +1,8 @@
-import React from 'react';
 import { between, haveWindow } from 'common';
 import { observer } from 'mobx-react';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 import { Block, BlockList } from 'pretty-math2/model';
+import React from 'react';
 import { PrinterOutput } from '../utils/PrinterOutput';
 
 export interface RadicalBlockData {}

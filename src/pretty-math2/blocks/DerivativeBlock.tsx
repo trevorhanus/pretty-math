@@ -1,8 +1,8 @@
-import React from 'react';
+import { extractDifferentialSymbolNames, parseCalchub } from 'math';
 import { IBlockConfig } from 'pretty-math2/interfaces';
 import { Block, BlockList } from 'pretty-math2/model';
+import React from 'react';
 import { PrinterOutput } from '../utils/PrinterOutput';
-import { parseCalchub, extractDifferentialSymbolNames, MathSyntaxError } from 'math';
 
 export interface DerivativeBlockData {}
 export interface DerivativeBlockChildren {
@@ -25,7 +25,7 @@ export const derivativeBlockConfig: IBlockConfig<DerivativeBlock> = {
                 derivativeOrder = diffSymbols.length;
             }
         } catch (e) {
-            
+
         }
 
         let differentialValue = 'd';
@@ -34,7 +34,7 @@ export const derivativeBlockConfig: IBlockConfig<DerivativeBlock> = {
                 differentialValue = '∂';
             }
         });
-        
+
         return (
             <span className="derivative">
                 <span className="fraction">
