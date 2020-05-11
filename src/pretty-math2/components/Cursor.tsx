@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { haveWindow } from '../../common';
-import { Editor } from '../model/EditorState';
+import { Editor } from '../model/Editor';
 import { offsetFromAncestor } from '../utils/DOMUtils';
 
 export interface ICursorProps {

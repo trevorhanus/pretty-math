@@ -69,12 +69,12 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
     handleCopy = (e: React.ClipboardEvent) => {
         e.preventDefault();
         this.controller.handleCommand('copy', e);
-    }
+    };
 
     handleCut = (e: React.ClipboardEvent) => {
         e.preventDefault();
         this.controller.handleCommand('cut', e);
-    }
+    };
 
     handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -132,5 +132,5 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
     handlePaste = (e: React.ClipboardEvent) => {
         e.preventDefault();
         this.controller.handleCommand('paste', e);
-    }
+    };
 }

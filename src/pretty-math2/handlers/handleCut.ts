@@ -1,10 +1,10 @@
 import React from 'react';
-import { EditorState } from 'pretty-math2/model/EditorState';
+import { Editor } from 'pretty-math2/model/Editor';
 import { handleCopy } from './handleCopy';
 
-export function handleCut(editorState: EditorState, e: React.ClipboardEvent) {
-    handleCopy(editorState, e);
-    if (!editorState.selection.isCollapsed) {
-        editorState.remove();
+export function handleCut(editor: Editor, e: React.ClipboardEvent) {
+    handleCopy(editor, e);
+    if (!editor.selection.isCollapsed) {
+        editor.remove();
     }
 }

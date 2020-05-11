@@ -2,7 +2,7 @@ import { action } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { Editor } from '../../model/EditorState';
+import { Editor } from '../../model/Editor';
 import { LibraryEntry } from '../library/LibraryEntry';
 import { AssistantForce } from '../stores/AssistantStore';
 import { AssistantDialog } from './AssistantDialog';
