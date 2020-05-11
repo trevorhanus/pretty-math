@@ -1,5 +1,8 @@
 import React from 'react';
-import { hasTripleModifier, hasCommandModifier } from 'pretty-math2/utils/KeyUtils';
+import {
+    hasCommandModifier,
+    hasTripleModifier
+} from 'pretty-math2/internal';
 
 export function defaultKeyBindingFn(e: React.KeyboardEvent): string {
     if (e.defaultPrevented) {

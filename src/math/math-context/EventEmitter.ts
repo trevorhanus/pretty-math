@@ -10,7 +10,7 @@ import {
     MathContext,
     MathExpr,
     MathExprProps
-} from 'math/internal';
+} from '../internal';
 
 export class EventEmitter {
     private _mathCxt: MathContext;

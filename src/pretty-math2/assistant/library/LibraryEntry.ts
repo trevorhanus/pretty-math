@@ -1,5 +1,8 @@
 import { generateId } from 'common';
-import { Editor, SerializedEditorState } from '../../model/Editor';
+import {
+    Editor,
+    SerializedEditorState
+} from 'pretty-math2/internal';
 
 export interface LibraryEntryConfig {
     // keywords are words that will be used when indexing the entry

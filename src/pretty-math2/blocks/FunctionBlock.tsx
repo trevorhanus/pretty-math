@@ -1,9 +1,14 @@
 import React from 'react';
-import { Block, BlockList } from 'pretty-math2/model';
-import { copyBlocksInChild, insertBlocksToRight } from 'pretty-math2/utils/BlockUtils';
-import { HandlerResponse, IBlockConfig } from 'pretty-math2/interfaces';
-import { Editor } from 'pretty-math2/model/Editor';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import {
+    Block,
+    BlockList,
+    copyBlocksInChild,
+    Editor,
+    HandlerResponse,
+    IBlockConfig,
+    insertBlocksToRight,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
 export interface FunctionBlockData {
     displayValue: string;
@@ -31,10 +36,10 @@ export const functionBlockConfig: IBlockConfig<FunctionBlock> = {
     printers: {
         calchub: ({ block, children }) => {
             return PrinterOutput.fromMany([
-                { text: block.data.displayValue, source: block },
-                { text: '{(', source: block },
+                { text: '\\' + block.data.displayValue, source: block },
+                { text: '{', source: block },
                 children.inner,
-                { text: ')}', source: block }
+                { text: '}', source: block }
             ]);
         },
         python: ({ block, children }) => {

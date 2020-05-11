@@ -1,7 +1,9 @@
 import React, { CSSProperties } from 'react';
-import { Block } from './model/Block';
-import { Editor } from './model/Editor';
-import { PrinterOutput } from './utils/PrinterOutput';
+import type {
+    Block,
+    Editor,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
 export type HandlerResponse = 'handled' | 'not_handled' | null;
 

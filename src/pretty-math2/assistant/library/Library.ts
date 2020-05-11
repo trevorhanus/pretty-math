@@ -1,7 +1,9 @@
 import elasticlunr from 'elasticlunr';
-import { Editor } from '../../model/Editor';
-import { LibraryEntry } from './LibraryEntry';
-import { mathEntries } from '../math.entries';
+import {
+    Editor,
+    LibraryEntry,
+    mathEntries
+} from 'pretty-math2/internal';
 
 elasticlunr.clearStopWords();
 

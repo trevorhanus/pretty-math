@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import { BlockFactory } from '../../blocks/BlockFactory';
-import { getCommonParent } from '../BlockUtils';
+import {
+    BlockFactory,
+    getCommonParent
+} from 'pretty-math2/internal';
 
 describe('BlockUtils', () => {
 

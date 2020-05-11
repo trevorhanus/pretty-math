@@ -1,8 +1,10 @@
-import { Block } from 'pretty-math2/model';
 import { observable, computed, action } from 'mobx';
-import { invariant } from 'pretty-math2/utils/invariant';
-import { getCommonParent } from '../utils/BlockUtils';
-import { sortLeftToRight } from './BlockPosition';
+import {
+    Block,
+    getCommonParent,
+    invariant,
+    sortLeftToRight
+} from 'pretty-math2/internal';
 
 export class SelectionRange {
     @observable _anchor: Block;

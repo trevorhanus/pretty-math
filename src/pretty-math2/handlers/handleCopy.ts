@@ -1,6 +1,8 @@
 import React from 'react';
-import { Editor } from 'pretty-math2/model/Editor';
-import { rangeToPython } from 'pretty-math2/utils/RangeUtils';
+import {
+    Editor,
+    rangeToPython
+} from 'pretty-math2/internal';
 
 export function handleCopy(editorState: Editor, e: React.ClipboardEvent) {
     const { start, end } = editorState.selection.range;

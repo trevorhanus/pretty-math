@@ -1,9 +1,8 @@
-import classNames from 'classnames';
+import { haveWindow } from 'common';
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { haveWindow } from '../../common';
-import { Editor } from '../model/Editor';
-import { offsetFromAncestor } from '../utils/DOMUtils';
+import classNames from 'classnames';
+import { Editor, offsetFromAncestor } from 'pretty-math2/internal';
 
 export interface ICursorProps {
     editorState: Editor;

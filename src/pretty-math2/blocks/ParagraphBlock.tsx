@@ -1,7 +1,9 @@
 import React from 'react';
-import { IBlockConfig } from '../interfaces';
-import { Block } from '../model';
-import { PrinterOutput } from '../utils/PrinterOutput';
+import {
+    Block,
+    IBlockConfig,
+    PrinterOutput
+} from 'pretty-math2/internal';
 
 export type ParagraphBlockChildNames = 'inner';
 

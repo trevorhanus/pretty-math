@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { Block } from '../../model';
-import { BlockFactory } from '../BlockFactory';
+import { BlockFactory } from 'pretty-math2/internal';
 
 describe('TextBlock', () => {
 

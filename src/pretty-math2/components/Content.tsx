@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
+import { Editor } from 'pretty-math2/internal';
 import * as React from 'react';
-import { Editor } from '../model/Editor';
 
 export interface IContentProps {
     editorState: Editor;

@@ -10,6 +10,7 @@ export * from './log';
 export * from './max';
 export * from './min';
 export * from './multiply';
+export * from './parens';
 export * from './pow';
 export * from './sqrt';
 export * from './subtract';

@@ -1,8 +1,10 @@
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { PrettyMathStatic } from '../../components/PrettyMathStatic';
-import { LibraryEntry } from '../library/LibraryEntry';
+import {
+    LibraryEntry,
+    PrettyMathStatic
+} from 'pretty-math2/internal';
 
 export interface IAssistantEntryItemProps {
     entry: LibraryEntry;

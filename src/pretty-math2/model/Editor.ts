@@ -1,15 +1,20 @@
 import { action, computed, observable } from 'mobx';
-import { Dir } from 'pretty-math2/interfaces';
-import { getNextCursorPosition } from 'pretty-math2/selection/CursorPositioner';
-import { removeRange } from 'pretty-math2/utils/RangeUtils';
 import * as React from 'react';
-import { AssistantStore } from '../assistant/stores/AssistantStore';
-import { BlockFactory } from '../blocks/BlockFactory';
-import { History } from '../history/History';
-import { Selection, SerializedSelectionState } from '../selection/Selection';
-import { Block, BlockState } from './Block';
-import { BlockList } from './BlockList';
-import { MathRootBlock, RootBlock } from './RootBlock';
+import {
+    AssistantStore,
+    Block,
+    BlockFactory,
+    BlockList,
+    BlockState,
+    Dir,
+    getNextCursorPosition,
+    History,
+    MathRootBlock,
+    removeRange,
+    RootBlock,
+    Selection,
+    SerializedSelectionState
+} from 'pretty-math2/internal';
 
 export interface SerializedEditorState {
     root: BlockState;

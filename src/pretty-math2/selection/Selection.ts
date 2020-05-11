@@ -1,7 +1,9 @@
 import { action, computed } from 'mobx';
-import { Block } from 'pretty-math2/model';
-import { Editor } from '../model/Editor';
-import { SelectionRange } from './SelectionRange';
+import {
+    Block,
+    Editor,
+    SelectionRange
+} from 'pretty-math2/internal';
 
 export interface SerializedSelectionState {
     anchor: string;

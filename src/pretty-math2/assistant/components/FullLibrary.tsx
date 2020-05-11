@@ -1,9 +1,11 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LibraryEntry } from '../library/LibraryEntry';
-import { AssistantStore } from '../stores/AssistantStore';
-import { AssistantEntryList } from './AssistantEntryList';
+import {
+    AssistantEntryList,
+    AssistantStore,
+    LibraryEntry
+} from 'pretty-math2/internal';
 
 export interface IFullLibraryProps {
     assistant?: AssistantStore;

@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { parseCalchub } from '../../internal';
-import * as PythonSymbols from '../../utils/PythonSafeSymbols';
+import * as PythonSymbols from '../../internal';
 
 describe('toPython', () => {
 
     before(() => {
-        sinon.stub(PythonSymbols, 'getPythonSafeSymbol').callsFake((symbol => symbol));
+        sinon.stub(PythonSymbols, 'getPythonSafeSymbol').callsFake(symbol => symbol);
     });
 
     after(() => {

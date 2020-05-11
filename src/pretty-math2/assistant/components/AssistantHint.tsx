@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { AssistantStore } from '../stores/AssistantStore';
+import { AssistantStore } from 'pretty-math2/internal';
 
 export interface IAssistantHintProps {
     assistant?: AssistantStore;

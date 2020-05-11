@@ -1,12 +1,14 @@
 import React from 'react';
-import { IBlockConfig } from '../interfaces';
-import { Block } from '../model';
+import {
+    Block,
+    IBlockConfig
+} from 'pretty-math2/internal';
 
 export interface RootBlockData {}
 export type RootBlockChildNames = 'inner';
-export type RootBlock = Block<RootBlockData, RootBlockChildNames>;
+export type RootBlockType = Block<RootBlockData, RootBlockChildNames>;
 
-export const rootBlockConfig: IBlockConfig<RootBlock> = {
+export const rootBlockConfig: IBlockConfig<RootBlockType> = {
     type: 'root',
 
     render: ({ children }) => {

@@ -1,6 +1,6 @@
 import isEqual from 'lodash.isequal';
 import { action, computed, IObservableArray, observable, reaction } from 'mobx';
-import { Editor, SerializedEditorState } from '../model/Editor';
+import type { Editor, SerializedEditorState } from 'pretty-math2/internal';
 
 export class History {
     readonly editor: Editor;

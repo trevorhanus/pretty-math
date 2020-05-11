@@ -1,24 +1,10 @@
 import classNames from 'classnames';
+import { generateId, omitEmpty } from 'common';
+import { INode } from 'math';
 import { action, computed, observable } from 'mobx';
-import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
-import { getTargetedSide } from 'pretty-math2/utils/BlockUtils';
+import { BlockList, BlockListState, BlockPosition, getTargetedSide, IBlockConfig, IBlockListConfig, ICompositeBlockConfig, ICursorOrderConfig, IEntryConfig, mapObject, PrinterOutput, PrinterProps, someObject } from 'pretty-math2/internal';
+import type { Editor, IModel } from 'pretty-math2/internal';
 import React from 'react';
-import { BlockList, BlockListState } from '.';
-import { generateId, omitEmpty } from '../../common';
-import { INode } from '../../math';
-import {
-    IBlockConfig,
-    IBlockListConfig,
-    ICompositeBlockConfig,
-    ICursorOrderConfig,
-    IEntryConfig,
-    IModel,
-    PrinterProps
-} from '../interfaces';
-import { mapObject } from '../utils/mapObject';
-import { PrinterOutput } from '../utils/PrinterOutput';
-import { someObject } from '../utils/someObject';
-import { Editor } from './Editor';
 
 declare global {
     interface MouseEvent {

@@ -1,8 +1,10 @@
-import { Block } from 'pretty-math2/model';
-import { Editor } from '../model/Editor';
-import { offsetFromAncestor } from './DOMUtils';
-import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
-import { invariant } from './invariant';
+import {
+    Block,
+    Editor,
+    invariant,
+    offsetFromAncestor,
+    SelectionRange
+} from 'pretty-math2/internal';
 
 export function cloneBlocks(blocks: Block[]): Block[] {
     const clone = [];
@@ -44,13 +46,13 @@ export function getLeftParenPair(rightParen: Block) {
     let next = rightParen.prev;
 
     while (next != null) {
-        if (next.type === 'math:left_paren' && parenStack.length === 0) {
+        if (next.type === 'math:leftParen' && parenStack.length === 0) {
             return next;
         }
-        if (next.type === 'math:left_paren') {
+        if (next.type === 'math:leftParen') {
             parenStack.pop();
         }
-        if (next.type === 'math:right_paren') {
+        if (next.type === 'math:rightParen') {
             parenStack.push(next);
         }
         next = next.prev;

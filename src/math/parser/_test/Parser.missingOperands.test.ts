@@ -18,8 +18,11 @@ describe('Parser.missingOperands', () => {
                 descr: 'left parens on left',
                 expr: '(!)',
                 expected: {
-                    op: '!',
-                    left: '?',
+                    op: '()',
+                    left: {
+                        op: '!',
+                        left: '?'
+                    }
                 }
             },
             {
@@ -71,11 +74,14 @@ describe('Parser.missingOperands', () => {
                 descr: 'unary op: right parens on right',
                 expr: '(4 * -)',
                 expected: {
-                    op: '*',
-                    left: '4',
-                    right: {
-                        op: 'neg',
-                        left: '?',
+                    op: '()',
+                    left: {
+                        op: '*',
+                        left: '4',
+                        right: {
+                            op: 'neg',
+                            left: '?'
+                        }
                     }
                 }
             },
@@ -118,22 +124,28 @@ describe('Parser.missingOperands', () => {
                 descr: 'binary op: left parens on left',
                 expr: '(+6)',
                 expected: {
-                    op: '+',
-                    left: '?',
-                    right: '6'
+                    op: '()',
+                    left: {
+                        op: '+',
+                        left: '?',
+                        right: '6'
+                    }
                 }
             },
             {
                 descr: 'binary op: two binary ops',
                 expr: '(*+)',
                 expected: {
-                    op: '+',
+                    op: '()',
                     left: {
-                        op: '*',
-                        left: '?',
-                        right: '?',
-                    },
-                    right: '?'
+                        op: '+',
+                        left: {
+                            op: '*',
+                            left: '?',
+                            right: '?',
+                        },
+                        right: '?'
+                    }
                 }
             },
             {
@@ -174,9 +186,12 @@ describe('Parser.missingOperands', () => {
                 descr: 'binary op: right parens on right',
                 expr: '(5+)',
                 expected: {
-                    op: '+',
-                    left: '5',
-                    right: '?'
+                    op: '()',
+                    left: {
+                        op: '+',
+                        left: '5',
+                        right: '?'
+                    }
                 }
             },
             {
@@ -209,7 +224,10 @@ describe('Parser.missingOperands', () => {
             {
                 descr: 'parens: empty',
                 expr: '()',
-                expected: '?'
+                expected: {
+                    op: '()',
+                    left: '?'
+                }
             },
         ].forEach(test => {
             const { expr, expected, descr } = test;

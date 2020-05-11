@@ -1,13 +1,7 @@
-import { action, computed, IObservableArray, observable, reaction } from 'mobx';
-import { EndBlock } from 'pretty-math2/blocks/EndBlock';
-import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
+import { action, computed, IObservableArray, observable } from 'mobx';
+import { BlockFactory, BlockPosition, EndBlock, invariant, PrinterOutput } from 'pretty-math2/internal';
+import type { Block, BlockState, Editor, IBlockListConfig, IModel } from 'pretty-math2/internal';
 import React from 'react';
-import { Block, BlockState } from '.';
-import { BlockFactory } from '../blocks/BlockFactory';
-import { IBlockListConfig, IModel } from '../interfaces';
-import { invariant } from '../utils/invariant';
-import { PrinterOutput } from '../utils/PrinterOutput';
-import { Editor } from './Editor';
 
 export type BlockListState = BlockState[];
 

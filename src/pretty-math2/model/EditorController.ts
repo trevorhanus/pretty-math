@@ -1,10 +1,12 @@
 import { action } from 'mobx';
 import * as React from 'react';
-import { IPrettyMathInputProps } from '../components/PrettyMathInput';
-import { defaultCommandHandler } from '../handlers/defaultCommandHandler';
-import { defaultKeyBindingFn } from '../keybindings/defaultKeyBindingFn';
-import { Editor } from './Editor';
-import { handleTextareaChange } from 'pretty-math2/handlers/handleTextareaChange';
+import {
+    defaultCommandHandler,
+    defaultKeyBindingFn,
+    Editor,
+    handleTextareaChange,
+    IPrettyMathInputProps
+} from 'pretty-math2/internal';
 
 export class EditorController {
     readonly editorState: Editor;

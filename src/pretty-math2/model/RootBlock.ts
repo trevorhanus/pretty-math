@@ -1,12 +1,17 @@
-import { parseCalchub } from '../../math';
-import { IBlockConfig } from '../interfaces';
-import { walkTree } from '../utils/BlockUtils';
-import { getStartIndexForSource } from '../utils/PrinterOutput';
-import { Block, BlockState } from './Block';
-import { RootBlock as RootBlockType, RootBlockData, RootBlockChildNames } from '../blocks/RootBlock';
-import { Editor } from './Editor';
 import { action, computed, reaction } from 'mobx';
-import { BlockPosition } from 'pretty-math2/selection/BlockPosition';
+import { parseCalchub } from 'math';
+import {
+    Block,
+    BlockPosition,
+    BlockState,
+    Editor,
+    getStartIndexForSource,
+    IBlockConfig,
+    RootBlockChildNames,
+    RootBlockData,
+    RootBlockType,
+    walkTree
+} from 'pretty-math2/internal';
 
 export class RootBlock extends Block<RootBlockData, RootBlockChildNames> {
     private _editor: Editor;
