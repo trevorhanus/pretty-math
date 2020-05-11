@@ -1,7 +1,7 @@
 import { action, computed } from 'mobx';
 import { Block } from 'pretty-math2/model';
 import { Editor } from '../model/Editor';
-import { SelectionRange } from './SelectionRange';
+import { BlockRange } from './BlockRange';
 
 export interface SerializedSelectionState {
     anchor: string;
@@ -9,12 +9,13 @@ export interface SerializedSelectionState {
 }
 
 export class Selection {
+    private _disposeReaction: () => void;
     readonly editor: Editor;
-    readonly range: SelectionRange;
+    readonly range: BlockRange;
 
     constructor(editor: Editor) {
         this.editor = editor;
-        this.range = new SelectionRange();
+        this.range = new BlockRange();
         this.anchorAtStart();
     }
 
@@ -36,14 +37,14 @@ export class Selection {
     }
 
     @computed
-    get trailingPhraseRange(): SelectionRange {
+    get trailingPhraseRange(): BlockRange {
         const anchor = this.focus;
 
         if (!anchor) {
-            return SelectionRange.empty();
+            return BlockRange.empty();
         }
 
-        const range = new SelectionRange();
+        const range = new BlockRange();
         range.setAnchor(anchor);
 
         let block = anchor.prev;
@@ -115,6 +116,10 @@ export class Selection {
 
 const TRAILING_PHRASE_PART = /^[a-zA-Z]$/;
 function includeInTrailingPhrase(block: Block): boolean {
+    if (!block) {
+        return false;
+    }
+
     const { type, data } = block;
     return type === 'atomic' && data.text && TRAILING_PHRASE_PART.test(data.text);
 }

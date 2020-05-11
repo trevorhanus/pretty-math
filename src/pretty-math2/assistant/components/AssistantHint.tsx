@@ -18,7 +18,7 @@ export const AssistantHint = inject('assistant')(observer((props: IAssistantHint
             case assistant.entryIndex === -1:
                 return <span>Press <span className="font-medium">Down arrow</span> to select.</span>;
 
-            case assistant.focusedEntry != null:
+            case assistant.focusedItem != null:
                 return <>Press <span className="font-medium">Enter</span> to select. <span className="font-medium">Esc</span> to hide.</>;
 
             default:

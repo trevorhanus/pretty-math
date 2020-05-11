@@ -1,3 +1,4 @@
+import { action } from 'mobx';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Assistant } from '../assistant/components/Assistant';
@@ -9,7 +10,7 @@ import { Content } from './Content';
 import { Cursor } from './Cursor';
 
 export interface IPrettyMathInputProps {
-    editorState?: SerializedEditorState;
+    editorState?: Partial<SerializedEditorState>;
     keyBindingFn?: (e: React.KeyboardEvent) => string;
     handleCommand?: (command: string, editor: Editor, e?: React.KeyboardEvent) => HandlerResponse;
     customBlocks?: IBlockConfig<Block>[];
@@ -42,7 +43,7 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
             >
                 <textarea
                     className="hidden-textarea"
-                    onBlur={() => this.editor.setFocus(false)}
+                    onBlur={this.handleBlur}
                     onCopy={this.handleCopy}
                     onChange={this.controller.handleTextareaChange}
                     onCut={this.handleCut}
@@ -63,6 +64,11 @@ export class PrettyMathInput extends React.Component<IPrettyMathInputProps, {}> 
             </div>
         );
     }
+
+    handleBlur = action(() => {
+        this.editor.setFocus(false);
+        this.editor.setLastCommand('blur');
+    });
 
     handleCopy = (e: React.ClipboardEvent) => {
         e.preventDefault();

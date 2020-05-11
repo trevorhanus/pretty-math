@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { LibrarySearchItem } from '../library/Library';
 import { AssistantStore } from '../stores/AssistantStore';
 import { AssistantEntryList } from './AssistantEntryList';
 import { AssistantHint } from './AssistantHint';
@@ -8,7 +8,7 @@ import { FullLibrary } from './FullLibrary';
 
 export interface IAssistantDialogProps {
     onCloseRequested: () => void;
-    onSelect: (entry: LibraryEntry) => void;
+    onSelect: (item: LibrarySearchItem) => void;
     onUnmount: () => void;
     assistant?: AssistantStore;
 }

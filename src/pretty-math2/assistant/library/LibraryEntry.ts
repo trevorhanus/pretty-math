@@ -29,7 +29,7 @@ export interface LibraryEntryConfig {
 
     // required callback that is invoked when the user
     // selects the entry. This callback should modify the editorState
-    onSelect: (editor: Editor, entry: LibraryEntry) => void;
+    onSelect: (editor: Editor, entry: LibraryEntry, searchTerm?: string) => void;
 }
 
 export class LibraryEntry {
@@ -70,8 +70,8 @@ export class LibraryEntry {
         return this._config.doSuggest ? this._config.doSuggest(editor) : true;
     }
 
-    onSelect(editor: Editor) {
-        this._config.onSelect(editor, this);
+    onSelect(editor: Editor, entry: LibraryEntry, searchTerm?: string) {
+        this._config.onSelect(editor, entry, searchTerm);
     }
 
     toDoc(): any {

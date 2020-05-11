@@ -1,17 +1,23 @@
 import elasticlunr from 'elasticlunr';
 import { Editor } from '../../model/Editor';
-import { LibraryEntry } from './LibraryEntry';
 import { mathEntries } from '../math.entries';
+import { LibraryEntry } from './LibraryEntry';
 
 elasticlunr.clearStopWords();
 
+export interface LibrarySearchItem {
+    entry: LibraryEntry;
+    score?: number;
+    searchTerm?: string;
+}
+
 export class Library {
-    private _categories: Map<string, LibraryEntry[]>;
+    private _categories: Map<string, LibrarySearchItem[]>;
     private _entries: Map<string, LibraryEntry>;
     private _index: any;
 
     constructor() {
-        this._categories = new Map<string, LibraryEntry[]>();
+        this._categories = new Map<string, LibrarySearchItem[]>();
         this._entries = new Map<string, LibraryEntry>();
 
         this._index = elasticlunr();
@@ -19,22 +25,26 @@ export class Library {
         this._index.setRef('id');
     }
 
-    get allEntries(): LibraryEntry[] {
-        return Array.from(this._entries.values());
+    get allEntries(): LibrarySearchItem[] {
+        return reduceIterator(this._entries.values(), entry => {
+            return {
+                entry,
+            }
+        });
     }
 
     get categories(): string[] {
         return Array.from(this._categories.keys());
     }
 
-    getCategoryList(category: string): LibraryEntry[] {
+    getCategoryList(category: string): LibrarySearchItem[] {
         if (!this._categories.has(category)) {
             this._categories.set(category, []);
         }
         return this._categories.get(category);
     }
 
-    getSuggested(phrase: string, editorState: Editor): LibraryEntry[] {
+    getSuggested(phrase: string, editorState: Editor): LibrarySearchItem[] {
         return this.search(phrase, entry => {
             return entry.doSuggest(editorState);
         });
@@ -49,7 +59,7 @@ export class Library {
         this._entries.set(entry.id, entry);
         if (entry.category) {
             const categoryList = this.getCategoryList(entry.category);
-            categoryList.push(entry);
+            categoryList.push({ entry });
         }
     }
 
@@ -71,7 +81,9 @@ export class Library {
         }
     }
 
-    search(term: string, keepCb?: (entry: LibraryEntry) => boolean): LibraryEntry[] {
+    search(term: string, keepCb?: (entry: LibraryEntry) => boolean): LibrarySearchItem[] {
+        const terms = expandTerm(term);
+
         const config = {
             bool: 'OR',
             expand: true,
@@ -79,13 +91,31 @@ export class Library {
 
         keepCb = keepCb || (() => true);
 
-        return this._index.search(term, config).reduce((entries, { ref }) => {
-            const entry = this._entries.get(ref);
-            if (entry && keepCb(entry)) {
-                entries.push(entry);
-            }
-            return entries;
-        }, []);
+        // store a map of hits
+        // { ref, term, score, entry }
+        const hits: { [ref: string]: LibrarySearchItem } = {};
+
+        terms.forEach(term => {
+            this._index.search(term, config).forEach(hit => {
+                const { ref } = hit;
+
+                if (hits[ref]) {
+                    return;
+                }
+
+                const entry = this._entries.get(ref);
+
+                if (entry && keepCb(entry)) {
+                    hits[ref] = {
+                        entry,
+                        score: hit.score,
+                        searchTerm: term,
+                    }
+                }
+            });
+        });
+
+        return Object.keys(hits).map(ref => hits[ref]);
     }
 
     private termIsADefinedKeyword(term: string): boolean {
@@ -97,6 +127,32 @@ export class Library {
         });
         return found;
     }
+}
+
+// foo => [foo, oo, o]
+function expandTerm(term: string): string[] {
+    if (!term) {
+        return [];
+    }
+
+    const terms = [];
+    let i = 0;
+    while (i < term.length) {
+        terms.push(term.slice(i));
+        i++;
+    }
+
+    return terms;
+}
+
+function reduceIterator<T, R>(iterator: IterableIterator<T>, cb: (item: T) => R): R[] {
+    const items: R[] = [];
+    let next = iterator.next();
+    while (next) {
+        items.push(cb(next.value));
+        next = iterator.next();
+    }
+    return items;
 }
 
 let mathLibrary = null;

@@ -1,14 +1,14 @@
 import { observer, Provider } from 'mobx-react';
-import * as React from 'react';
 import { PrettyMathInput } from 'pretty-math2';
+import * as React from 'react';
+import { SerializedEditorState } from '../../src/pretty-math2/model/Editor';
 
 import 'pretty-math2/style/pretty-math.scss';
-import { SerializedEditorState } from '../../src/pretty-math2/model/Editor';
 
 export interface IApp2Props {
 }
 
-const INITIAL_STATE: SerializedEditorState = {
+const INITIAL_STATE: Partial<SerializedEditorState> = {
     root: {
         type: 'root:math',
         children: {

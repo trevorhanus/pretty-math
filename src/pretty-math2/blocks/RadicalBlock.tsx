@@ -17,7 +17,7 @@ export type RadicalBlockChildNames = 'inner';
 export type RadicalBlock = Block<RadicalBlockData, RadicalBlockChildNames>;
 
 export const radicalBlockConfig: IBlockConfig<RadicalBlock> = {
-    type: 'math:squareRoot',
+    type: 'math:radical',
 
     render: ({ block, children, style }) => (
         <span

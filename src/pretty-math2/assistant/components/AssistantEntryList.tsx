@@ -1,13 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { LibrarySearchItem } from '../library/Library';
 import { AssistantStore } from '../stores/AssistantStore';
-import { AssistantEntryItem } from './AssistantEntryItem';
+import { AssistantItem } from './AssistantItem';
 
 export interface IAssistantEntryListProps {
     assistant?: AssistantStore;
-    entries: LibraryEntry[];
-    onSelect: (entry: LibraryEntry) => void;
+    entries: LibrarySearchItem[];
+    onSelect: (searchResult: LibrarySearchItem) => void;
 }
 
 @inject('assistant')
@@ -38,11 +38,12 @@ export class AssistantEntryList extends React.Component<IAssistantEntryListProps
             <div className="pm-assistant__entry-list-scroller">
                 <ul className="pm-assistant__entry-list">
                     {
-                        entries.map((entry, i) => {
+                        entries.map((sr, i) => {
+                            const { entry } = sr;
                             return (
-                                <AssistantEntryItem
+                                <AssistantItem
                                     key={entry.id}
-                                    entry={entry}
+                                    item={sr}
                                     focused={assistant.isFocused(i)}
                                     onSelect={this.props.onSelect}
                                 />
@@ -61,9 +62,9 @@ export class AssistantEntryList extends React.Component<IAssistantEntryListProps
         switch (true) {
 
             case e.keyCode === 13: // Return
-                if (assistant.focusedEntry) {
+                if (assistant.focusedItem) {
                     e.preventDefault();
-                    this.props.onSelect(assistant.focusedEntry);
+                    this.props.onSelect(assistant.focusedItem);
                 }
                 break;
 

@@ -1,10 +1,10 @@
+import { action, computed, observable } from 'mobx';
 import { Block } from 'pretty-math2/model';
-import { observable, computed, action } from 'mobx';
 import { invariant } from 'pretty-math2/utils/invariant';
 import { getCommonParent } from '../utils/BlockUtils';
 import { sortLeftToRight } from './BlockPosition';
 
-export class SelectionRange {
+export class BlockRange {
     @observable _anchor: Block;
     @observable _focus: Block;
 
@@ -25,7 +25,7 @@ export class SelectionRange {
 
         while (start.parent != commonParent) {
             start = start.parent;
-            invariant(start == null, "commonParent was not found for SelectionRange.start.");
+            invariant(start == null, "commonParent was not found for BlockRange.start.");
             if (start == null) {
                 return null;
             }
@@ -33,7 +33,7 @@ export class SelectionRange {
         if (end.parent != commonParent) {
             while (end.parent != commonParent) {
                 end = end.parent;
-                invariant(end == null, "commonParent was not found for SelectionRange.end.");
+                invariant(end == null, "commonParent was not found for BlockRange.end.");
                 if (end == null) {
                     return null;
                 }
@@ -76,7 +76,7 @@ export class SelectionRange {
 
         while (start.parent != commonParent) {
             start = start.parent;
-            invariant(start == null, "commonParent was not found for SelectionRange.start.");
+            invariant(start == null, "commonParent was not found for BlockRange.start.");
             if (start == null) {
                 return null;
             }
@@ -84,7 +84,7 @@ export class SelectionRange {
 
         while (end.parent != commonParent) {
             end = end.parent;
-            invariant(end == null, "commonParent was not found for SelectionRange.end.");
+            invariant(end == null, "commonParent was not found for BlockRange.end.");
             if (end == null) {
                 return null;
             }
@@ -98,6 +98,12 @@ export class SelectionRange {
     }
 
     @action
+    clear() {
+        this._anchor = null;
+        this._focus = null;
+    }
+
+    @action
     setAnchor(block: Block) {
         this._anchor = block;
         this._focus = block;
@@ -108,8 +114,8 @@ export class SelectionRange {
         this._focus = block;
     }
 
-    static empty(): SelectionRange {
-        return new SelectionRange();
+    static empty(): BlockRange {
+        return new BlockRange();
     }
 }
 
