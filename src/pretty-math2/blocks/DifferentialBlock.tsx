@@ -22,7 +22,7 @@ export const differentialBlockConfig: IBlockConfig<DifferentialBlock> = {
         let classes = classNames(
             'inner',
             { 'has-focus': block.childMap.inner.contains(block.editor.selection.focus) }
-        )
+        );
         return (
             <span className="differential">
                 <span>{block.data.displayValue}</span>
@@ -74,4 +74,4 @@ export const differentialBlockConfig: IBlockConfig<DifferentialBlock> = {
             },
         }
     }
-}
+};
