@@ -2,16 +2,17 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { PrettyMathStatic } from '../../components/PrettyMathStatic';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { LibrarySearchItem } from '../library/Library';
 
-export interface IAssistantEntryItemProps {
-    entry: LibraryEntry;
+export interface IAssistantItemProps {
+    item: LibrarySearchItem;
     focused: boolean;
-    onSelect: (entry: LibraryEntry) => void;
+    onSelect: (item: LibrarySearchItem) => void;
 }
 
-export const AssistantEntryItem = observer((props: IAssistantEntryItemProps) => {
-    const { entry } = props;
+export const AssistantItem = observer((props: IAssistantItemProps) => {
+    const { item } = props;
+    const { entry } = item;
 
     const handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -19,7 +20,7 @@ export const AssistantEntryItem = observer((props: IAssistantEntryItemProps) => 
     };
 
     const handleMouseUp = (e: React.MouseEvent) => {
-        props.onSelect(entry);
+        props.onSelect(item);
     };
 
     const handleRef = (ref: HTMLLIElement) => {

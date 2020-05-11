@@ -1,17 +1,17 @@
 import { action } from 'mobx';
+import { handleTextareaChange } from 'pretty-math2/handlers/handleTextareaChange';
 import * as React from 'react';
 import { IPrettyMathInputProps } from '../components/PrettyMathInput';
 import { defaultCommandHandler } from '../handlers/defaultCommandHandler';
 import { defaultKeyBindingFn } from '../keybindings/defaultKeyBindingFn';
 import { Editor } from './Editor';
-import { handleTextareaChange } from 'pretty-math2/handlers/handleTextareaChange';
 
 export class EditorController {
-    readonly editorState: Editor;
+    readonly editor: Editor;
     readonly props: IPrettyMathInputProps;
 
     constructor(props: IPrettyMathInputProps, editorState: Editor) {
-        this.editorState = editorState;
+        this.editor = editorState;
         this.props = props;
     }
 
@@ -36,21 +36,21 @@ export class EditorController {
 
     @action
     handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        handleTextareaChange(this.editorState, e);
-        this.editorState.setLastCommand('input');
+        handleTextareaChange(this.editor, e);
+        this.editor.setLastCommand('input');
     };
 
     handleCommand(command: string, e?: React.SyntheticEvent) {
         let handled = 'not_handled';
 
         if (this.props.handleCommand) {
-            handled = this.props.handleCommand(command, this.editorState, e as React.KeyboardEvent);
+            handled = this.props.handleCommand(command, this.editor, e as React.KeyboardEvent);
         }
 
         if (handled === 'not_handled') {
-            defaultCommandHandler(command, this.editorState, e);
+            defaultCommandHandler(command, this.editor, e);
         }
 
-        this.editorState.setLastCommand(command);
+        this.editor.setLastCommand(command);
     }
 }

@@ -1,6 +1,7 @@
 import { BlockFactory } from '../blocks/BlockFactory';
 import { Editor } from '../model/Editor';
-import { LibraryEntryConfig } from './library/LibraryEntry';
+import { isType, removeTrailingPhrase } from '../utils/BlockUtils';
+import { LibraryEntry, LibraryEntryConfig } from './library/LibraryEntry';
 
 const algebra: LibraryEntryConfig[] = [
     {
@@ -29,10 +30,30 @@ const algebra: LibraryEntryConfig[] = [
                 }
             }
         },
-        onSelect: (editor: Editor) => {
-            // editor.removeRange(editor.selection.trailingPhraseRange);
-            // editor.insertBlock(BlockFactory.createBlock('atomic', { text: '+' }));
-            console.log('Addition selected!');
+        onSelect: (editor: Editor, entry: LibraryEntry, searchTerm?: string) => {
+            removeTrailingPhrase(editor, searchTerm);
+            editor.insertBlock(BlockFactory.createBlock('atomic', { text: '+' }));
+        }
+    },
+    {
+        keywords: ['fraction', 'divide'],
+        category: 'Algebra',
+        description: 'Fraction',
+        preview: {
+            root: {
+                type: 'root:math',
+                children: {
+                    inner: [
+                        { type: 'math:fraction' },
+                    ]
+                }
+            }
+        },
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+            const block = BlockFactory.createBlock('math:fraction');
+            editor.insertBlock(block);
+            editor.selection.anchorAt(block.childMap.num.start);
         }
     },
     {
@@ -57,13 +78,38 @@ const algebra: LibraryEntryConfig[] = [
                 }
             }
         },
-        onSelect: (editorState: Editor) => {
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+
             const data = {
                 text: '∞',
                 calchub: '\\inf',
                 python: 'INF'
             };
-            console.log('Infinity selected!');
+
+            editor.insertBlock(BlockFactory.createBlock('math:symbol', data));
+        }
+    },
+    {
+        keywords: ['square', 'root', 'radical'],
+        category: 'Algebra',
+        description: 'Radical',
+        preview: {
+            root: {
+                type: 'root:math',
+                children: {
+                    inner: [
+                        { type: 'math:radical' },
+                    ]
+
+                }
+            }
+        },
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+            const block = BlockFactory.createBlock('math:radical');
+            editor.insertBlock(block);
+            editor.selection.anchorAt(block.childMap.inner.start);
         }
     },
 ];
@@ -246,15 +292,265 @@ const greek = [
                 }
             }
         },
-        onSelect: (editor: Editor) => {
-            // editor.removeRange(editor.selection.trailingPhraseRange);
-            // editor.insertBlock(BlockFactory.createBlock('atomic', { text: '+' }));
-            console.log('Alpha selected!');
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+
+            const data = {
+                text: c.text,
+                calchub: c.calchub,
+                python: c.python,
+            };
+
+            editor.insertBlock(BlockFactory.createBlock('math:symbol', data));
         }
     };
 });
 
-const mathEntries = [...algebra, ...greek];
+const trig = [
+    {
+        keywords: ['arccos', 'acos'],
+        description: 'Inverse cosine of a value',
+        calchub: '\\arccos',
+        displayValue: 'acos',
+        python: 'Acos',
+    },
+    {
+        keywords: ['arcsin', 'asin'],
+        description: 'Inverse sine of a value',
+        calchub: '\\arcsin',
+        displayValue: 'asin',
+        python: 'Asin',
+    },
+    {
+        keywords: ['arctan', 'atan'],
+        description: 'Inverse tangent of a value',
+        calchub: '\\arctan',
+        displayValue: 'atan',
+        python: 'Atan',
+    },
+    {
+        keywords: ['acosh', 'hyperbolic', 'cosine'],
+        description: 'Inverse hyperbolic cosine of a value',
+        calchub: '\\chacosh',
+        displayValue: 'acosh',
+        python: 'Acosh',
+    },
+    {
+        keywords: ['asinh', 'hyperbolic', 'sine'],
+        description: 'Invserse hyperbolic sine of a real number',
+        calchub: '\\chasinh',
+        displayValue: 'asinh',
+        python: 'Asinh',
+    },
+    {
+        keywords: ['atanh', 'hyperbolic', 'tangent', 'trig'],
+        description: 'Invserse hyperbolic tangent of a real number',
+        calchub: '\\chatanh',
+        displayValue: 'atanh',
+        python: 'Atanh',
+    },
+    {
+        keywords: ['cosine'],
+        description: 'Cosine of a value',
+        calchub: '\\cos',
+        displayValue: 'cos',
+        python: 'Cos',
+    },
+    {
+        keywords: ['cosh', 'hyperbolic'],
+        description: 'Hyperbolic cosine of a value',
+        calchub: '\\cosh',
+        displayValue: 'cosh',
+        python: 'Cosh',
+    },
+    {
+        keywords: ['cot', 'tagent'],
+        description: 'Cotangent of a value',
+        calchub: '\\cot',
+        displayValue: 'cot',
+        python: 'Cot',
+    },
+    {
+        keywords: ['coth', 'tagent'],
+        description: 'Hyperbolic cotangent of a value',
+        calchub: '\\coth',
+        displayValue: 'coth',
+        python: 'Coth',
+    },
+    {
+        keywords: ['csc'],
+        description: 'Cosecant of a value',
+        calchub: '\\csc',
+        displayValue: 'csc',
+        python: 'Csc',
+    },
+    {
+        keywords: ['sine'],
+        description: 'Sine of a value',
+        calchub: '\\sin',
+        displayValue: 'sin',
+        python: 'Sin',
+    },
+    {
+        keywords: ['sinh'],
+        description: 'Hyperbolic sine of a value',
+        calchub: '\\sinh',
+        displayValue: 'sinh',
+        python: 'Sinh',
+    },
+    {
+        keywords: ['tangent'],
+        description: 'Tangent of a value',
+        calchub: '\\tan',
+        displayValue: 'tan',
+        python: 'Tan',
+    },
+    {
+        keywords: ['tanh'],
+        description: 'Hyperbolic tangent of a real number',
+        calchub: '\\tanh',
+        displayValue: 'tanh',
+        python: 'Tanh',
+    },
+].map(trig => {
+    return {
+        keywords: trig.keywords,
+        category: 'Trig',
+        description: trig.description,
+        preview: {
+            root: {
+                type: 'root:math',
+                children: {
+                    inner: [
+                        {
+                            type: 'math:function',
+                            data: {
+                                displayValue: trig.displayValue,
+                            },
+                        },
+                    ]
+
+                }
+            }
+        },
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+
+            const data = {
+                displayValue: trig.displayValue,
+                calchub: trig.calchub,
+                python: trig.python,
+            };
+
+            const block = BlockFactory.createBlock('math:function', data);
+            editor.insertBlock(block);
+            editor.selection.anchorAt(block.childMap.inner.start);
+        }
+    }
+});
+
+const calculus = [
+    {
+        keywords: ['derivative', 'differentiate'],
+        category: 'Calculus',
+        description: 'Derivative',
+        preview: {
+            root: {
+                type: 'root:math',
+                children: {
+                    inner: [
+                        {
+                            type: 'math:derivative',
+                            children: {
+                                wrt: [
+                                    {
+                                        type: 'math:differential',
+                                        data: {
+                                            displayValue: 'd',
+                                        },
+                                        children: {
+                                            inner: [
+                                                {
+                                                    type: 'atomic',
+                                                    data: {
+                                                        text: 'x',
+                                                    }
+                                                }
+                                            ]
+
+                                        }
+                                    }
+                                ],
+                                inner: [
+                                    {
+                                        type: 'atomic',
+                                        data: {
+                                            text: 'x',
+                                        }
+                                    }
+                                ]
+                            }
+
+                        },
+                    ]
+
+                }
+            }
+        },
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+            const block = BlockFactory.createBlock('math:derivative');
+            const differential = BlockFactory.createBlock('math:differential', { displayValue: 'd' });
+            block.childMap.wrt.insertBlock(block.childMap.wrt.start, differential);
+            editor.insertBlock(block);
+            editor.selection.anchorAt(differential.childMap.inner.end);
+        }
+    },
+    {
+        keywords: ['differential'],
+        category: 'Calculus',
+        description: 'Differential',
+        doSuggest: (editor: Editor) => {
+            const { focus } = editor.selection;
+            return isType(focus.parent, 'math:derivative') && focus.list.name === 'wrt';
+        },
+        preview: {
+            root: {
+                type: 'root:math',
+                children: {
+                    inner: [
+                        {
+                            type: 'math:differential',
+                            data: {
+                                displayValue: 'd',
+                            },
+                            children: {
+                                inner: [
+                                    {
+                                        type: 'atomic',
+                                        data: {
+                                            text: 'x',
+                                        }
+                                    }
+                                ]
+
+                            }
+                        }
+                    ]
+
+                }
+            }
+        },
+        onSelect: (editor: Editor, entry: LibraryEntry, phrase?: string) => {
+            removeTrailingPhrase(editor, phrase);
+            const block = BlockFactory.createBlock('math:differential', { displayValue: 'd' });
+            editor.insertBlock(block);
+            editor.selection.anchorAt(block.childMap.inner.start);
+        }
+    }
+];
+
+const mathEntries = [...algebra, ...greek, ...trig, ...calculus];
 
 export {
     mathEntries,

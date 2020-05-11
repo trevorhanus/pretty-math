@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { LibrarySearchItem } from '../library/Library';
 import { AssistantStore } from '../stores/AssistantStore';
 import { AssistantEntryList } from './AssistantEntryList';
 
 export interface IFullLibraryProps {
     assistant?: AssistantStore;
-    onSelect: (entry: LibraryEntry) => void;
+    onSelect: (item: LibrarySearchItem) => void;
 }
 
 @inject('assistant')

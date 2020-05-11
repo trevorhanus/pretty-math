@@ -1,9 +1,8 @@
 import { action, computed, observable, reaction } from 'mobx';
 import { between, scrollIntoView } from '../../../common';
 import { Editor } from '../../model/Editor';
-import { SelectionRange } from '../../selection/SelectionRange';
-import { getMathLibrary, Library } from '../library/Library';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { BlockRange } from '../../selection/BlockRange';
+import { getMathLibrary, Library, LibrarySearchItem } from '../library/Library';
 
 export enum AssistantForce {
     Open,
@@ -44,12 +43,12 @@ export class AssistantStore {
     }
 
     @computed
-    get entriesUnderFocusedCategory(): LibraryEntry[] {
+    get entriesUnderFocusedCategory(): LibrarySearchItem[] {
         return this.library.getCategoryList(this.focusedCategory);
     }
 
     @computed
-    get entriesToRender(): LibraryEntry[] {
+    get itemsToRender(): LibrarySearchItem[] {
         if (this.fullLibrary) {
             return this.entriesUnderFocusedCategory;
         } else {
@@ -68,8 +67,8 @@ export class AssistantStore {
     }
 
     @computed
-    get focusedEntry(): LibraryEntry {
-        return this.entriesToRender[this._entryIndex];
+    get focusedItem(): LibrarySearchItem {
+        return this.itemsToRender[this._entryIndex];
     }
 
     @computed
@@ -100,7 +99,7 @@ export class AssistantStore {
     }
 
     @computed
-    get suggestions(): LibraryEntry[] {
+    get suggestions(): LibrarySearchItem[] {
         const phrase = rangeToCalchub(this.editor.selection.trailingPhraseRange);
         return phrase ? this.library.getSuggested(phrase, this.editor) : [];
     }
@@ -147,9 +146,10 @@ export class AssistantStore {
     moveFocus(inc: number): boolean {
         const oldIndex = this._entryIndex;
         const nextIndex = oldIndex + inc;
-        this._entryIndex = between(-1, Math.max(0, this.entriesToRender.length - 1), nextIndex);
-        if (this.focusedEntry) {
-            scrollIntoView(this.focusedEntry.ref, { block: 'nearest', paddingBottom: 50 });
+        this._entryIndex = between(-1, Math.max(0, this.itemsToRender.length - 1), nextIndex);
+        if (this.focusedItem) {
+            const htmlRef = this.focusedItem.entry.ref;
+            scrollIntoView(htmlRef, { block: 'nearest', paddingBottom: 50 });
         }
         return this._entryIndex !== oldIndex;
     }
@@ -189,7 +189,7 @@ export class AssistantStore {
     }
 }
 
-export function rangeToCalchub(range: SelectionRange): string {
+export function rangeToCalchub(range: BlockRange): string {
     if (range.isEmpty) {
         return '';
     }

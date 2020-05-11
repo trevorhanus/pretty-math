@@ -7,6 +7,7 @@ import { AssistantStore } from '../assistant/stores/AssistantStore';
 import { BlockFactory } from '../blocks/BlockFactory';
 import { History } from '../history/History';
 import { Selection, SerializedSelectionState } from '../selection/Selection';
+import { BlockRange } from '../selection/BlockRange';
 import { Block, BlockState } from './Block';
 import { BlockList } from './BlockList';
 import { MathRootBlock, RootBlock } from './RootBlock';
@@ -60,7 +61,7 @@ export class Editor {
     }
 
     @action
-    applyState(state?: SerializedEditorState) {
+    applyState(state?: Partial<SerializedEditorState>) {
         if (state == null) {
             return;
         }
@@ -163,7 +164,11 @@ export class Editor {
     }
 
     @action
-    remove() {
+    removeNext() {
+        if (this.lastCommand === 'assistant_entry_selected') {
+            return this.history.undo();
+        }
+
         if (!this.selection.isCollapsed) {
             const { end } = this.selection.range;
             removeRange(this.selection.range);
@@ -194,6 +199,12 @@ export class Editor {
     }
 
     @action
+    removeRange(range: BlockRange) {
+        const nextAnchor = removeRange(range);
+        this.selection.anchorAt(nextAnchor);
+    }
+
+    @action
     setFocus(hasFocus: boolean) {
         this._hasFocus = hasFocus;
     }
@@ -216,7 +227,7 @@ export class Editor {
     }
 
     @action
-    static createMathRoot(state?: SerializedEditorState): Editor {
+    static createMathRoot(state?: Partial<SerializedEditorState>): Editor {
         const root = BlockFactory.createBlock('root:math') as MathRootBlock;
         const editor = new Editor(root);
         if (state) {

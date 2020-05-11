@@ -3,7 +3,7 @@ import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { Editor } from '../../model/Editor';
-import { LibraryEntry } from '../library/LibraryEntry';
+import { LibrarySearchItem } from '../library/Library';
 import { AssistantForce } from '../stores/AssistantStore';
 import { AssistantDialog } from './AssistantDialog';
 import { AssistantPositioner } from './AssistantPositioner';
@@ -88,9 +88,10 @@ export class Assistant extends React.Component<IAssistantProps, {}> {
     }
 
     @action
-    handleEntrySelect = (entry: LibraryEntry) => {
+    handleEntrySelect = (item: LibrarySearchItem) => {
         const { editor } = this.props;
-        entry.onSelect(editor);
+        const { entry } = item;
+        entry.onSelect(editor, entry, item.searchTerm);
         editor.assistant.releaseForce();
         editor.setLastCommand('assistant_entry_selected');
     };

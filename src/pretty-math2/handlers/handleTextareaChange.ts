@@ -1,61 +1,48 @@
 import React from 'react';
 import { BlockFactory } from '../blocks/BlockFactory';
 import { Editor } from '../model/Editor';
+import { isType } from '../utils/BlockUtils';
 
 export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<HTMLTextAreaElement>) {
     // Still a work in progress. Looking into other ways to find the keys we want
     const keyValue = e.target.value;
 
     const { focus } = editorState.selection;
-    if (focus.parent.type === 'math:derivative' && focus.list.name === 'wrt') {
-        if (keyValue === 'd') {
-            const newBlock = BlockFactory.createBlock('math:differential', { displayValue: '∂' });
-            editorState.insertBlock(newBlock);
-            editorState.selection.anchorAt(newBlock.childMap.inner.start);
-            return;
-        }
-        return;
-    }
-    if (keyValue === 's') {
-        const newBlock = BlockFactory.createBlock('math:function', { displayValue: 'sin' });
-        editorState.insertBlock(newBlock);
-        return;
-    }
-    if (keyValue === 'r') {
-        const newBlock = BlockFactory.createBlock('math:squareRoot');
+
+    if (keyValue === 'd' && isType(focus.parent, 'math:derivative') && focus.list.name === 'wrt') {
+        const newBlock = BlockFactory.createBlock('math:differential', { displayValue: 'd' });
         editorState.insertBlock(newBlock);
         editorState.selection.anchorAt(newBlock.childMap.inner.start);
         return;
     }
-    if (keyValue === 'v') {
-        const newBlock = BlockFactory.createBlock('math:derivative');
-        newBlock.childMap.wrt.insertBlock(newBlock.childMap.wrt.start, BlockFactory.createBlock('math:differential', { displayValue: '∂' }));
-        editorState.insertBlock(newBlock);
-        editorState.selection.anchorAt(newBlock.childMap.wrt.start);
-        return;
-    }
-    if (keyValue === 'i') {
-        handleIntegral(editorState);
-        return;
-    }
+
+    // if (keyValue === 'i') {
+    //     handleIntegral(editorState);
+    //     return;
+    // }
+
     // Fraction
     if (keyValue === '/') {
         handleFraction(editorState);
         return;
     }
+
     if (keyValue === '^') {
         handleSuperscript(editorState);
         return;
     }
+
     if (keyValue === '_') {
         handleSubscript(editorState);
         return;
     }
+
     if (keyValue === ')') {
         const newBlock = BlockFactory.createBlock('math:right_paren');
         editorState.insertBlock(newBlock);
         return;
     }
+
     if (keyValue === '(') {
         const newBlock = BlockFactory.createBlock('math:left_paren');
         editorState.insertBlock(newBlock);

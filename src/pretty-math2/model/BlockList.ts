@@ -101,9 +101,14 @@ export class BlockList implements IModel<BlockListState> {
     }
 
     getBlockById(id: string): Block | null {
-        return this.blocks.find(b => {
-            return b.getBlockById(id);
-        });
+        let block = null;
+        for (let i = 0; i < this.blocks.length; i++) {
+            block = this.blocks[i].getBlockById(id);
+            if (block) {
+                return block;
+            }
+        }
+        return null;
     }
 
     getIndex(block: Block): number {

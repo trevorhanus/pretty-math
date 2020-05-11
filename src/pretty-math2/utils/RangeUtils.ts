@@ -1,8 +1,8 @@
 import { action } from 'mobx';
 import { Block } from 'pretty-math2/model';
-import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
+import { BlockRange } from 'pretty-math2/selection/BlockRange';
 
-export function cloneBlocksInRange(range: SelectionRange): Block[] {
+export function cloneBlocksInRange(range: BlockRange): Block[] {
     const { start, end } = range;
     const blocks = [];
     let cur = start;
@@ -13,10 +13,10 @@ export function cloneBlocksInRange(range: SelectionRange): Block[] {
     return blocks;
 }
 
-export function rangeToPython(range: SelectionRange): string {
+export function rangeToPython(range: BlockRange): string {
     const { start, end } = range;
     let cur = start;
-    let python = ''
+    let python = '';
     while (cur != end) {
         python += cur.toPython().text;
         cur = cur.next;
@@ -24,7 +24,7 @@ export function rangeToPython(range: SelectionRange): string {
     return python;
 }
 
-export const removeRange = action((range: SelectionRange) => {
+export const removeRange = action((range: BlockRange): Block => {
     const { start, end } = range;
     let cur = start;
     while (cur != end) {
@@ -32,4 +32,5 @@ export const removeRange = action((range: SelectionRange) => {
         cur.list.removeBlock(cur);
         cur = temp;
     }
+    return end;
 });

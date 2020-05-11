@@ -1,8 +1,20 @@
 import { Block } from 'pretty-math2/model';
+import { BlockRange } from 'pretty-math2/selection/BlockRange';
 import { Editor } from '../model/Editor';
 import { offsetFromAncestor } from './DOMUtils';
-import { SelectionRange } from 'pretty-math2/selection/SelectionRange';
 import { invariant } from './invariant';
+
+export interface Point {
+    x: number,
+    y: number,
+}
+
+function calculateRelativePoint(e: React.MouseEvent, rect: DOMRect): Point {
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+    }
+}
 
 export function cloneBlocks(blocks: Block[]): Block[] {
     const clone = [];
@@ -12,88 +24,15 @@ export function cloneBlocks(blocks: Block[]): Block[] {
     return clone;
 }
 
-export function isRootBlock(block: Block): boolean {
-    return block.type === 'root' || block.type === 'root:math';
-}
-
-export function getCommonParent(b1: Block, b2: Block): Block {
-    if (b1.parent === b2.parent) {
-        return b1.parent;
-    }
-
-    // at same depth, but parent is not the same
-    if (b1.position.depth === b2.position.depth) {
-        return getCommonParent(b1.parent, b2.parent);
-    }
-
-    // b1 is higher up
-    if (b1.position.depth < b2.position.depth) {
-        return getCommonParent(b1, b2.parent);
-    }
-
-    // b2 is higher up
-    return getCommonParent(b1.parent, b2);
-}
-
-export function getNumeratorRangeLeftOfBlock(block: Block, anchor?: Block): SelectionRange {
-    return SelectionRange.empty();
-}
-
-export function getLeftParenPair(rightParen: Block) {
-    const parenStack = [];
-    let next = rightParen.prev;
-
-    while (next != null) {
-        if (next.type === 'math:left_paren' && parenStack.length === 0) {
-            return next;
-        }
-        if (next.type === 'math:left_paren') {
-            parenStack.pop();
-        }
-        if (next.type === 'math:right_paren') {
-            parenStack.push(next);
-        }
-        next = next.prev;
-    }
-
-    return null;
-}
-
 export function copyBlocksInChild(block: Block, child: string): Block[] {
     invariant(block.childMap[child] == null, `Cannot copy blocks in child: ${child}. Not a valid child of block type: ${block.type}`);
     return cloneBlocks(block.childMap[child].blocks);
 }
 
-export function insertBlocksToRight(block: Block, blocks: Block[]) {
-    if (block.type === 'end') {
-        invariant(block.type === 'end', 'Attempted to insert blocks right of end block');
-        return;
-    }
-    blocks.forEach(b => {
-        block.list.insertBlock(block.next, b);
-    });
-}
-
-export function insertBlocksToLeft(block: Block, blocks: Block[]) {
-    blocks.forEach(b => {
-        block.list.insertBlock(block, b);
-    });
-}
-
-export function walkTree(block: Block, iterator: (block: Block) => void) {
-    if (!block) {
-        return;
-    }
-
-    iterator(block);
-
-    if (block.isComposite) {
-        block.children.forEach(list => {
-            list.blocks.forEach(block => {
-                walkTree(block, iterator);
-            });
-        });
-    }
+function distanceBetween(p1: Point, p2: Point): number {
+    const x = Math.pow(p2.x - p1.x, 2);
+    const y = Math.pow(p2.y - p1.y, 2);
+    return Math.sqrt(x + y);
 }
 
 export function findClosestBlock(editor: Editor, e: React.MouseEvent): Block {
@@ -131,30 +70,67 @@ export function findClosestBlock(editor: Editor, e: React.MouseEvent): Block {
     return closestBlock;
 }
 
-export interface Point {
-    x: number,
-    y: number,
+export function insertBlocksToLeft(block: Block, blocks: Block[]) {
+    blocks.forEach(b => {
+        block.list.insertBlock(block, b);
+    });
 }
 
-function calculateRelativePoint(e: React.MouseEvent, rect: DOMRect): Point {
-    return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+export function insertBlocksToRight(block: Block, blocks: Block[]) {
+    if (block.type === 'end') {
+        invariant(block.type === 'end', 'Attempted to insert blocks right of end block');
+        return;
     }
+    blocks.forEach(b => {
+        block.list.insertBlock(block.next, b);
+    });
 }
 
-function distanceBetween(p1: Point, p2: Point): number {
-    const x = Math.pow(p2.x - p1.x, 2);
-    const y = Math.pow(p2.y - p1.y, 2);
-    return Math.sqrt(x + y);
+export function isType(block: Block, type: string): boolean {
+    return block && block.type === type;
 }
 
-function isInside(e: React.MouseEvent, rect: DOMRect): boolean {
-    const { clientX, clientY } = e;
-    return clientX > rect.left
-        && clientX < rect.right
-        && clientY > rect.top
-        && clientY < rect.bottom;
+export function getCommonParent(b1: Block, b2: Block): Block {
+    if (b1.parent === b2.parent) {
+        return b1.parent;
+    }
+
+    // at same depth, but parent is not the same
+    if (b1.position.depth === b2.position.depth) {
+        return getCommonParent(b1.parent, b2.parent);
+    }
+
+    // b1 is higher up
+    if (b1.position.depth < b2.position.depth) {
+        return getCommonParent(b1, b2.parent);
+    }
+
+    // b2 is higher up
+    return getCommonParent(b1.parent, b2);
+}
+
+export function getLeftParenPair(rightParen: Block) {
+    const parenStack = [];
+    let next = rightParen.prev;
+
+    while (next != null) {
+        if (next.type === 'math:left_paren' && parenStack.length === 0) {
+            return next;
+        }
+        if (next.type === 'math:left_paren') {
+            parenStack.pop();
+        }
+        if (next.type === 'math:right_paren') {
+            parenStack.push(next);
+        }
+        next = next.prev;
+    }
+
+    return null;
+}
+
+export function getNumeratorRangeLeftOfBlock(block: Block, anchor?: Block): BlockRange {
+    return BlockRange.empty();
 }
 
 export function getTargetedSide(e: MouseEvent | React.MouseEvent, target: HTMLElement): number {
@@ -167,4 +143,55 @@ export function getTargetedSide(e: MouseEvent | React.MouseEvent, target: HTMLEl
     }
 
     return Math.round(localOffset / width);
+}
+
+function isInside(e: React.MouseEvent, rect: DOMRect): boolean {
+    const { clientX, clientY } = e;
+    return clientX > rect.left
+        && clientX < rect.right
+        && clientY > rect.top
+        && clientY < rect.bottom;
+}
+
+export function isRootBlock(block: Block): boolean {
+    return block.type === 'root' || block.type === 'root:math';
+}
+
+export function removeTrailingPhrase(editor: Editor, phrase?: string) {
+    let range: BlockRange = null;
+
+    if (phrase) {
+        // build a range to remove
+        range = new BlockRange();
+        const { focus } = editor.selection;
+        range.setAnchor(focus);
+
+        let block = focus.prev;
+        let i = phrase.length - 1;
+        while (block && i >= 0 && block.type === 'atomic') {
+            range.setFocus(block);
+            block = block.prev;
+            i--;
+        }
+    } else {
+        range = editor.selection.trailingPhraseRange;
+    }
+
+    editor.removeRange(range);
+}
+
+export function walkTree(block: Block, iterator: (block: Block) => void) {
+    if (!block) {
+        return;
+    }
+
+    iterator(block);
+
+    if (block.isComposite) {
+        block.children.forEach(list => {
+            list.blocks.forEach(block => {
+                walkTree(block, iterator);
+            });
+        });
+    }
 }
