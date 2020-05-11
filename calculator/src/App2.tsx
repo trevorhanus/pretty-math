@@ -3,7 +3,7 @@ import * as React from 'react';
 import { PrettyMathInput } from 'pretty-math2';
 
 import 'pretty-math2/style/pretty-math.scss';
-import { SerializedEditorState } from '../../src/pretty-math2/model/EditorState';
+import { SerializedEditorState } from '../../src/pretty-math2/model/Editor';
 
 export interface IApp2Props {
 }

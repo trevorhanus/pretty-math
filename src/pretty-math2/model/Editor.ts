@@ -13,7 +13,7 @@ import { MathRootBlock, RootBlock } from './RootBlock';
 
 export interface SerializedEditorState {
     root: BlockState;
-    selection: SerializedSelectionState;
+    selection?: SerializedSelectionState;
 }
 
 export class Editor {
