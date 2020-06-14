@@ -7,6 +7,6 @@ import {
 export function handleCut(editor: Editor, e: React.ClipboardEvent) {
     handleCopy(editor, e);
     if (!editor.selection.isCollapsed) {
-        editor.remove();
+        editor.removeNext();
     }
 }

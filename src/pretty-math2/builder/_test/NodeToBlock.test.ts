@@ -5,7 +5,7 @@ import {
     blocksFromNodeTree,
 } from 'pretty-math2/internal';
 
-describe.only('NodeToBlock', () => {
+describe('NodeToBlock', () => {
 
     it('general', () => {
         [
@@ -95,7 +95,7 @@ describe.only('NodeToBlock', () => {
                     children: {
                         inner: [
                             {
-                                type: "math:squareRoot",
+                                type: "math:radical",
                                 children: {
                                     inner: [
                                         {

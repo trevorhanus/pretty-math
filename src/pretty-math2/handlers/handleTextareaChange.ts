@@ -7,6 +7,7 @@ import {
     blocksFromNodeTree,
     isType,
 } from 'pretty-math2/internal';
+import { BlockRange } from 'pretty-math2/selection/BlockRange';
 
 export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<HTMLTextAreaElement>) {
     // Still a work in progress. Looking into other ways to find the keys we want
@@ -60,14 +61,14 @@ export function handleTextareaChange(editorState: Editor, e: React.ChangeEvent<H
 
 function handleFraction(editor: Editor) {
     const { focus } = editor.selection;
-    const sr = new SelectionRange();
+    const sr = new BlockRange();
     sr.setAnchor(focus);
     sr.setFocus(focus.list.start);
     const node = extractFractionNumerator(parseCalchub(rangeToCalchub(sr)).root);
     const numBlocks = blocksFromNodeTree(node)
     const newBlock = BlockFactory.createBlock('math:fraction');
     if (numBlocks.length > 0) {
-        numBlocks.forEach(block => editor.remove());
+        numBlocks.forEach(block => editor.removeNext());
         newBlock.childMap.num.addBlocks(...numBlocks);
         editor.insertBlock(newBlock);
         editor.selection.anchorAt(newBlock.childMap['denom'].start);

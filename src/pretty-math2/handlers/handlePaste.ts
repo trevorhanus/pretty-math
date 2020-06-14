@@ -10,7 +10,7 @@ export function handlePaste(editor: Editor, e: React.ClipboardEvent) {
         const obj = JSON.parse(data);
         if (obj.prettyMath.length > 0) {
             if (!editor.selection.isCollapsed) {
-                editor.remove();
+                editor.removeNext();
             }
             for (let i = 0; i < obj.prettyMath.length; i++) {
                 const block = BlockFactory.createBlockFromState(obj.prettyMath[i]);

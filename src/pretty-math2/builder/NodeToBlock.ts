@@ -85,7 +85,7 @@ export function skip(node: INode): Block[] {
 }
 
 export function sqrt(node: INode, children: Block[][]): Block[] {
-    const block = BlockFactory.createBlock('math:squareRoot');
+    const block = BlockFactory.createBlock('math:radical');
     block.childMap.inner.addBlocks(...children[0]);
     return [block];
 }
