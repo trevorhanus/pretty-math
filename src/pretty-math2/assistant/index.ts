@@ -4,7 +4,7 @@ export * from './library/Library';
 export * from './components/Assistant';
 export * from './components/AssistantDialog';
 export * from './components/AssistantEntryList';
-export * from './components/AssistantEntryItem';
+export * from './components/AssistantItem';
 export * from './components/AssistantHint';
 export * from './components/AssistantPositioner';
 export * from './components/FullLibrary';
