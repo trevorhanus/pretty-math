@@ -9,11 +9,11 @@
     "start:explorer": "webpack-dev-server --config tree-explorer/webpack.config.js --env.command=start",
     "storybook": "start-storybook",
     "install-peers": "install-peers",
-    "test": "mocha src/pretty-math2/**/*.test.ts",
+    "test": "mocha src/pretty-math/**/*.test.ts",
     "test:watch": "yarn test --watch"
   },
   "_moduleAliases": {
-    "pretty-math2": "src/pretty-math2",
+    "pretty-math": "src/pretty-math",
     "common": "src/common",
     "math": "src/math"
   },
@@ -40,6 +40,7 @@
     "precss": "^4.0.0",
     "resolve-url-loader": "^3.1.1",
     "sass-loader": "^8.0.2",
+    "sinon": "^9.2.1",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.1",
     "ts-node": "^8.9.1",
@@ -67,7 +68,6 @@
     "react": "^16.13.1",
     "react-color": "^2.18.0",
     "react-dom": "^16.13.1",
-    "sinon": "^9.0.2",
     "ua-parser-js": "^0.7.21"
   }
 }

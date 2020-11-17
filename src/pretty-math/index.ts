@@ -1,1 +1,3 @@
-export * from './internal'
+import './style/pretty-math.scss';
+
+export * from './internal';

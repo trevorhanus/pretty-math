@@ -1,37 +1,33 @@
-import { INode, TokenName } from 'math';
-import { IBlock, ChainBuilder } from 'pretty-math/internal';
-
-const {
+import { TokenName, INode } from 'math';
+import {
+    Block,
+    atomic,
     biop,
     derivative,
-    dfunc,
     diff,
     frac,
     func,
     integral,
-    libraryEntry,
-    matrix,
     parens,
     partialDiff,
+    skip,
     sqrt,
     sup,
     symbol,
-    tokenValue,
-    udf,
     unary
-} = ChainBuilder;
+} from 'pretty-math/internal';
 
-export type BuilderFn = (node: INode, children?: IBlock[]) => IBlock;
+export type TokenBuilderFn = (node: INode, children?: Block[][]) => Block[];
 const _ = TokenName;
 
-export const TOKEN_TO_BUILDER: { [name in TokenName]: BuilderFn } = {
+export const TOKEN_TO_BUILDER: { [name in TokenName]: TokenBuilderFn } = {
 
     [_.Missing]: null,
     [_.Space]: null, // shouldn't ever show up in tree
 
-    [_.e]: tokenValue,
-    [_.pi]: libraryEntry('\\pi'),
-    [_.Infinity]: libraryEntry('\\inf'),
+    [_.e]: atomic,
+    [_.pi]: null, //libraryEntry('\\pi'),
+    [_.Infinity]: null, //libraryEntry('\\inf'),
 
     // unary operators
     [_.Factorial]: unary,
@@ -42,42 +38,42 @@ export const TOKEN_TO_BUILDER: { [name in TokenName]: BuilderFn } = {
     [_.Assign]: biop('='),
     [_.Comma]: biop(', '),
     [_.Divide]: biop('/'),
-    [_.ImplMultiply]: biop(''),
+    [_.ImplMultiply]: biop(),
     [_.Multiply]: biop('*'),
     [_.Power]: sup,
     [_.Subtract]: biop('-'),
 
     // trig functions
-    [_.Acos]: func('acos', '\\arccos'),
-    [_.Asin]: func('asin', '\\arcsin'),
-    [_.Atan]: func('atan', '\\arctan'),
-    [_.Acosh]: func('acosh', '\\chacosh'),
-    [_.Asinh]: func('asinh', '\\chasinh'),
-    [_.Atanh]: func('atanh', '\\chatanh'),
-    [_.Cos]: func('cos', '\\cos'),
-    [_.Cosh]: func('cosh', '\\cosh'),
-    [_.Sin]: func('sin', '\\sin'),
-    [_.Sinh]: func('sinh', '\\sinh'),
-    [_.Tan]: func('tan', '\\tan'),
-    [_.Tanh]: func('tanh', '\\tanh'),
+    [_.Acos]: func('acos'),
+    [_.Asin]: func('asin'),
+    [_.Atan]: func('atan'),
+    [_.Acosh]: func('acosh'),
+    [_.Asinh]: func('asinh'),
+    [_.Atanh]: func('atanh'),
+    [_.Cos]: func('cos'),
+    [_.Cosh]: func('cosh'),
+    [_.Sin]: func('sin'),
+    [_.Sinh]: func('sinh'),
+    [_.Tan]: func('tan'),
+    [_.Tanh]: func('tanh'),
 
     // arithmetic functions
     [_.Abs]: func('abs'),
     [_.Exp]: func('exp'),
     [_.Frac]: frac,
-    [_.Ln]: func('ln', '\\ln'),
-    [_.Log]: func('log', '\\log'),
-    [_.Max]: func('max', '\\chmax'),
-    [_.Min]: func('min', '\\chmin'),
+    [_.Ln]: func('ln'),
+    [_.Log]: func('log'),
+    [_.Max]: func('max'),
+    [_.Min]: func('min'),
     [_.Sqrt]: sqrt,
-    [_.Sum]: func('sum', '\\chsum'),
+    [_.Sum]: func('sum'),
 
     // calchub
-    [_.Dfunc]: dfunc,
-    [_.UserDefinedFunc]: udf,
+    [_.Dfunc]: null, // TODO: dfunc,
+    [_.UserDefinedFunc]: null, // TODO: udf,
 
     // linear algebra
-    [_.Matrix]: matrix,
+    [_.Matrix]: null, // TODO: matrix,
     [_.CrossP]: biop('\\crossp'),
     [_.DotP]: biop('\\dotp'),
     [_.Transpose]: null,
@@ -94,50 +90,50 @@ export const TOKEN_TO_BUILDER: { [name in TokenName]: BuilderFn } = {
     [_.ArrayCloser]: null,
 
     // parens
-    [_.EscapedLeftCurlyParens]: parens,
-    [_.LeftCurlyParens]: parens,
-    [_.LeftRoundParens]: parens,
+    [_.EscapedLeftCurlyParens]: parens('\\{', '\\}'),
+    [_.LeftCurlyParens]: parens('{', '}'),
+    [_.LeftRoundParens]: parens(),
     [_.EscapedRightCurlyParens]: null, // right parens are taken care of by left
     [_.RightCurlyParens]: null,
     [_.RightRoundParens]: null,
 
     // operands
-    [_.Literal]: tokenValue,
+    [_.Literal]: atomic,
     [_.Symbol]: symbol,
 
     // greeks
-    [_.alpha]: libraryEntry('\\alpha'),
-    [_.beta]: libraryEntry('\\beta'),
-    [_.gamma]: libraryEntry('\\gamma'),
-    [_.delta]: libraryEntry('\\delta'),
-    [_.epsilon]: libraryEntry('\\epsilon'),
-    [_.zeta]: libraryEntry('\\zeta'),
-    [_.eta]: libraryEntry('\\eta'),
-    [_.theta]: libraryEntry('\\theta'),
-    [_.kappa]: libraryEntry('\\kappa'),
-    [_.lambda]: libraryEntry('\\lambda'),
-    [_.mu]: libraryEntry('\\mu'),
-    [_.nu]: libraryEntry('\\nu'),
-    [_.xi]: libraryEntry('\\xi'),
-    [_.rho]: libraryEntry('\\rho'),
-    [_.sigma]: libraryEntry('\\sigma'),
-    [_.tau]: libraryEntry('\\tau'),
-    [_.upsilon]: libraryEntry('\\upsilon'),
-    [_.phi]: libraryEntry('\\phi'),
-    [_.chi]: libraryEntry('\\chi'),
-    [_.psi]: libraryEntry('\\psi'),
-    [_.omega]: libraryEntry('\\omega'),
+    [_.alpha]: null, //libraryEntry('\\alpha'),
+    [_.beta]: null, //libraryEntry('\\beta'),
+    [_.gamma]: null, //libraryEntry('\\gamma'),
+    [_.delta]: null, //libraryEntry('\\delta'),
+    [_.epsilon]: null, //libraryEntry('\\epsilon'),
+    [_.zeta]: null, //libraryEntry('\\zeta'),
+    [_.eta]: null, //libraryEntry('\\eta'),
+    [_.theta]: null, //libraryEntry('\\theta'),
+    [_.kappa]: null, //libraryEntry('\\kappa'),
+    [_.lambda]: null, //libraryEntry('\\lambda'),
+    [_.mu]: null, //libraryEntry('\\mu'),
+    [_.nu]: null, //libraryEntry('\\nu'),
+    [_.xi]: null, //libraryEntry('\\xi'),
+    [_.rho]: null, //libraryEntry('\\rho'),
+    [_.sigma]: null, //libraryEntry('\\sigma'),
+    [_.tau]: null, //libraryEntry('\\tau'),
+    [_.upsilon]: null, //libraryEntry('\\upsilon'),
+    [_.phi]: null, //libraryEntry('\\phi'),
+    [_.chi]: null, //libraryEntry('\\chi'),
+    [_.psi]: null, //libraryEntry('\\psi'),
+    [_.omega]: null, //libraryEntry('\\omega'),
 
-    [_.Gamma]: libraryEntry('\\Gamma'),
-    [_.Delta]: libraryEntry('\\Delta'),
-    [_.Theta]: libraryEntry('\\Theta'),
-    [_.Lambda]: libraryEntry('\\Lambda'),
-    [_.Xi]: libraryEntry('\\Xi'),
-    [_.Pi]: libraryEntry('\\Pi'),
-    [_.Sigma]: libraryEntry('\\Sigma'),
-    [_.Upsilon]: libraryEntry('\\Upsilon'),
-    [_.Phi]: libraryEntry('\\Phi'),
-    [_.Psi]: libraryEntry('\\Psi'),
-    [_.Omega]: libraryEntry('\\Omega'),
+    [_.Gamma]: null, //libraryEntry('\\Gamma'),
+    [_.Delta]: null, //libraryEntry('\\Delta'),
+    [_.Theta]: null, //libraryEntry('\\Theta'),
+    [_.Lambda]: null, //libraryEntry('\\Lambda'),
+    [_.Xi]: null, //libraryEntry('\\Xi'),
+    [_.Pi]: null, //libraryEntry('\\Pi'),
+    [_.Sigma]: null, //libraryEntry('\\Sigma'),
+    [_.Upsilon]: null, //libraryEntry('\\Upsilon'),
+    [_.Phi]: null, //libraryEntry('\\Phi'),
+    [_.Psi]: null, //libraryEntry('\\Psi'),
+    [_.Omega]: null, //libraryEntry('\\Omega'),
 
 };

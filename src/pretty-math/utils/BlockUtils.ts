@@ -1,463 +1,199 @@
-import { isBinaryOpFam } from 'math';
-import { runInAction } from 'mobx';
 import {
-    BlockBuilder,
-    BlockChainState,
-    BlockType,
-    buildChainFromCalchub,
-    calchubFromChain,
-    CursorPosition,
-    FractionBlock,
-    getBlockAtPosition,
-    IBlock,
-    IBlockState,
-    ICursorPosition,
-    isMatrixBlock,
-    isSupSubBlock,
-    LibraryEntry,
-    MatrixBlock,
-    Range,
-    RightParensBlock,
-    Selection,
-    warn
+    Block,
+    Editor,
+    invariant,
+    offsetFromAncestor,
+    BlockRange,
 } from 'pretty-math/internal';
 
-export function removeRange(range: Range): ICursorPosition {
-    return runInAction(() => {
+export interface Point {
+    x: number,
+    y: number,
+}
 
-        if (range.isEmpty || range.isCollapsed) {
-            return null;
+function calculateRelativePoint(e: React.MouseEvent, rect: DOMRect): Point {
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+    }
+}
+
+export function cloneBlocks(blocks: Block[]): Block[] {
+    const clone = [];
+    blocks.forEach(block => {
+        clone.push(block.deepClone());
+    });
+    return clone;
+}
+
+export function copyBlocksInChild(block: Block, child: string): Block[] {
+    invariant(block.childMap[child] == null, `Cannot copy blocks in child: ${child}. Not a valid child of block type: ${block.type}`);
+    return cloneBlocks(block.childMap[child].blocks);
+}
+
+function distanceBetween(p1: Point, p2: Point): number {
+    const x = Math.pow(p2.x - p1.x, 2);
+    const y = Math.pow(p2.y - p1.y, 2);
+    return Math.sqrt(x + y);
+}
+
+export function findClosestBlock(editor: Editor, e: React.MouseEvent): Block {
+    const containerRef = editor.containerRef.current;
+
+    if (!containerRef) {
+        return null;
+    }
+
+    const containerClientRect = containerRef.getBoundingClientRect();
+
+    if (!isInside(e, containerClientRect)) {
+        return null;
+    }
+
+    const relPoint = calculateRelativePoint(e, containerClientRect);
+
+    let closestBlock = null;
+    let leastDist = null;
+
+    walkTree(editor.root.childMap.inner.start, block => {
+        const blockOffset = offsetFromAncestor(containerRef, block.ref.current);
+        const dist = distanceBetween(relPoint, { x: blockOffset.offsetLeft, y: blockOffset.offsetTop });
+
+        if (!leastDist) {
+            leastDist = dist;
         }
 
-        let startBlock = range.start.offset === 0 ? range.start.block : range.start.block.right;
-        let endBlock = range.end.offset === 1 ? range.end.block : range.end.block.left;
-
-        if (startBlock === endBlock) {
-            return startBlock.removeNext(1);
+        if (dist <= leastDist) {
+            leastDist = dist;
+            closestBlock = block;
         }
+    });
 
-        // whole chain
-        if (startBlock.isChainStart && endBlock.isChainEnd) {
+    return closestBlock;
+}
 
-            if (startBlock.parent == null) {
-                // this should never happen, expect in tests sometimes
-                warn('invariant: a block does not have a parent.');
-                return null;
-            }
-
-            return startBlock.parent.removeChild(startBlock);
-        }
-
-        // start of chain
-        if (startBlock.isChainStart) {
-            const newStart = endBlock.right;
-            endBlock.splitAt(1);
-            startBlock.parent.replaceChild(startBlock, newStart);
-            return {
-                block: newStart,
-                offset: 0,
-            }
-        }
-
-        // end of chain
-        if (endBlock.isChainEnd) {
-            const newEnd = startBlock.left;
-            newEnd.setRight(null);
-            return {
-                block: newEnd,
-                offset: 1,
-            }
-        }
-
-        // must be in the middle of a chain
-        const left = startBlock.left;
-        const right = endBlock.right;
-
-        startBlock.splitAt(0);
-        endBlock.splitAt(1);
-
-        left.insertChainRight(right);
-
-        return {
-            block: left,
-            offset: 1,
-        }
+export function insertBlocksToLeft(block: Block, blocks: Block[]) {
+    blocks.forEach(b => {
+        block.list.insertBlock(block, b);
     });
 }
 
-export function getCalchubForRange(range: Range): string {
-    if (range.isEmpty || range.isCollapsed) {
-        return '';
+export function insertBlocksToRight(block: Block, blocks: Block[]) {
+    if (block.type === 'end') {
+        invariant(block.type === 'end', 'Attempted to insert blocks right of end block');
+        return;
     }
-
-    const startBlock = range.start.offset === 0 ? range.start.block : range.start.block.right;
-    const endBlock = range.end.offset === 1 ? range.end.block : range.end.block.left;
-
-    let currentBlock = startBlock;
-    let calchub = currentBlock.toCalchub();
-
-    while (currentBlock !== endBlock && currentBlock.right) {
-        calchub += currentBlock.right.toCalchub();
-        currentBlock = currentBlock.right;
-    }
-
-    return calchub;
+    blocks.forEach(b => {
+        block.list.insertBlock(block.next, b);
+    });
 }
 
-export function replaceFocusedTokenWithLibraryEntry(selection: Selection, entry: LibraryEntry) {
-    replaceRangeWithLibraryEntry(selection, selection.focusedTokenRange, entry);
+export function isType(block: Block, type: string): boolean {
+    return block && block.type === type;
 }
 
-export function replaceRangeWithLibraryEntry(selection: Selection, range: Range, entry: LibraryEntry) {
-    if (entry == null || range == null) {
+export function getCommonParent(b1: Block, b2: Block): Block {
+    if (b1.parent === b2.parent) {
+        return b1.parent;
+    }
+
+    // at same depth, but parent is not the same
+    if (b1.position.depth === b2.position.depth) {
+        return getCommonParent(b1.parent, b2.parent);
+    }
+
+    // b1 is higher up
+    if (b1.position.depth < b2.position.depth) {
+        return getCommonParent(b1, b2.parent);
+    }
+
+    // b2 is higher up
+    return getCommonParent(b1.parent, b2);
+}
+
+export function getLeftParenPair(rightParen: Block) {
+    const parenStack = [];
+    let next = rightParen.prev;
+
+    while (next != null) {
+        if (next.type === 'math:leftParen' && parenStack.length === 0) {
+            return next;
+        }
+        if (next.type === 'math:leftParen') {
+            parenStack.pop();
+        }
+        if (next.type === 'math:rightParen') {
+            parenStack.push(next);
+        }
+        next = next.prev;
+    }
+
+    return null;
+}
+
+export function getNumeratorRangeLeftOfBlock(block: Block, anchor?: Block): BlockRange {
+    return BlockRange.empty();
+}
+
+export function getTargetedSide(e: MouseEvent | React.MouseEvent, target: HTMLElement): number {
+    const localOffset = e.clientX - target.getBoundingClientRect().left;
+    const width = target.offsetWidth;
+
+    if (localOffset < 0 || localOffset > width) {
+        // out of bounds
+        return -1;
+    }
+
+    return Math.round(localOffset / width);
+}
+
+function isInside(e: React.MouseEvent, rect: DOMRect): boolean {
+    const { clientX, clientY } = e;
+    return clientX > rect.left
+        && clientX < rect.right
+        && clientY > rect.top
+        && clientY < rect.bottom;
+}
+
+export function isRootBlock(block: Block): boolean {
+    return block.type === 'root' || block.type === 'root:math';
+}
+
+export function removeTrailingPhrase(editor: Editor, phrase?: string) {
+    let range: BlockRange = null;
+
+    if (phrase) {
+        // build a range to remove
+        range = new BlockRange();
+        const { focus } = editor.selection;
+        range.setAnchor(focus);
+
+        let block = focus.prev;
+        let i = phrase.length - 1;
+        while (block && i >= 0 && block.type === 'atomic') {
+            range.setFocus(block);
+            block = block.prev;
+            i--;
+        }
+    } else {
+        range = editor.selection.trailingPhraseRange;
+    }
+
+    editor.removeRange(range);
+}
+
+export function walkTree(block: Block, iterator: (block: Block) => void) {
+    if (!block) {
         return;
     }
 
-    const { autocomplete, latex, cursorOnInsert } = entry;
+    iterator(block);
 
-    const replacementChain = buildReplacementChain(autocomplete || latex);
-
-    let nextCursorPosition = { block: replacementChain.chainEnd, offset: 1 };
-
-    if (cursorOnInsert) {
-        const { blockPos, offset } = cursorOnInsert;
-        const block = getBlockAtPosition(replacementChain, blockPos);
-        if (block) {
-            nextCursorPosition = { block, offset };
-        }
+    if (block.isComposite) {
+        block.children.forEach(list => {
+            list.blocks.forEach(block => {
+                walkTree(block, iterator);
+            });
+        });
     }
-
-    const insertPos = removeRange(range);
-    insertPos.block.insertAt(replacementChain, insertPos.offset);
-    selection.anchorAt(nextCursorPosition);
-}
-
-function buildReplacementChain(source?: string | BlockChainState): IBlock {
-    if (!source) {
-        return null;
-    }
-
-    if (typeof source === 'string') {
-        return buildChainFromCalchub(source);
-    }
-
-    if (Array.isArray(source)) {
-        return BlockBuilder.fromJS(source);
-    }
-
-    return null;
-}
-
-export function getBlockAtIndex(block: IBlock, index: number): IBlock {
-    let i = 0;
-
-    while (i < index && block) {
-        block = block.right;
-        i++;
-    }
-
-    return block;
-}
-
-export function getTrailingPhrase(cursorPosition: ICursorPosition): string {
-    const { block, offset } = cursorPosition;
-    const blockToLeft = offset === 0 ? block.left : block;
-
-    if (!blockToLeft) {
-        return '';
-    }
-
-    if (!blockToLeft.node) {
-        return '';
-    }
-
-    const targetNode = blockToLeft.node;
-
-    // walk to the left until
-    // the blocks node does not equal ours
-    let phrase = blockToLeft.text;
-    let b = blockToLeft.left;
-    while (b != null && b.node === targetNode) {
-        phrase += b.text;
-        b = b.left;
-    }
-
-    return phrase;
-}
-
-export function getCompleteRangeForNodeAtBlock(block: IBlock) {
-    if (block == null) {
-        return null;
-    }
-
-    if (block.node == null) {
-        return null;
-    }
-
-    const targetNode = block.node;
-
-    // walk to the left until
-    // the blocks token does not equal ours
-    let start = block;
-    while (start.left && start.left.node === targetNode) {
-        start = start.left;
-    }
-
-    // walk to the right until
-    // the blocks token does not equal ours
-    let end = block;
-    while (end.right && end.right.node === targetNode) {
-        end = end.right;
-    }
-
-    return Range.create({ block: start, offset: 0 }, { block: end, offset: 1 });
-}
-
-export function insertFraction(cp: CursorPosition): ICursorPosition {
-    const { block, offset } = cp;
-    const frac = new FractionBlock();
-    if (offset === 1) {
-        let num = getNumeratorChain(block);
-        if (num != null) {
-            frac.setNum(num);
-        }
-        block.insertAt(frac, offset);
-        if (num != null && num.type != BlockType.Blank) {
-            let deletion = getNumeratorRange(frac.left);
-            removeRange(deletion);
-        }
-    } else if (offset === 0 && block.left != null) {
-        let num = getNumeratorChain(block.left);
-        if (num != null) {
-            frac.setNum(num);
-        }
-        block.insertAt(frac, offset);
-        if (num != null && num.type != BlockType.Blank) {
-            let deletion = getNumeratorRange(frac.left);
-            removeRange(deletion);
-        }
-    } else {
-        block.insertAt(frac, offset);
-    }
-
-    return nextCursorPositionFraction(frac);
-}
-
-export function insertFractionWithSelection(selection: Selection): ICursorPosition {
-    const frac = new FractionBlock();
-
-    let currentBlock = selection.start.block;
-    let chain = currentBlock.clone();
-
-    while (currentBlock != selection.end.block) {
-        currentBlock = currentBlock.right;
-        chain.chainEnd.insertChainRight(currentBlock.clone());
-    }
-
-    frac.setNum(chain);
-    selection.start.block.insertChainLeft(frac);
-
-    return nextCursorPositionFraction(frac);
-}
-
-function nextCursorPositionFraction(block: FractionBlock): ICursorPosition {
-    if (block.num.type === BlockType.Blank) {
-        return { block: block.num, offset: 0 };
-    }
-    if (block.denom.type === BlockType.Blank) {
-        return { block: block.denom, offset: 0 };
-    }
-    return { block: block, offset: 1 };
-}
-
-function getNumeratorRange(block: IBlock): Range {
-    let deletion = new Range();
-
-    if (block == null || block.type === BlockType.Blank) return deletion;
-    
-    deletion.setAnchor({ block: block, offset: 1 });
-
-    if (block.type === BlockType.RightParens) {
-        let leftParens = (block as RightParensBlock).leftParensPartner;
-        if (leftParens != null) {
-            deletion.setFocus({ block: leftParens, offset: 0 });
-        }
-        return deletion;
-    } else if (block.type === BlockType.Block || block.type === BlockType.SupSub) {
-        let currentBlock = block;
-        while (currentBlock.left != null && (currentBlock.left.type === BlockType.SupSub || !isBinaryOpFam(currentBlock.left.node))) {
-            currentBlock = currentBlock.left;
-        }
-        deletion.setFocus({ block: currentBlock, offset: 0 });
-        return deletion;
-    } else if (block.type === BlockType.Function || block.type === BlockType.Radical || block.type === BlockType.Fraction) {
-        deletion.setFocus({ block: block, offset: 0 });
-        return deletion;
-    }
-    return null;
-}
-
-function getNumeratorChain(block: IBlock): IBlock {
-    if (block == null) return null;
-
-    let chain = null;
-    if (block.type === BlockType.RightParens) {
-        let currentBlock = (block as RightParensBlock).leftParensPartner as IBlock;
-        if (currentBlock != null) {
-            chain = currentBlock.clone();
-            currentBlock = currentBlock.right;
-            while (currentBlock != null && currentBlock != block) {
-                chain.chainEnd.insertChainRight(currentBlock.clone());
-                currentBlock = currentBlock.right;
-            }
-            chain.chainEnd.insertChainRight(currentBlock.clone());
-        }
-        return chain;
-    } else if (block.type === BlockType.Block) {
-        if (!isBinaryOpFam(block.node)) {
-            chain = block.clone();
-            let currentBlock = block.left;
-            while (currentBlock != null && !isBinaryOpFam(currentBlock.node)) {
-                chain.chainStart.insertChainLeft(currentBlock.clone());
-
-                currentBlock = currentBlock.left;
-            }
-            return chain.chainStart;
-        }
-    } else if (block.type === BlockType.SupSub) {
-        chain = block.clone();
-        let currentBlock = block.left;
-        while (currentBlock != null && !isBinaryOpFam(currentBlock.node)) {
-            chain.chainStart.insertChainLeft(currentBlock.clone());
-
-            currentBlock = currentBlock.left;
-        }
-        return chain.chainStart;
-    } else if (block.type === BlockType.Function || block.type === BlockType.Radical || block.type === BlockType.Fraction) {
-        return block.clone();
-    }
-    return chain;
-}
-
-export function getBlockLeftOfCursorPosition(pos: ICursorPosition) {
-    if (pos.offset === 1) {
-        return pos.block;
-    }
-    return pos.block.left;
-}
-
-export function getRangeLeftOfBlockInclusive(block: IBlock): Range {
-    if (block == null || block.type !== BlockType.Block) {
-        return null;
-    }
-
-    const range = new Range();
-    range.setAnchor({ block: block, offset: 1 });
-    range.setFocus({ block: block, offset: 0 });
-
-    while (range.focus.block.left && range.anchor.block.node === range.focus.block.left.node) {
-        range.setFocus({ block: range.focus.block.left, offset: 0 })
-    }
-
-    return range;
-}
-
-export function isParensPair(value1: string, value2: string): boolean {
-    const pair = parensPairs[value1];
-    return pair != null && value2 === pair;
-}
-
-const parensPairs = {
-    '(': ')',
-    ')': '(',
-    '{': '}',
-    '}': '{',
-    '[': ']',
-    ']': '['
-};
-
-export function calchubFromState(state: IBlockState | BlockChainState): string {
-    const chain = BlockBuilder.fromJS(state);
-    return calchubFromChain(chain);
-}
-
-export function mergeAdjacentSupSubs(chain: IBlock): IBlock {
-    if (chain == null) {
-        return null;
-    }
-
-    const block = chain;
-    let next = chain.right;
-
-    if (isSupSubBlock(block) && isSupSubBlock(next)) {
-        const orientation = (block.sup ? 1 : 0) + (block.sub ? 2 : 0) + (next.sup ? 4 : 0) + (next.sub ? 8 : 0);
-
-        switch (orientation) {
-
-            // block is empty
-            case 0:
-            case 4:
-                // remove block and move on
-                block.remove();
-                break;
-
-            // right is empty
-            case 1:
-            case 2:
-            case 3:
-                // move on
-                break;
-
-            // both have a sup
-            case 5:
-                break;
-
-            // block has sub, right has sup: merge!
-            case 6:
-                block.setSup(next.sup);
-                next.remove();
-                next = block.right;
-                break;
-
-            // block is full
-            case 7:
-            case 11:
-                break;
-
-            // block is empty
-            case 8:
-            case 12:
-                block.remove();
-                break;
-
-            case 9: // block has sup, right has sub
-                // merge!
-                block.setSub(next.sub);
-                next.remove();
-                next = block.right;
-                break;
-
-            case 10: // both have subs
-                break;
-
-            // right is full
-            case 13:
-            case 14:
-            case 15:
-                break;
-        }
-    }
-
-    if (next != null) {
-        return mergeAdjacentSupSubs(next);
-    } else {
-        return block.chainStart;
-    }
-}
-
-export function getFirstMatrixBlockParent(block: IBlock): MatrixBlock {
-    if (!block) {
-        return null;
-    }
-    return isMatrixBlock(block) ? block : getFirstMatrixBlockParent(block.parent);
 }
